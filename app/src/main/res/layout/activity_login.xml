@@ -50,17 +50,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.31" />
 
-    <android.widget.Button
+    <ImageView
         android:id="@+id/login"
         android:layout_width="363dp"
-        android:layout_height="65dp"
-        android:backgroundTint="@color/black"
-        android:text="로그인"
-        android:textColor="@color/white"
+        android:layout_height="60dp"
+        android:background="@drawable/loginbutton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.43" />
 
