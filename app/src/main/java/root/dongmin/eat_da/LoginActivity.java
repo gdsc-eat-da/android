@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                         else { //로그인 실패
-                            Toast.makeText(LoginActivity.this, "화원가입 실패시발",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "아이디나 비밀번호를 다시 확인하세요.",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

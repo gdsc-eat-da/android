@@ -89,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "화원가입 완료",Toast.LENGTH_SHORT).show();
                         }
                         else { //실패시
-                            Toast.makeText(RegisterActivity.this, "화원가입 실패시발",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "아이디나 비밀번호가 적절한지 확인하세요",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
