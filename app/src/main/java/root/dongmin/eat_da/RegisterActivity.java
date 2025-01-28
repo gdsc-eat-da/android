@@ -1,6 +1,8 @@
 package root.dongmin.eat_da;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -93,9 +95,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                             //mdatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                             Toast.makeText(RegisterActivity.this, "화원가입 완료",Toast.LENGTH_SHORT).show();
+
+
+                            //닉네임 액티비티로 이동 ㄱㄱ
+                            Intent intent = new Intent(RegisterActivity.this, NicknameActivity.class);
+                            startActivity(intent);
+                            finish(); // 현재 액티비티 종료
                         }
                         else { //실패시
-                            Toast.makeText(RegisterActivity.this, "화원가입 실패시발",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "아이디나 비밀번호가 적절한지 확인하세요",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
