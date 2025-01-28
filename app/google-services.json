@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "35392002959",
+    "firebase_url": "https://eat-da-68342-default-rtdb.firebaseio.com",
     "project_id": "eat-da-68342",
     "storage_bucket": "eat-da-68342.firebasestorage.app"
   },
@@ -42,6 +43,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "35392002959-4a0jquh6tq1ale914h0d6juvbhtcsu57.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.real_eat_da",
+            "certificate_hash": "87bb13f30bbfd6eb8852240aee0b565ffe605b8a"
+          }
+        },
         {
           "client_id": "35392002959-fcsl9keucr43s94c19mfb83ng91fdqbo.apps.googleusercontent.com",
           "client_type": 3

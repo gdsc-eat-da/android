@@ -158,7 +158,7 @@
         app:layout_constraintVertical_bias="0.51" />
 
     <ImageView
-        android:id="@+id/googleStartBtn"
+        android:id="@+id/btn_google_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

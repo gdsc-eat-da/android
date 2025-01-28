@@ -3,7 +3,6 @@ package root.dongmin.eat_da;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,29 +15,35 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-
-
 public class LoginActivity extends AppCompatActivity {
 
+    private static final int RC_SIGN_IN = 9001; // 구글 로그인 요청 코드
 
-    //파이어베이스와 연동하기 위한 코드
-    private FirebaseAuth mFirebaseAuth;//파이어베이스 인증
-    private DatabaseReference mdatabaseRef;//실시간 데이터 베이스
+    private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
+    private DatabaseReference mdatabaseRef; // 실시간 데이터베이스
 
-    //-------------------------------------------------------------------------
+    private GoogleSignInClient mGoogleSignInClient; // 구글 로그인 클라이언트
 
     private EditText mEtEmail, mEtPwd;
     private ImageView mBtnLogin;
     private TextView mBtnRegister;
-
-
+    private ImageView googleLoginbtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,44 +51,43 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-
-        //파이어베이스 래퍼런스 선언
+        // 파이어베이스 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
         mdatabaseRef = FirebaseDatabase.getInstance().getReference();
 
-        //버튼 이름 정리
+        // 버튼 및 입력 필드 초기화
         mEtEmail = findViewById(R.id.et_email);
         mEtPwd = findViewById(R.id.et_pwd);
         mBtnRegister = findViewById(R.id.legistor);
         mBtnLogin = findViewById(R.id.login);
+        googleLoginbtn = findViewById(R.id.btn_google_sign_in);
 
-
-        mBtnLogin.setOnClickListener(new View.OnClickListener() { // 로그인 버튼 눌렀을 때
+        // 이메일 로그인 버튼
+        mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //로그인 처리 시작
                 String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
 
-                mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) { // 로그인 성공 유무 클래스의 함수
-                        if(task.isSuccessful())
-                        {
-                            //로그인 성공
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-
-                        }
-                        else { //로그인 실패
-                            Toast.makeText(LoginActivity.this, "화원가입 실패시발",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // 로그인 성공
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    // 로그인 실패
+                                    Toast.makeText(LoginActivity.this, "정보를 확인해 주세요", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
+        // 회원가입 버튼
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,13 +96,71 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
-
+        // 시스템 바 여백 적용
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Google Sign-In 설정
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)) // Firebase 콘솔에서 가져온 클라이언트 ID
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // 구글 로그인 버튼
+        googleLoginbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signInWithGoogle();
+            }
+        });
+    }
+
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                if (account != null) {
+                    firebaseAuthWithGoogle(account);
+                }
+            } catch (ApiException e) {
+                Toast.makeText(this, "구글 로그인 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace(); // 로그캣에 오류 출력
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        mFirebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            if (user != null) {
+                                Toast.makeText(LoginActivity.this, "구글 로그인 성공", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, "구글 로그인 인증 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

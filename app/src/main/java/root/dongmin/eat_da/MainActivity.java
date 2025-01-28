@@ -1,5 +1,6 @@
 package root.dongmin.eat_da;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -52,12 +53,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 버튼 초기화 및 클릭 이벤트 추가
-        Button button = findViewById(R.id.btngotophoto);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button photobutton = findViewById(R.id.btngotophoto);
+        photobutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // PhotoActivity로 이동
                 Intent intent = new Intent(MainActivity.this, PhotoActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button chatbutton = findViewById(R.id.btnchat);
+        chatbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // ChatActivity로 이동
+                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 startActivity(intent);
             }
         });

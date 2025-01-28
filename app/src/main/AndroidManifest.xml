@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -34,6 +35,10 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="true"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import root.dongmin.eat_da.data.User;
+
 public class RegisterActivity extends AppCompatActivity {
 
 
@@ -85,7 +87,11 @@ public class RegisterActivity extends AppCompatActivity {
                             account.setEmailId(firebaseUser.getEmail());
                             account.setPassword(strPwd);
 
-                            mdatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+                            // 실시간 데이터베이스에 저장
+                            String userId = mFirebaseAuth.getCurrentUser().getUid();
+                            addUserToDatabase(strEmail,strPwd, userId);
+
+                            //mdatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                             Toast.makeText(RegisterActivity.this, "화원가입 완료",Toast.LENGTH_SHORT).show();
                         }
                         else { //실패시
@@ -93,6 +99,10 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+
+            private void addUserToDatabase(String name, String email, String uId) {
+                mdatabaseRef.child("user").child(uId).setValue(new User(name,email,uId));
             }
         });
 
