@@ -19,7 +19,7 @@
             android:name=".ForgotpwActivity"
             android:exported="false" />
         <activity
-            android:name=".TestActivity"
+            android:name=".ForgotdoneActivity"
             android:exported="false" />
         <activity
             android:name=".NicknameActivity"
@@ -36,9 +36,7 @@
         <activity
             android:name=".PhotoActivity"
             android:exported="false" />
-        <activity
-            android:name=".UserAccount"
-            android:exported="false" />
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />

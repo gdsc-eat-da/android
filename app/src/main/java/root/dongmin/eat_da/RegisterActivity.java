@@ -1,12 +1,16 @@
 package root.dongmin.eat_da;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,25 +33,13 @@ import root.dongmin.eat_da.data.User;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private FirebaseAuth mFirebaseAuth;  // Firebase 인증
+    private DatabaseReference mdatabaseRef;  // Firebase DB
 
-
-//https://www.youtube.com/watch?v=NJgolOfKcYE 참고
-
-
-
-    //https://console.firebase.google.com/project/eat-da-68342/authentication/users?hl=ko
-    //가보면 회원가입 완료 시 가입한 아이디,비번,UID 코드가 뜰거임
-
-    //파이어베이스와 연동하기 위한 코드
-    private FirebaseAuth mFirebaseAuth;//파이어베이스 인증
-    private DatabaseReference mdatabaseRef;//실시간 데이터 베이스
-
-    //-------------------------------------------------------------------------
-
-    private EditText mEtEmail, mEtPwd;
-    private Button mBtnRegister, mBtnTogglePwd;
-
-
+    private EditText mEtEmail, mEtPwd, checkPwd;
+    private MaterialButton mBtnRegister;  // MaterialButton 사용
+    private TextView ack1, ack2, ack3, ack4;
+    private ImageView mBtnTogglePwd1, mBtnTogglePwd2;
 
     private boolean isPasswordVisible = false; // 비밀번호 표시 상태 저장 변수
 
@@ -56,100 +49,167 @@ public class RegisterActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
-
-        //파이어베이스 래퍼런스 선언
+        // Firebase 레퍼런스 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
         mdatabaseRef = FirebaseDatabase.getInstance().getReference();
 
-        //버튼 이름 정리
+        // UI 요소 초기화
         mEtEmail = findViewById(R.id.et_re_e);
         mEtPwd = findViewById(R.id.et_re_p);
+        checkPwd = findViewById(R.id.check_et_re_p);
         mBtnRegister = findViewById(R.id.et_re_gogo);
-        mBtnTogglePwd = findViewById(R.id.et_re_visible); // 비밀번호 표시 버튼
-        mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);//비밀번호 원래 안보이게 초기화(기본값:안보임)
 
+        // 입력 확인 알림 텍스트
+        ack1 = findViewById(R.id.acktext1);
+        ack2 = findViewById(R.id.acktext2);
+        ack3 = findViewById(R.id.acktext3);
+        ack4 = findViewById(R.id.acktext4);
 
+        // 초기에는 전부 안 보이도록 설정
+        ack1.setVisibility(View.GONE);
+        ack2.setVisibility(View.GONE);
+        ack3.setVisibility(View.GONE);
+        ack4.setVisibility(View.GONE);
 
+        // 초기 버튼 비활성화 및 배경색 변경
+        setRegisterButtonState(false);
 
+        // 비밀번호 표시/숨김 버튼
+        mBtnTogglePwd1 = findViewById(R.id.et_re_visible);
+        mBtnTogglePwd2 = findViewById(R.id.et_re_visible2);
 
-        // 비밀번호 표시/숨김 버튼 기능 추가
-        mBtnTogglePwd.setOnClickListener(new View.OnClickListener() {
+        // 비밀번호 기본적으로 숨김 상태로 설정
+        mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        // 비밀번호 표시/숨김 토글 리스너 등록
+        View.OnClickListener togglePasswordListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPasswordVisible) {
-                    // 비밀번호 숨기기
-                    mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    mBtnTogglePwd.setText("보이기");
-                } else {
-                    // 비밀번호 보이기
-                    mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    mBtnTogglePwd.setText("숨기기");
+                togglePasswordVisibility();
+            }
+        };
+
+        // 두 개의 버튼에 같은 리스너 적용
+        mBtnTogglePwd1.setOnClickListener(togglePasswordListener);
+        mBtnTogglePwd2.setOnClickListener(togglePasswordListener);
+
+        // 비밀번호 입력 감지 리스너
+        TextWatcher passwordWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkPasswordMatch();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        mEtPwd.addTextChangedListener(passwordWatcher);
+        checkPwd.addTextChangedListener(passwordWatcher);
+
+        // 회원가입 버튼 클릭 리스너
+        mBtnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strEmail = mEtEmail.getText().toString().trim();
+                String strPwd = mEtPwd.getText().toString().trim();
+
+                if (strEmail.isEmpty() || strPwd.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, "이메일과 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                isPasswordVisible = !isPasswordVisible;
-                mEtPwd.setSelection(mEtPwd.getText().length()); // 커서 위치 유지
+
+                // Firebase 회원가입 진행
+                mFirebaseAuth.createUserWithEmailAndPassword(strEmail, strPwd)
+                        .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                                    String userId = firebaseUser.getUid();
+
+                                    // 사용자 데이터베이스에 저장
+                                    addUserToDatabase(strEmail, strPwd, userId);
+
+                                    Toast.makeText(RegisterActivity.this, "회원가입 완료", Toast.LENGTH_SHORT).show();
+
+                                    // 닉네임 입력 화면으로 이동
+                                    Intent intent = new Intent(RegisterActivity.this, NicknameActivity.class);
+                                    startActivity(intent);
+                                    finish();  // 현재 액티비티 종료
+                                } else {
+                                    Toast.makeText(RegisterActivity.this, "아이디나 비밀번호를 확인하세요", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
-
-        //ㄱㄱ버튼 눌렀을 때
-        mBtnRegister.setOnClickListener(new View.OnClickListener() { //ㄱㄱ버튼 눌렀을 때
-            @Override
-            public void onClick(View v) {
-
-                //회원가입 처리 시작
-                String strEmail = mEtEmail.getText().toString();
-                String strPwd = mEtPwd.getText().toString();
-
-
-
-                //firebase Auth 시작
-                mFirebaseAuth.createUserWithEmailAndPassword(strEmail,strPwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {// 회원가입 성공 유무 클래스의 함수
-
-                        if(task.isSuccessful()) //성공시
-                        {
-                            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                            UserAccount account = new UserAccount();
-                            account.setIdToken(firebaseUser.getUid());
-                            account.setEmailId(firebaseUser.getEmail());
-                            account.setPassword(strPwd);
-
-                            // 실시간 데이터베이스에 저장
-                            String userId = mFirebaseAuth.getCurrentUser().getUid();
-                            addUserToDatabase(strEmail,strPwd, userId);
-
-                            //mdatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
-                            Toast.makeText(RegisterActivity.this, "화원가입 완료",Toast.LENGTH_SHORT).show();
-
-
-                            //닉네임 액티비티로 이동 ㄱㄱ
-                            Intent intent = new Intent(RegisterActivity.this, NicknameActivity.class);
-                            startActivity(intent);
-                            finish(); // 현재 액티비티 종료
-                        }
-                        else { //실패시
-                            Toast.makeText(RegisterActivity.this, "아이디나 비밀번호가 적절한지 확인하세요",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-
-            private void addUserToDatabase(String name, String email, String uId) {
-                mdatabaseRef.child("user").child(uId).setValue(new User(name,email,uId));
-            }
-        });
-
-
-
-
-
-
-
+        // 시스템 바 여백 적용
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    /**
+     * 비밀번호 표시/숨김을 토글하는 메서드
+     */
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // 비밀번호 숨기기
+            mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mBtnTogglePwd1.setImageResource(R.drawable.eye);
+            mBtnTogglePwd2.setImageResource(R.drawable.eye);
+        } else {
+            // 비밀번호 보이기
+            mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            mBtnTogglePwd1.setImageResource(R.drawable.eyeoff);
+            mBtnTogglePwd2.setImageResource(R.drawable.eyeoff);
+        }
+
+        isPasswordVisible = !isPasswordVisible;
+
+        // 커서 위치 유지
+        mEtPwd.setSelection(mEtPwd.getText().length());
+    }
+
+    /**
+     * 비밀번호가 일치하는지 확인하고 버튼 상태 변경
+     */
+    private void checkPasswordMatch() {
+        String password = mEtPwd.getText().toString().trim();
+        String confirmPassword = checkPwd.getText().toString().trim();
+
+        boolean isMatch = !password.isEmpty() && password.equals(confirmPassword);
+        setRegisterButtonState(isMatch);
+
+        boolean isValidLength = password.length() >= 6;
+
+        if (isMatch && isValidLength) {
+            ack1.setVisibility(View.VISIBLE);
+            ack2.setVisibility(View.VISIBLE);
+            ack3.setVisibility(View.GONE);
+            ack4.setVisibility(View.GONE);
+        } else {
+            ack1.setVisibility(View.GONE);
+            ack2.setVisibility(View.GONE);
+            ack3.setVisibility(View.VISIBLE);
+            ack4.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setRegisterButtonState(boolean isEnabled) {
+        mBtnRegister.setEnabled(isEnabled);
+        mBtnRegister.setBackgroundTintList(ColorStateList.valueOf(isEnabled ? Color.BLACK : Color.GRAY));
+        mBtnRegister.setTextColor(Color.WHITE);
+    }
+
+    private void addUserToDatabase(String email, String password, String uId) {
+        mdatabaseRef.child("user").child(uId).setValue(new User(email, password, uId));
     }
 }
