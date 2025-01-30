@@ -5,9 +5,11 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +38,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText mEtEmail, mEtPwd, checkPwd;
     private MaterialButton mBtnRegister;  // MaterialButton 사용
-    private TextView ack1,ack2,ack3,ack4;
+    private TextView ack1, ack2, ack3, ack4;
+    private ImageView mBtnTogglePwd1, mBtnTogglePwd2;
+
+    private boolean isPasswordVisible = false; // 비밀번호 표시 상태 저장 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         checkPwd = findViewById(R.id.check_et_re_p);
         mBtnRegister = findViewById(R.id.et_re_gogo);
 
-
-        //입력 확인 알림 텍스트
+        // 입력 확인 알림 텍스트
         ack1 = findViewById(R.id.acktext1);
         ack2 = findViewById(R.id.acktext2);
         ack3 = findViewById(R.id.acktext3);
@@ -70,9 +74,24 @@ public class RegisterActivity extends AppCompatActivity {
         // 초기 버튼 비활성화 및 배경색 변경
         setRegisterButtonState(false);
 
+        // 비밀번호 표시/숨김 버튼
+        mBtnTogglePwd1 = findViewById(R.id.et_re_visible);
+        mBtnTogglePwd2 = findViewById(R.id.et_re_visible2);
 
-        // 초기 버튼 비활성화 및 배경색 변경
-        setRegisterButtonState(false);
+        // 비밀번호 기본적으로 숨김 상태로 설정
+        mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        // 비밀번호 표시/숨김 토글 리스너 등록
+        View.OnClickListener togglePasswordListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePasswordVisibility();
+            }
+        };
+
+        // 두 개의 버튼에 같은 리스너 적용
+        mBtnTogglePwd1.setOnClickListener(togglePasswordListener);
+        mBtnTogglePwd2.setOnClickListener(togglePasswordListener);
 
         // 비밀번호 입력 감지 리스너
         TextWatcher passwordWatcher = new TextWatcher() {
@@ -138,6 +157,28 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
+     * 비밀번호 표시/숨김을 토글하는 메서드
+     */
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // 비밀번호 숨기기
+            mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mBtnTogglePwd1.setImageResource(R.drawable.eye);
+            mBtnTogglePwd2.setImageResource(R.drawable.eye);
+        } else {
+            // 비밀번호 보이기
+            mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            mBtnTogglePwd1.setImageResource(R.drawable.eyeoff);
+            mBtnTogglePwd2.setImageResource(R.drawable.eyeoff);
+        }
+
+        isPasswordVisible = !isPasswordVisible;
+
+        // 커서 위치 유지
+        mEtPwd.setSelection(mEtPwd.getText().length());
+    }
+
+    /**
      * 비밀번호가 일치하는지 확인하고 버튼 상태 변경
      */
     private void checkPasswordMatch() {
@@ -150,38 +191,24 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isValidLength = password.length() >= 6;
 
         if (isMatch && isValidLength) {
-            // 비밀번호 일치 + 6자리 이상
             ack1.setVisibility(View.VISIBLE);
             ack2.setVisibility(View.VISIBLE);
             ack3.setVisibility(View.GONE);
             ack4.setVisibility(View.GONE);
-            setRegisterButtonState(true);
         } else {
-            // 비밀번호 불일치 또는 6자리 이하
             ack1.setVisibility(View.GONE);
             ack2.setVisibility(View.GONE);
             ack3.setVisibility(View.VISIBLE);
             ack4.setVisibility(View.VISIBLE);
-            setRegisterButtonState(false);
         }
     }
 
-    /**
-     * 회원가입 버튼 상태 변경
-     * @param isEnabled 활성화 여부
-     */
     private void setRegisterButtonState(boolean isEnabled) {
         mBtnRegister.setEnabled(isEnabled);
-        if (isEnabled) {
-            mBtnRegister.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000"))); // 검정색
-        } else {
-            mBtnRegister.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BDBDBD"))); // 회색
-        }
+        mBtnRegister.setBackgroundTintList(ColorStateList.valueOf(isEnabled ? Color.BLACK : Color.GRAY));
+        mBtnRegister.setTextColor(Color.WHITE);
     }
 
-    /**
-     * 사용자 정보를 Firebase DB에 저장
-     */
     private void addUserToDatabase(String email, String password, String uId) {
         mdatabaseRef.child("user").child(uId).setValue(new User(email, password, uId));
     }

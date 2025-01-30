@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +16,10 @@
         android:theme="@style/Theme.Eat_da"
         tools:targetApi="31">
         <activity
-            android:name=".TestActivity"
+            android:name=".ForgotpwActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotdoneActivity"
             android:exported="false" />
         <activity
             android:name=".NicknameActivity"
@@ -33,9 +36,7 @@
         <activity
             android:name=".PhotoActivity"
             android:exported="false" />
-        <activity
-            android:name=".UserAccount"
-            android:exported="false" />
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />

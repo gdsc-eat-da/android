@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView mBtnLogin;
     private TextView mBtnRegister;
     private ImageView googleLoginbtn;
+    private TextView btnFind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         mBtnRegister = findViewById(R.id.legistor);
         mBtnLogin = findViewById(R.id.login);
         googleLoginbtn = findViewById(R.id.btn_google_sign_in);
+        btnFind = findViewById(R.id.findpasswd);
 
         // 이메일 로그인 버튼
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +120,20 @@ public class LoginActivity extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+
+        // 비밀번호 찾기 버튼
+        btnFind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this,ForgotpwActivity.class);
+                startActivity(intent);
+                finish(); // 현재 액티비티 종료 (필요한 경우)
+            }
+        });
     }
+
+
+
 
     private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
