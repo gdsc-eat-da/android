@@ -48,4 +48,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_re_e" />
+
+    <Button
+        android:id="@+id/et_re_visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보이기"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.811"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_re_e"
+        app:layout_constraintVertical_bias="0.576" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

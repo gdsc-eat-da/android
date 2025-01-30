@@ -2,6 +2,7 @@ package root.dongmin.eat_da;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,9 +44,11 @@ public class RegisterActivity extends AppCompatActivity {
     //-------------------------------------------------------------------------
 
     private EditText mEtEmail, mEtPwd;
-    private Button mBtnRegister;
+    private Button mBtnRegister, mBtnTogglePwd;
 
 
+
+    private boolean isPasswordVisible = false; // 비밀번호 표시 상태 저장 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +65,33 @@ public class RegisterActivity extends AppCompatActivity {
         mEtEmail = findViewById(R.id.et_re_e);
         mEtPwd = findViewById(R.id.et_re_p);
         mBtnRegister = findViewById(R.id.et_re_gogo);
+        mBtnTogglePwd = findViewById(R.id.et_re_visible); // 비밀번호 표시 버튼
+        mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);//비밀번호 원래 안보이게 초기화(기본값:안보임)
 
 
 
 
+
+        // 비밀번호 표시/숨김 버튼 기능 추가
+        mBtnTogglePwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPasswordVisible) {
+                    // 비밀번호 숨기기
+                    mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    mBtnTogglePwd.setText("보이기");
+                } else {
+                    // 비밀번호 보이기
+                    mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    mBtnTogglePwd.setText("숨기기");
+                }
+                isPasswordVisible = !isPasswordVisible;
+                mEtPwd.setSelection(mEtPwd.getText().length()); // 커서 위치 유지
+            }
+        });
+
+
+        //ㄱㄱ버튼 눌렀을 때
         mBtnRegister.setOnClickListener(new View.OnClickListener() { //ㄱㄱ버튼 눌렀을 때
             @Override
             public void onClick(View v) {

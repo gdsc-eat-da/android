@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText mEtEmail, mEtPwd;
     private ImageView mBtnLogin;
-    private TextView mBtnRegister;
+    private TextView mBtnRegister, findPassword;
     private ImageView googleLoginbtn;
 
     @Override
@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         mBtnRegister = findViewById(R.id.legistor);
         mBtnLogin = findViewById(R.id.login);
         googleLoginbtn = findViewById(R.id.btn_google_sign_in);
+        findPassword = findViewById(R.id.findpasswd);
 
         // 이메일 로그인 버튼
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +93,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        //비번찾기 버튼
+        findPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ForgotpwActivity.class);
                 startActivity(intent);
             }
         });
