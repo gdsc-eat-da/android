@@ -1,58 +1,78 @@
 package root.dongmin.eat_da;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import root.dongmin.eat_da.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mDatabaseRef;
+    private TextView greed; // 사용자에게 보여줄 텍스트뷰 (반갑습니다 [닉네임]님!)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        // 뷰 바인딩 초기화
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        // Firebase 초기화
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
 
-        // 툴바 설정
-        setSupportActionBar(binding.toolbar);
+        // 텍스트뷰 초기화
+        greed = findViewById(R.id.greeding);
 
-        // 네비게이션 컨트롤러 설정
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // 현재 로그인한 사용자 정보 가져오기
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
-        // 플로팅 액션 버튼 클릭 이벤트
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
+        if (firebaseUser != null) {
+            // Firebase에서 사용자 닉네임 가져오기
+            String userId = firebaseUser.getUid();
 
-        // 버튼 초기화 및 클릭 이벤트 추가
+            // 데이터베이스에서 해당 사용자 닉네임을 가져오기
+            mDatabaseRef.child(userId).child("nickname").addListenerForSingleValueEvent(
+                   // 익명 클래스는 클래스의 이름 없이, 인터페이스나 추상 클래스의 인스턴스를 즉석에서 만들어서 해당 클래스의 메서드를 재정의하는 방식입니다.
+                    new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // 닉네임 가져오기
+                    String nickname = dataSnapshot.getValue(String.class);
+                    if (nickname != null) {
+                        // 닉네임을 "반갑습니다, [닉네임]님!" 형태로 표시
+                        greed.setText("반갑습니다, " + nickname + "님!");
+                    } else {
+                        // 닉네임이 없다면 기본 텍스트 설정
+                        greed.setText("닉네임을 설정해주세요.");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // 에러 처리
+                    Toast.makeText(MainActivity.this, "닉네임을 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // 로그인이 되어 있지 않으면 로그인 화면으로 이동
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        // 버튼 초기화 및 클릭 이벤트 처리
         Button photobutton = findViewById(R.id.btngotophoto);
         photobutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,30 +92,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // 메뉴 인플레이트
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
     }
 }
