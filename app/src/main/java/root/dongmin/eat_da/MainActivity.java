@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private TextView greed; // 사용자에게 보여줄 텍스트뷰 (반갑습니다 [닉네임]님!)
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
