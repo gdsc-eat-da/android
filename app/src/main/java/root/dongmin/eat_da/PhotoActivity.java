@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,18 +19,27 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     // ActivityResultLauncher 선언
     private ActivityResultLauncher<Intent> cameraLauncher;
 
+    // 글쓰기 url (strings.xml 파일에 가면 주소 있음)
+    final private String URL = getString(R.string.api_url);
+
+    private Button btnCamera;
+    private ImageView cameraView;
+    private EditText eText,inText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        Button btnCamera;
-        ImageView cameraView;
-
 
         // 디자인 정의
         btnCamera = findViewById(R.id.btnPhoto);
         cameraView = findViewById(R.id.carmeraView);
+        eText = findViewById(R.id.context);
+        inText = findViewById(R.id.ingredient);
+
+
+
         btnCamera.setOnClickListener(this);
 
         // ActivityResultLauncher 초기화
