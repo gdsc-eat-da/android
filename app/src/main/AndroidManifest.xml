@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,9 +17,7 @@
         android:theme="@style/Theme.Eat_da"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".PostActivity"
-            android:exported="false" />
+
         <activity
             android:name=".ForgotpwActivity"
             android:exported="false" />

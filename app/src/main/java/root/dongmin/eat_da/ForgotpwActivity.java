@@ -69,7 +69,7 @@ public class ForgotpwActivity extends AppCompatActivity {
                             // ForgotdoneActivity로 이동
                             Intent intent = new Intent(ForgotpwActivity.this, ForgotdoneActivity.class);
                             startActivity(intent);
-                            finish(); // 액티비티 종료
+                            //finish(); // 액티비티 종료
                         } else {
                             Toast.makeText(ForgotpwActivity.this, "이메일 전송 실패! 다시 시도하세요.", Toast.LENGTH_SHORT).show();
                             ack6.setVisibility(View.VISIBLE);
