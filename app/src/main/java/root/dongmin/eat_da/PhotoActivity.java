@@ -25,26 +25,24 @@ import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.RetrofitClient;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class PhotoActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // ActivityResultLauncher 선언
     private ActivityResultLauncher<Intent> cameraLauncher;
-
-
-
     private Button btnCamera, btnUpload;
     private ImageView cameraView;
     private EditText eText, inText;
-    private Bitmap imageBitmap;  // 사진을 저장할 변수
+    private Bitmap imageBitmap; // 사진을 저장할 변수
+    private ApiService apiService; // Retrofit API 서비스
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        // 글쓰기 url (strings.xml 파일에 가면 주소 있음)
-        final String URL = getString(R.string.api_url);
+        // Retrofit API 서비스 초기화
+        apiService = RetrofitClient.getApiService(this);
 
         // 디자인 정의
         btnCamera = findViewById(R.id.btnPhoto);
@@ -61,7 +59,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        // 결과 처리
                         Bundle extras = result.getData().getExtras();
                         imageBitmap = (Bitmap) extras.get("data");
                         cameraView.setImageBitmap(imageBitmap);
@@ -73,14 +70,17 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnPhoto) {
-            // 카메라 기능을 Intent
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                cameraLauncher.launch(cameraIntent);
-            }
+            openCamera();
         } else if (view.getId() == R.id.photoupload) {
-            // 업로드 버튼 클릭 시 서버로 데이터 전송
             uploadPost();
+        }
+    }
+
+    // 카메라 실행 메서드
+    private void openCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            cameraLauncher.launch(cameraIntent);
         }
     }
 
@@ -88,22 +88,23 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     private void uploadPost() {
         if (imageBitmap == null) {
             Log.e("Upload", "이미지가 없습니다.");
-            return; // 이미지가 없으면 종료
+            return;
         }
 
         // EditText 내용 가져오기
-        String contents = eText.getText().toString();
-        String ingredients = inText.getText().toString();
+        String contents = eText.getText().toString().trim();
+        String ingredients = inText.getText().toString().trim();
+
+        // 값이 비어있는지 확인
+        if (contents.isEmpty() || ingredients.isEmpty()) {
+            Log.e("Upload", "내용 또는 재료가 비어 있습니다.");
+            return;
+        }
 
         // Bitmap을 MultipartBody.Part로 변환
         MultipartBody.Part filePart = createImagePart(imageBitmap);
-
-        // 텍스트를 RequestBody로 변환
         RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
         RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
-
-        // ApiService 인스턴스 생성
-        ApiService apiService = RetrofitClient.getApiService(PhotoActivity.this);
 
         // API 호출
         Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody);
@@ -111,36 +112,34 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Log.d("Upload", "Success: " + response.body().toString());
-                    // 성공적으로 업로드 처리
-                } else {
-                    Log.d("Upload", "Failed: " + response.message());
-                    // 실패 처리
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        Log.d("Upload", "Success: " + responseBody);
+                    } else {
+                        Log.e("Upload", "Failed: " + response.code() + " " + response.message());
+                        if (response.errorBody() != null) {
+                            Log.e("Upload", "Error body: " + response.errorBody().string());
+                        }
+                    }
+                } catch (IOException e) {
+                    Log.e("Upload", "응답 처리 중 오류 발생: " + e.getMessage());
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("Upload", "Error: " + t.getMessage());
-                // 네트워크 실패 처리
+                Log.e("Upload", "Error: " + t.getMessage());
             }
         });
     }
 
     // Bitmap을 MultipartBody.Part로 변환하는 메서드
     private MultipartBody.Part createImagePart(Bitmap bitmap) {
-        if (bitmap != null) {
-            // Bitmap을 ByteArray로 변환
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-            // ByteArray를 RequestBody로 변환
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), byteArray);
-            return MultipartBody.Part.createFormData("photo", "image.jpg", requestBody);
-        } else {
-            return null;
-        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), byteArray);
+        return MultipartBody.Part.createFormData("photo", "image.jpg", requestBody);
     }
 }
