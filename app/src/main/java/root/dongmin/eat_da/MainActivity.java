@@ -3,6 +3,7 @@ package root.dongmin.eat_da;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,24 +59,12 @@ public class MainActivity extends AppCompatActivity {
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
 
-        // 사용자 정보 가져오기
+        // 사용자 정보 및 게시글 불러오기
         loadUserInfo();
-
-        // 게시글 불러오기
         loadPosts();
 
-        // 버튼 클릭 이벤트 처리
-        Button photobutton = findViewById(R.id.btngotophoto);
-        photobutton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, PhotoActivity.class);
-            startActivity(intent);
-        });
-
-        Button chatbutton = findViewById(R.id.btnchat);
-        chatbutton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-            startActivity(intent);
-        });
+        // 버튼 이벤트 처리
+        setupButtons();
     }
 
     // 사용자 닉네임 가져오기
@@ -108,20 +97,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     // 게시글 목록 불러오기
     private void loadPosts() {
         Call<List<Post>> call = apiService.getPosts();
-        Log.e("MainActivity", "🔗 요청 보낸 URL: " + call.request().url());
-
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Gson gson = new GsonBuilder().setLenient().create();
 
-                    // 🔥 서버 응답 로그 출력 (원본 JSON 확인)
+                    // 🔥 서버 응답 로그 출력
                     try {
                         String jsonResponse = new Gson().toJson(response.body());
                         Log.d("MainActivity", "서버 응답 데이터: " + jsonResponse);
@@ -131,9 +116,8 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    // 🔥 리스트로 변환 (예상되는 응답 형식과 일치하는지 확인 필요)
-                    List<Post> postList = response.body();  // body()는 이미 List<Post>로 변환됨
-
+                    // 리스트 변환 및 RecyclerView 연결
+                    List<Post> postList = response.body();
                     if (postList != null && !postList.isEmpty()) {
                         postAdapter = new PostAdapter(MainActivity.this, postList);
                         recyclerView.setAdapter(postAdapter);
@@ -151,12 +135,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
                 showErrorMessage("네트워크 오류로 게시글을 불러올 수 없습니다.");
                 Log.e("MainActivity", "게시글 불러오기 실패", t);
             }
+        });
+    }
+
+    // 버튼 클릭 이벤트 처리
+    private void setupButtons() {
+        Button photobutton = findViewById(R.id.btngotophoto);
+        photobutton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, PhotoActivity.class);
+            startActivity(intent);
+        });
+
+        Button chatbutton = findViewById(R.id.btnchat);
+        chatbutton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            startActivity(intent);
+        });
+
+        Button findUserButton = findViewById(R.id.btnFindUser);
+        findUserButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, TestChatActivity.class);
+            startActivity(intent);
         });
     }
 

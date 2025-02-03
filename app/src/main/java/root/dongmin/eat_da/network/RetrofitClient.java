@@ -12,7 +12,7 @@ public class RetrofitClient {
 
     public static Retrofit getRetrofitInstance(Context context) {
         if (retrofit == null) {
-            String baseUrl = context.getString(R.string.post_url).trim();
+            String baseUrl = context.getString(R.string.post_url).trim(); // 경로를 잘 파악하자..
 
             // baseUrl이 슬래시('/')로 끝나지 않으면 추가
             if (!baseUrl.endsWith("/")) {
