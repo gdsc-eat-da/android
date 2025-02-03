@@ -2,6 +2,7 @@ package root.dongmin.eat_da;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -29,8 +30,8 @@ import java.io.IOException;
 
 public class PhotoActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ActivityResultLauncher<Intent> cameraLauncher;
-    private Button btnCamera, btnUpload;
+    private ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
+    private Button btnCamera, btnGallery, btnUpload;
     private ImageView cameraView;
     private EditText eText, inText;
     private Bitmap imageBitmap; // 사진을 저장할 변수
@@ -44,17 +45,19 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         // Retrofit API 서비스 초기화
         apiService = RetrofitClient.getApiService(this);
 
-        // 디자인 정의
+        // UI 요소 연결
         btnCamera = findViewById(R.id.btnPhoto);
+        btnGallery = findViewById(R.id.btnGallery);  // 추가된 버튼
+        btnUpload = findViewById(R.id.photoupload);
         cameraView = findViewById(R.id.carmeraView);
         eText = findViewById(R.id.context);
         inText = findViewById(R.id.ingredient);
-        btnUpload = findViewById(R.id.photoupload);
 
         btnCamera.setOnClickListener(this);
+        btnGallery.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
 
-        // ActivityResultLauncher 초기화
+        // 카메라 실행 결과 처리
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -65,18 +68,37 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
         );
+
+        // 갤러리에서 이미지 선택 결과 처리
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        try {
+                            // 갤러리에서 선택한 이미지의 URI 가져오기
+                            Uri selectedImageUri = result.getData().getData();
+                            imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                            cameraView.setImageBitmap(imageBitmap);  // ImageView에 표시
+                        } catch (IOException e) {
+                            Log.e("Gallery", "이미지 불러오기 오류: " + e.getMessage());
+                        }
+                    }
+                }
+        );
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnPhoto) {
             openCamera();
+        } else if (view.getId() == R.id.btnGallery) {
+            openGallery();
         } else if (view.getId() == R.id.photoupload) {
             uploadPost();
         }
     }
 
-    // 카메라 실행 메서드
+    // 📸 카메라 실행 메서드
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
@@ -84,29 +106,32 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    // 서버로 데이터 업로드하는 메서드
+    // 🖼 갤러리에서 이미지 선택 메서드
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.setType("image/*");
+        galleryLauncher.launch(galleryIntent);
+    }
+
+    // 📤 서버 업로드
     private void uploadPost() {
         if (imageBitmap == null) {
             Log.e("Upload", "이미지가 없습니다.");
             return;
         }
 
-        // EditText 내용 가져오기
         String contents = eText.getText().toString().trim();
         String ingredients = inText.getText().toString().trim();
 
-        // 값이 비어있는지 확인
         if (contents.isEmpty() || ingredients.isEmpty()) {
             Log.e("Upload", "내용 또는 재료가 비어 있습니다.");
             return;
         }
 
-        // Bitmap을 MultipartBody.Part로 변환
         MultipartBody.Part filePart = createImagePart(imageBitmap);
         RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
         RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
 
-        // API 호출
         Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody);
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -134,7 +159,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    // Bitmap을 MultipartBody.Part로 변환하는 메서드
+    // Bitmap을 MultipartBody.Part로 변환
     private MultipartBody.Part createImagePart(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
