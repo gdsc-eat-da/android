@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -140,7 +141,14 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (response.isSuccessful() && response.body() != null) {
                         String responseBody = response.body().string();
+                        Toast.makeText(PhotoActivity.this, "게시물이 업로드되었습니다!", Toast.LENGTH_SHORT).show();
                         Log.d("Upload", "Success: " + responseBody);
+
+                        // ✅ 업로드 완료 후 메인 화면으로 이동
+                        Intent intent = new Intent(PhotoActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish(); // 현재 액티비티 종료
                     } else {
                         Log.e("Upload", "Failed: " + response.code() + " " + response.message());
                         if (response.errorBody() != null) {
