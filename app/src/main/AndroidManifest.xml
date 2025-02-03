@@ -17,7 +17,18 @@
         android:theme="@style/Theme.Eat_da"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".TestChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserFindActivity"
+            android:exported="false" />
+        <activity
+            android:name=".userListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatingActivity"
+            android:exported="false" />
         <activity
             android:name=".ForgotpwActivity"
             android:exported="false" />

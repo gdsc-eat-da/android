@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private TextView greed; // 사용자에게 보여줄 텍스트뷰 (반갑습니다 [닉네임]님!)
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,27 +44,26 @@ public class MainActivity extends AppCompatActivity {
 
             // 데이터베이스에서 해당 사용자 닉네임을 가져오기
             mDatabaseRef.child(userId).child("nickname").addListenerForSingleValueEvent(
-                   // 익명 클래스는 클래스의 이름 없이, 인터페이스나 추상 클래스의 인스턴스를 즉석에서 만들어서 해당 클래스의 메서드를 재정의하는 방식입니다.
                     new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // 닉네임 가져오기
-                    String nickname = dataSnapshot.getValue(String.class);
-                    if (nickname != null) {
-                        // 닉네임을 "반갑습니다, [닉네임]님!" 형태로 표시
-                        greed.setText("반갑습니다, " + nickname + "님!");
-                    } else {
-                        // 닉네임이 없다면 기본 텍스트 설정
-                        greed.setText("닉네임을 설정해주세요.");
-                    }
-                }
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // 닉네임 가져오기
+                            String nickname = dataSnapshot.getValue(String.class);
+                            if (nickname != null) {
+                                // 닉네임을 "반갑습니다, [닉네임]님!" 형태로 표시
+                                greed.setText("반갑습니다, " + nickname + "님!");
+                            } else {
+                                // 닉네임이 없다면 기본 텍스트 설정
+                                greed.setText("닉네임을 설정해주세요.");
+                            }
+                        }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // 에러 처리
-                    Toast.makeText(MainActivity.this, "닉네임을 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // 에러 처리
+                            Toast.makeText(MainActivity.this, "닉네임을 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         } else {
             // 로그인이 되어 있지 않으면 로그인 화면으로 이동
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -93,5 +91,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // 사용자 찾기 버튼 클릭 시 UserFindActivity로 이동
+        Button findUserButton = findViewById(R.id.btnFindUser);
+        findUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // UserFindActivity로 이동
+                Intent intent = new Intent(MainActivity.this, TestChatActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
+
