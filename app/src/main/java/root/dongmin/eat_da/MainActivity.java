@@ -1,6 +1,8 @@
 package root.dongmin.eat_da;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +39,8 @@ import root.dongmin.eat_da.network.RetrofitClient;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한
+
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private TextView greed; // 사용자 환영 메시지
@@ -46,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 🔥 위치 권한 확인 및 요청
+        checkLocationPermission();
 
         // Firebase 및 UI 요소 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -65,6 +74,31 @@ public class MainActivity extends AppCompatActivity {
 
         // 버튼 이벤트 처리
         setupButtons();
+    }
+
+    // ✅ 위치 권한 확인 및 요청
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    // ✅ 권한 요청 결과 처리
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permission", "위치 권한 허용됨");
+            } else {
+                Toast.makeText(this, "위치 권한이 필요합니다. 업로드 기능이 제한됩니다.",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     // 사용자 닉네임 가져오기
@@ -104,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
     // 게시글 목록 불러오기
     private void loadPosts() {
         Call<List<Post>> call = apiService.getPosts();
+        Log.e("MainActivity", "🔗 요청 보낸 URL: " + call.request().url()); // 이런식으로 url 점검가능
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
