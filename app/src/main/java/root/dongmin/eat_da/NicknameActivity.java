@@ -1,6 +1,7 @@
 package root.dongmin.eat_da;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -100,11 +101,11 @@ public class NicknameActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(NicknameActivity.this, "닉네임이 저장되었습니다.", Toast.LENGTH_SHORT).show();
 
-                    // LoginActivity로 이동
-                    Intent intent = new Intent(NicknameActivity.this, LoginActivity.class);
+                    // MainActivity로 이동
+                    Intent intent = new Intent(NicknameActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    finish(); // 현재 액티비티 종료
+                    //finish(); // 현재 액티비티 종료
 
                 } else {
                     Toast.makeText(NicknameActivity.this, "닉네임 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
