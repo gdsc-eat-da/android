@@ -6,14 +6,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.content.Intent;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import root.dongmin.eat_da.adapter.ChatAdapter;
@@ -33,15 +33,21 @@ import root.dongmin.eat_da.data.ChatData;
 
 public class TestChatActivity extends AppCompatActivity {
 
-
-    private RecyclerView mRecycleView;//xml에 있는 리사이클뷰를 끌어온다
+    // 리사이클러뷰 및 관련 변수 선언
+    private RecyclerView mRecycleView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ChatData> chatList;
+
+    // Firebase 인증 관련 변수
     private FirebaseAuth mAuth;
-    private String userEmail; // 사용자 이메일 저장 변수
+    private String userEmail, receivedId; // 현재 로그인한 사용자의 이메일 저장
+
+    // 채팅 입력 필드 및 전송 버튼
     private EditText EditText_chat;
     private Button Button_send;
+
+    // Firebase Realtime Database 참조
     private DatabaseReference myRef;
 
     @Override
@@ -51,13 +57,20 @@ public class TestChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test_chat);
 
 
+        // 1. Intent에서 데이터 가져오기 (상대방 아이디)       (receivedID)
+        Intent intent = getIntent();
+        if(intent != null && intent.hasExtra("chatID"))
+        {
+            receivedId = intent.getStringExtra("chatID");
+            Toast.makeText(this, "채팅을 시작할 상대: " + receivedId, Toast.LENGTH_SHORT).show();
+        }
 
-        // FirebaseAuth 인스턴스 가져오기-----------------------------------------초기 자기자신 식별코드
+        // 2. FirebaseAuth 인스턴스를 가져와 현재 로그인한 사용자 확인 (자기 자신 아이디)
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
-            userEmail = currentUser.getEmail(); // 현재 로그인한 사용자의 이메일 가져오기
+            userEmail = currentUser.getEmail(); // 로그인한 사용자의 이메일 저장
             Log.d("TestChatActivity", "로그인된 이메일: " + userEmail);
             Toast.makeText(this, "로그인된 이메일: " + userEmail, Toast.LENGTH_SHORT).show();
         } else {
@@ -65,90 +78,86 @@ public class TestChatActivity extends AppCompatActivity {
             Log.d("TestChatActivity", "로그인된 사용자가 없습니다.");
         }
 
+        // 3. 그 둘의 아이디를 통해 고유 채팅방 아이디 만들기
+        List<String> users = new ArrayList<>();
+        String userEmailSafe = userEmail.replace(".", "_").replace("@", "_");
+        String receivedIdSafe = receivedId.replace(".", "_").replace("@", "_");
+        users.add(receivedIdSafe);
+        users.add(userEmailSafe);
+        Collections.sort(users);
+
+        String sortedId = users.get(0) + "_" + users.get(1);
+        Log.d("TestChatActivity", "정렬된 채팅방 ID: " + sortedId);
+
+
+        // 4.  Firebase Realtime Database 참조 가져오기
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference( sortedId.toString());
 
 
 
-//초기설정 리사이클뷰랑 어댑터 연동 코드------------------------------------------------------------
+
+
+
+
+
+
+        // UI 요소 초기화 및 이벤트 리스너 설정
         Button_send = findViewById(R.id.Button_send);
         EditText_chat = findViewById(R.id.EditText_chat);
+
+        // 전송 버튼 클릭 시 채팅 데이터 Firebase에 저장
         Button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String msg = EditText_chat.getText().toString();
                 ChatData chat = new ChatData();
-                chat.setNickname(userEmail);
-                chat.setMsg(msg);
-                myRef.push().setValue(chat);
+                chat.setNickname(userEmail); // 사용자 이메일을 닉네임으로 설정
+                chat.setMsg(msg); // 입력된 메시지 설정
+                myRef.push().setValue(chat); // Firebase에 데이터 저장
             }
         });
 
+        // 리사이클러뷰 초기화 및 레이아웃 설정
         mRecycleView = findViewById(R.id.my_recycler_view);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecycleView.setLayoutManager(mLayoutManager);
 
-
+        // 채팅 데이터 리스트 및 어댑터 설정
         chatList = new ArrayList<>();
         mAdapter = new ChatAdapter(chatList, TestChatActivity.this, userEmail);
         mRecycleView.setAdapter(mAdapter);
 
 
 
-
-
-
-
-
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("message");
-
-//        ChatData chat = new ChatData();
-//        chat.setNickname(userEmail);
-//        chat.setMsg("hellpoooo");
-//        myRef.setValue(chat);
-
-
+        // Firebase에서 새로운 채팅 데이터가 추가될 때마다 실행되는 리스너 설정
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                ChatData chat = snapshot.getValue(ChatData.class);
-                ((ChatAdapter) mAdapter).addChat(chat);
+                ChatData chat = snapshot.getValue(ChatData.class); // 새로 추가된 데이터 가져오기
+                ((ChatAdapter) mAdapter).addChat(chat); // 어댑터를 통해 리스트에 추가
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                // 채팅 데이터가 변경되었을 때 처리 (현재 미구현)
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
+                // 채팅 데이터가 삭제되었을 때 처리 (현재 미구현)
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                // 채팅 데이터가 이동되었을 때 처리 (현재 미구현)
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // 데이터 로드 중 에러 발생 시 처리
             }
         });
-
-
-
-
-
-
-
-
-
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
     }
 }
