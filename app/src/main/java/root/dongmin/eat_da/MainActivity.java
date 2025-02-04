@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
                         greed.setText("반갑습니다, " + nickname + "님!");
                     } else {
                         greed.setText("닉네임을 설정해주세요.");
+                        greed.setOnClickListener(v -> {
+                            Intent intent = new Intent(MainActivity.this, NicknameActivity.class);
+                            startActivity(intent);
+                        });
                     }
                 }
 

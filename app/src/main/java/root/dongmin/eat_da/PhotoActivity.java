@@ -170,7 +170,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     // Bitmap을 MultipartBody.Part로 변환
     private MultipartBody.Part createImagePart(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream); // compress 숫자 높일수록 화질 업 max:100
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), byteArray);
         return MultipartBody.Part.createFormData("photo", "image.jpg", requestBody);
