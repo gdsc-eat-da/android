@@ -37,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import root.dongmin.eat_da.adapter.PostAdapter;
 import root.dongmin.eat_da.network.ApiService;
+import root.dongmin.eat_da.network.NearbyPostResponse;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
 
@@ -168,26 +169,31 @@ public class MainActivity extends AppCompatActivity {
     // ✅ 근처 게시글 불러오기
     private void loadNearbyPosts(double latitude, double longitude) {
         double radius = 5.0; // 반경 5km
-        Call<List<Post>> call = apiService.getNearbyPosts(latitude, longitude, radius);
+        Call<NearbyPostResponse> call = apiService.getNearbyPosts(latitude, longitude, radius);
 
-        call.enqueue(new Callback<List<Post>>() {
+        Log.d("Upload", "API 요청 URL: " + call.request().url());
+
+        call.enqueue(new Callback<NearbyPostResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Post> postList = response.body();
+            public void onResponse(@NonNull Call<NearbyPostResponse> call, @NonNull Response<NearbyPostResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<Post> postList = response.body().getPosts();
+                    Log.d("Upload", "서버 응답 데이터: " + new Gson().toJson(postList));
                     postAdapter = new PostAdapter(MainActivity.this, postList);
                     recyclerView.setAdapter(postAdapter);
                 } else {
+                    Log.e("Upload", "근처 게시물 불러오기 실패: 위도 :"+ latitude + " 경도:" + longitude + " 거리: " + radius);
                     showErrorMessage("근처 게시글을 불러올 수 없습니다.");
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<NearbyPostResponse> call, @NonNull Throwable t) {
                 showErrorMessage("네트워크 오류로 게시글을 불러올 수 없습니다.");
             }
         });
     }
+
 
     // ✅ 근처 게시글 보기 토글 기능
     private void toggleNearbyPosts(Button nearbyButton) {

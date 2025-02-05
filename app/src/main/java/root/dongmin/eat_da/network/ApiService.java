@@ -40,10 +40,11 @@ public interface ApiService {
     );
 
     @GET("getNearbyPosts.php")
-    Call<List<Post>> getNearbyPosts(
+    Call<NearbyPostResponse> getNearbyPosts(
             @Query("latitude") double latitude,
             @Query("longitude") double longitude,
             @Query("radius") double radius
     );
+
 
 }
