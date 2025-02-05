@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,13 +50,18 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private ApiService apiService;
+    private boolean isNearbyActive = false; // "근처 게시물 보기" 상태 여부
+    private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
+    private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 🔥 위치 권한 확인 및 요청
+        // 위치 서비스 초기화
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //  위치 권한 확인 및 요청
         checkLocationPermission();
 
         // Firebase 및 UI 요소 초기화
@@ -95,13 +103,13 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("Permission", "위치 권한 허용됨");
             } else {
-                Toast.makeText(this, "위치 권한이 필요합니다. 업로드 기능이 제한됩니다.",
+                Toast.makeText(this, "위치 권한이 필요합니다. 기능이 제한됩니다.",
                         Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    // 사용자 닉네임 가져오기
+    // ✅ 사용자 닉네임 가져오기
     private void loadUserInfo() {
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
@@ -135,75 +143,103 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // 게시글 목록 불러오기
+    // ✅ 게시글 목록 불러오기
     private void loadPosts() {
         Call<List<Post>> call = apiService.getPosts();
-        Log.e("MainActivity", "🔗 요청 보낸 URL: " + call.request().url()); // 이런식으로 url 점검가능
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Gson gson = new GsonBuilder().setLenient().create();
-
-                    // 🔥 서버 응답 로그 출력
-                    try {
-                        String jsonResponse = new Gson().toJson(response.body());
-                        Log.d("MainActivity", "서버 응답 데이터: " + jsonResponse);
-                        Log.d("RetrofitResponse", "Response: " + response.body());
-                        Log.d("RetrofitError", "Error Body: " + response.errorBody());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    // 리스트 변환 및 RecyclerView 연결
-                    List<Post> postList = response.body();
-                    if (postList != null && !postList.isEmpty()) {
-                        postAdapter = new PostAdapter(MainActivity.this, postList);
-                        recyclerView.setAdapter(postAdapter);
-                    } else {
-                        showErrorMessage("게시글이 없습니다.");
-                    }
+                    allPosts = response.body(); // 기존 게시물 저장
+                    postAdapter = new PostAdapter(MainActivity.this, allPosts);
+                    recyclerView.setAdapter(postAdapter);
                 } else {
-                    try {
-                        String errorBody = response.errorBody().string();
-                        Log.e("MainActivity", "서버 응답 오류: " + errorBody);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    showErrorMessage("서버 응답 오류: 게시글을 불러올 수 없습니다.");
+                    showErrorMessage("게시글을 불러올 수 없습니다.");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
                 showErrorMessage("네트워크 오류로 게시글을 불러올 수 없습니다.");
-                Log.e("MainActivity", "게시글 불러오기 실패", t);
             }
         });
     }
 
-    // 버튼 클릭 이벤트 처리
-    private void setupButtons() {
-        Button photobutton = findViewById(R.id.btngotophoto);
-        photobutton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, PhotoActivity.class);
-            startActivity(intent);
-        });
+    // ✅ 근처 게시글 불러오기
+    private void loadNearbyPosts(double latitude, double longitude) {
+        double radius = 5.0; // 반경 5km
+        Call<List<Post>> call = apiService.getNearbyPosts(latitude, longitude, radius);
 
-        Button chatbutton = findViewById(R.id.btnchat);
-        chatbutton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, IdListActivity.class);
-            startActivity(intent);
-        });
+        call.enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Post> postList = response.body();
+                    postAdapter = new PostAdapter(MainActivity.this, postList);
+                    recyclerView.setAdapter(postAdapter);
+                } else {
+                    showErrorMessage("근처 게시글을 불러올 수 없습니다.");
+                }
+            }
 
-        Button findUserButton = findViewById(R.id.btnFindUser);
-        findUserButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, TestChatActivity.class);
-            startActivity(intent);
+            @Override
+            public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
+                showErrorMessage("네트워크 오류로 게시글을 불러올 수 없습니다.");
+            }
         });
     }
 
-    // 오류 메시지를 화면에 표시하는 메서드
+    // ✅ 근처 게시글 보기 토글 기능
+    private void toggleNearbyPosts(Button nearbyButton) {
+        if (isNearbyActive) {
+            // 📌 토글 OFF: 원래 게시글 목록 복원
+            isNearbyActive = false;
+            nearbyButton.setText("근처 게시글 보기");
+
+            postAdapter = new PostAdapter(MainActivity.this, allPosts);
+            recyclerView.setAdapter(postAdapter);
+        } else {
+            // 📌 토글 ON: 현재 위치 가져와서 근처 게시글 불러오기
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                double latitude = location.getLatitude();
+                                double longitude = location.getLongitude();
+
+                                isNearbyActive = true;
+                                nearbyButton.setText("근처 게시글 취소");
+
+                                loadNearbyPosts(latitude, longitude);
+                            } else {
+                                Toast.makeText(MainActivity.this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                // 권한이 없는 경우 다시 요청
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+
+
+
+    // ✅ 버튼 클릭 이벤트 처리
+    private void setupButtons() {
+        Button photobutton = findViewById(R.id.btngotophoto);
+        photobutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, PhotoActivity.class)));
+
+        Button chatbutton = findViewById(R.id.btnchat);
+        chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));
+
+        Button findUserButton = findViewById(R.id.btnFindUser);
+        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, TestChatActivity.class)));
+
+        Button nearbutton = findViewById(R.id.btnNearby);
+        nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
+    }
+
+    // ✅ 오류 메시지 출력
     private void showErrorMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
     }

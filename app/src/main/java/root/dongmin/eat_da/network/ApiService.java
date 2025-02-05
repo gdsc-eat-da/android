@@ -11,7 +11,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
 
+// 컨트롤러의 역할
 public interface ApiService {
     // 게시글 업로드 (이미지 + 글 + 재료)
     @Multipart
@@ -36,4 +38,12 @@ public interface ApiService {
             @Field("latitude") double latitude, // 위도
             @Field("longitude") double longitude // 경도
     );
+
+    @GET("getNearbyPosts.php")
+    Call<List<Post>> getNearbyPosts(
+            @Query("latitude") double latitude,
+            @Query("longitude") double longitude,
+            @Query("radius") double radius
+    );
+
 }
