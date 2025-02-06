@@ -167,10 +167,26 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             if (user != null) {
-                                Toast.makeText(LoginActivity.this, "구글 로그인 성공", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                String uid = user.getUid();
+                                String email = user.getEmail();
+
+                                // UserAccount 경로에서 닉네임 조회
+                                DatabaseReference userRef = mdatabaseRef.child("UserAccount").child(uid);
+                                userRef.child("emailId").setValue(email);
+                                userRef.child("idToken").setValue(uid);
+
+                                userRef.child("nickname").get().addOnCompleteListener(nicknameTask -> {
+                                    if (nicknameTask.isSuccessful() && nicknameTask.getResult().exists()) {
+                                        // 닉네임이 존재하면 MainActivity로 이동
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        // 닉네임이 없으면 NicknameActivity로 이동
+                                        Intent intent = new Intent(LoginActivity.this, NicknameActivity.class);
+                                        startActivity(intent);
+                                    }
+                                    finish();
+                                });
                             }
                         } else {
                             Toast.makeText(LoginActivity.this, "구글 로그인 인증 실패", Toast.LENGTH_SHORT).show();
@@ -178,4 +194,5 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

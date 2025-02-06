@@ -80,23 +80,22 @@ public class NicknameActivity extends AppCompatActivity {
     // 닉네임 저장 메서드
     private void saveNickname() {
 
-        //닉네임 가져오기
+        // 닉네임 가져오기
         String nickname = mEtNickname.getText().toString().trim();
 
-        //닉네임 비어있다면
+        // 닉네임이 비어있다면 저장 불가
         if (nickname.isEmpty()) {
             Toast.makeText(NicknameActivity.this, "닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //현재 로그인된 사용자의 계정을 가져옴(Null이어야만 닉네임 설정 가능하겠지?)
+        // 현재 로그인된 사용자 정보 가져오기
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
-        //회원가입되지 않은 계정으로만 닉네임 저장 가능하게 만들기
         if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
 
-            // 데이터베이스에 닉네임 저장
+            // `UserAccount/{uid}/nickname` 경로에 닉네임 저장
             mDatabaseRef.child(uid).child("nickname").setValue(nickname).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(NicknameActivity.this, "닉네임이 저장되었습니다.", Toast.LENGTH_SHORT).show();
@@ -105,7 +104,6 @@ public class NicknameActivity extends AppCompatActivity {
                     Intent intent = new Intent(NicknameActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    //finish(); // 현재 액티비티 종료
 
                 } else {
                     Toast.makeText(NicknameActivity.this, "닉네임 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();

@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
 
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,17 +50,18 @@ public class TestChatActivity extends AppCompatActivity {
     // Firebase Realtime Database 참조
     private DatabaseReference myRef;
 
+    // 클래스 멤버 변수로 yourNick 선언
+    private String yourNick = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_test_chat);
 
-
         // 1. Intent에서 데이터 가져오기 (상대방 아이디)       (receivedID)
         Intent intent = getIntent();
-        if(intent != null && intent.hasExtra("chatID"))
-        {
+        if (intent != null && intent.hasExtra("chatID")) {
             receivedId = intent.getStringExtra("chatID");
             Toast.makeText(this, "채팅을 시작할 상대: " + receivedId, Toast.LENGTH_SHORT).show();
         }
@@ -78,31 +79,49 @@ public class TestChatActivity extends AppCompatActivity {
             Log.d("TestChatActivity", "로그인된 사용자가 없습니다.");
         }
 
-        // 3. 그 둘의 아이디를 통해 고유 채팅방 아이디 만들기
-        List<String> users = new ArrayList<>();
-        String userEmailSafe = userEmail.replace(".", "_").replace("@", "_");
-        String receivedIdSafe = receivedId.replace(".", "_").replace("@", "_");
-        users.add(receivedIdSafe);
-        users.add(userEmailSafe);
-        Collections.sort(users);
+        // 3. 현재 사용자의 닉네임 가져오기
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String uid = firebaseUser.getUid(); // uid 변수 초기화
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UserAccount").child(uid);
 
-        String sortedId = users.get(0) + "_" + users.get(1);
-        Log.d("TestChatActivity", "정렬된 채팅방 ID: " + sortedId);
+            userRef.child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    yourNick = dataSnapshot.getValue(String.class); // 클래스 멤버 변수에 닉네임 저장
+                    if (yourNick != null) {
+                        Log.d("Nickname", "닉네임: " + yourNick);
 
+                        // 4. 고유 채팅방 아이디 만들기
+                        List<String> users = new ArrayList<>();
+                        String userEmailSafe = userEmail.replace(".", "_").replace("@", "_");
+                        String receivedIdSafe = receivedId.replace(".", "_").replace("@", "_");
+                        users.add(receivedIdSafe);
+                        users.add(yourNick);
+                        Collections.sort(users);
 
-        // 4.  Firebase Realtime Database 참조 가져오기
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference( sortedId.toString());
+                        String sortedId = users.get(0) + "_" + users.get(1);
+                        Log.d("TestChatActivity", "정렬된 채팅방 ID: " + sortedId);
 
+                        // 5. Firebase Realtime Database 참조 가져오기
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        myRef = database.getReference(sortedId);
 
+                        // 6. UI 요소 초기화 및 이벤트 리스너 설정
+                        initUI();
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("FirebaseError", "닉네임 불러오기 실패: " + databaseError.getMessage());
+                }
+            });
+        }
+    }
 
-
-
-
-
-
-        // UI 요소 초기화 및 이벤트 리스너 설정
+    // UI 초기화 및 이벤트 리스너 설정
+    private void initUI() {
         Button_send = findViewById(R.id.Button_send);
         EditText_chat = findViewById(R.id.EditText_chat);
 
@@ -128,8 +147,6 @@ public class TestChatActivity extends AppCompatActivity {
         chatList = new ArrayList<>();
         mAdapter = new ChatAdapter(chatList, TestChatActivity.this, userEmail);
         mRecycleView.setAdapter(mAdapter);
-
-
 
         // Firebase에서 새로운 채팅 데이터가 추가될 때마다 실행되는 리스너 설정
         myRef.addChildEventListener(new ChildEventListener() {

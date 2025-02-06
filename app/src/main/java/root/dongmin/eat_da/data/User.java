@@ -7,6 +7,8 @@ public class User {
     private String email;
     private String uId;
 
+    private String nickname;
+
     // 기본 생성자
     public User() {
         this.name = "";

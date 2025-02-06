@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한
 
+    public String Nicknamee;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private TextView greed; // 사용자 환영 메시지
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     String nickname = dataSnapshot.getValue(String.class);
                     if (nickname != null) {
                         greed.setText("반갑습니다, " + nickname + "님!");
+                        Nicknamee = nickname;
                     } else {
                         greed.setText("닉네임을 설정해주세요.");
                         greed.setOnClickListener(v -> {
@@ -233,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));
 
         Button findUserButton = findViewById(R.id.btnFindUser);
-        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, TestChatActivity.class)));
+        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
 
         Button nearbutton = findViewById(R.id.btnNearby);
         nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
