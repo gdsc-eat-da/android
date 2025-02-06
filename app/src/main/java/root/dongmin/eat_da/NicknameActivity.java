@@ -69,14 +69,6 @@ public class NicknameActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
     // 닉네임 저장 메서드
     private void saveNickname() {
 
@@ -99,7 +91,7 @@ public class NicknameActivity extends AppCompatActivity {
             mDatabaseRef.child(uid).child("nickname").setValue(nickname).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(NicknameActivity.this, "닉네임이 저장되었습니다.", Toast.LENGTH_SHORT).show();
-
+                    setTransactionCount(uid);
                     // MainActivity로 이동
                     Intent intent = new Intent(NicknameActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,6 +104,20 @@ public class NicknameActivity extends AppCompatActivity {
         } else {
             Toast.makeText(NicknameActivity.this, "로그인 상태를 확인하세요.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // 가입시 -> 거래횟수를 초기화
+    private void setTransactionCount(String uid) {
+        // 거래 횟수를 0으로 설정
+        mDatabaseRef.child(uid).child("transactionCount").setValue(0).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // 거래 횟수 초기화 성공
+                Toast.makeText(NicknameActivity.this, "거래 횟수가 초기화되었습니다.", Toast.LENGTH_SHORT).show();
+            } else {
+                // 거래 횟수 초기화 실패
+                Toast.makeText(NicknameActivity.this, "거래 횟수 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

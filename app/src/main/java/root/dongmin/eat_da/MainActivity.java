@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한
 
-    public String Nicknamee;
+    public String Nickname;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private TextView greed; // 사용자 환영 메시지
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     String nickname = dataSnapshot.getValue(String.class);
                     if (nickname != null) {
                         greed.setText("반갑습니다, " + nickname + "님!");
-                        Nicknamee = nickname;
+                        Nickname = nickname;
                     } else {
                         greed.setText("닉네임을 설정해주세요.");
                         greed.setOnClickListener(v -> {
@@ -245,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button nearbutton = findViewById(R.id.btnNearby);
         nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
+
+        Button mypagebutton = findViewById(R.id.btnMyPage);
+        mypagebutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MyPageActivity.class)));
     }
 
     // ✅ 오류 메시지 출력
