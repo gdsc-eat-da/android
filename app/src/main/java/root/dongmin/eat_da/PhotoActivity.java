@@ -26,6 +26,13 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
@@ -164,43 +171,65 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        MultipartBody.Part filePart = createImagePart(imageBitmap);
-        RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
-        RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
+        // ✅ 닉네임을 가져온 후 API 요청 실행 (닉네임의 비동기 처리를 위해 어쩔 수 없이 api 요청 코드를 닉네임 가져오는 함수 안에 넣었습니다...)
+        getNickname(nickname -> {
+            if (nickname == null) {
+                Toast.makeText(PhotoActivity.this, "닉네임을 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if (response.isSuccessful() && response.body() != null) {
-                        String responseBody = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseBody);
-                        boolean success = jsonResponse.getBoolean("success");
+            Log.d("Upload", "닉네임 포함하여 업로드: " + nickname);
 
-                        if (success) {
-                            int postID = jsonResponse.getInt("postID");
-                            Log.d("Upload", "postID: " + postID);
 
-                            // 위지 저장 요청 실행
-                            uploadLocation(postID);
+            // ✅ 이미지 Multipart 변환
+            MultipartBody.Part filePart = createImagePart(imageBitmap);
+
+            // ✅ 다른 데이터 RequestBody로 변환
+            RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
+            RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
+            RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname); // ✅ 닉네임 추가
+
+
+
+            // ✅ API 호출 (닉네임 포함)
+            Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody, nicknameBody);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        if (response.isSuccessful() && response.body() != null) {
+                            String responseBody = response.body().string();
+                            JSONObject jsonResponse = new JSONObject(responseBody);
+                            boolean success = jsonResponse.getBoolean("success");
+
+                            if (success) {
+                                int postID = jsonResponse.getInt("postID");
+                                Log.d("Upload", "postID: " + postID);
+
+                                // ✅ 위치 저장 실행
+                                uploadLocation(postID);
+                            } else {
+                                Log.e("Upload", "게시물 업로드 실패: " + jsonResponse.getString("message"));
+                            }
                         } else {
-                            Log.e("Upload", "게시물 업로드 실패: " + jsonResponse.getString("message"));
+                            Log.e("Upload", "Failed: " + response.code() + " " + response.message());
                         }
-                    } else {
-                        Log.e("Upload", "Failed: " + response.code() + " " + response.message());
+                    } catch (Exception e) {
+                        Log.e("Upload", "응답 처리 중 오류 발생: " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    Log.e("Upload", "응답 처리 중 오류 발생: " + e.getMessage());
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Upload", "게시물 업로드 실패: " + t.getMessage());
-            }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("Upload", "게시물 업로드 실패: " + t.getMessage());
+                }
+            });
         });
     }
+
+
+
+
 
     // 📍 위치 업로드
     private void uploadLocation(int postID) {
@@ -253,4 +282,45 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), byteArrayOutputStream.toByteArray());
         return MultipartBody.Part.createFormData("photo", "image.jpg", requestBody);
     }
+
+
+    // 🔥 Firebase에서 현재 사용자의 닉네임 가져오는 메서드
+    private void getNickname(OnNicknameReceivedListener listener) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String uid = firebaseUser.getUid(); // 현재 유저 UID 가져오기
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UserAccount").child(uid);
+
+            userRef.child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String nickname = dataSnapshot.getValue(String.class); // 닉네임 가져오기
+                    if (nickname != null) {
+                        Log.d("Nickname", "닉네임 가져옴: " + nickname);
+                        listener.onReceived(nickname); // 콜백으로 전달
+                    } else {
+                        Log.e("Nickname", "닉네임이 없습니다.");
+                        listener.onReceived(null);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("FirebaseError", "닉네임 불러오기 실패: " + databaseError.getMessage());
+                    listener.onReceived(null);
+                }
+            });
+        } else {
+            Log.e("Nickname", "FirebaseUser가 null입니다.");
+            listener.onReceived(null);
+        }
+    }
+
+    // 🔥 닉네임을 받아서 처리할 인터페이스 (비동기 처리용)
+    interface OnNicknameReceivedListener {
+        void onReceived(String nickname);
+    }
+
+
+
 }

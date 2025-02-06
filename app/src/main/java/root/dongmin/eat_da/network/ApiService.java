@@ -21,8 +21,9 @@ public interface ApiService {
     Call<ResponseBody> uploadPost(
             @Part MultipartBody.Part photo, //사진
             @Part("contents") RequestBody contents, // 내용
-            @Part("ingredients") RequestBody ingredients // 재료(영양 성분)
-    );
+            @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
+            @Part("nickname") RequestBody nickname  //  닉네임 추가
+            );
 
     // 게시글 목록 가져오기
     @GET("get_post.php")
