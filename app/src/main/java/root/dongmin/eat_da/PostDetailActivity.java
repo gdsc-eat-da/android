@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,5 +43,18 @@ public class PostDetailActivity extends AppCompatActivity {
         titleTextView.setText(Nick + "님의 " + title);
         ingredientsTextView.setText(ingredients);
         Glide.with(this).load(image).into(postImageView);
+
+
+        Button chatbutton = findViewById(R.id.chatButton);
+        chatbutton.setOnClickListener(view -> {
+            // 닉네임을 Intent에 추가하여 TestChatActivity로 전달
+            Intent chatIntent = new Intent(PostDetailActivity.this, TestChatActivity.class);
+            chatIntent.putExtra("chatID", Nick);  // 닉네임을 "chatID"라는 키로 전달
+            startActivity(chatIntent);
+        });
+
+
+
+
     }
 }
