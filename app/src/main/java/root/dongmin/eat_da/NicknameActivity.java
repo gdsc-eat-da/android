@@ -92,6 +92,7 @@ public class NicknameActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(NicknameActivity.this, "닉네임이 저장되었습니다.", Toast.LENGTH_SHORT).show();
                     setTransactionCount(uid);
+                    setDefaultProfileImage(uid);
                     // MainActivity로 이동
                     Intent intent = new Intent(NicknameActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -118,6 +119,24 @@ public class NicknameActivity extends AppCompatActivity {
                 Toast.makeText(NicknameActivity.this, "거래 횟수 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    //가입시 -> 프로필에는 기본 이미지가 저장
+    private void setDefaultProfileImage(String uid){
+        // 기본이미지 경로를 파이어베이스에 자동 저장
+        // 기본 프로필 이미지 URL
+        String defaultProfileImageUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200";  // 기본 이미지 URL
+
+        // Firebase에 프로필 이미지 URL 저장
+        mDatabaseRef.child(uid).child("profileImage").setValue(defaultProfileImageUrl)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(NicknameActivity.this, "기본 프로필 이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(NicknameActivity.this, "프로필 이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
 }

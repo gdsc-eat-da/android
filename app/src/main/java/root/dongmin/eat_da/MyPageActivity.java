@@ -1,6 +1,7 @@
 package root.dongmin.eat_da;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +29,7 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView transaction; // 총 거래 횟수 표시
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth mFirebaseAuth;
+    private ImageView profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class MyPageActivity extends AppCompatActivity {
 
         namePage = findViewById(R.id.nickname);
         transaction = findViewById(R.id.donationCount);
+        profile = findViewById(R.id.profileImage);
 
         // Firebase 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -54,6 +58,7 @@ public class MyPageActivity extends AppCompatActivity {
                     if (dataSnapshot.exists()) {
                         String nickname = dataSnapshot.child("nickname").getValue(String.class);
                         Integer transactionCount = dataSnapshot.child("transactionCount").getValue(Integer.class);
+                        String profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
 
                         // 텍스트뷰에 사용자 정보 설정
                         if (nickname != null) {
@@ -66,6 +71,11 @@ public class MyPageActivity extends AppCompatActivity {
                             transaction.setText(String.format("기부횟수 %d 회", transactionCount));
                         } else {
                             transaction.setText("0");
+                        }
+                        if (profileImageUrl != null) {
+                            Glide.with(MyPageActivity.this)
+                                    .load(profileImageUrl)  // Firebase에서 가져온 URL
+                                    .into(profile);  // ImageView에 로드
                         }
                     }
                 }
