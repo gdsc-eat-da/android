@@ -24,6 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -179,26 +182,42 @@ public class MyPageActivity extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                         try {
-                            // 서버에서 반환된 이미지 URL 가져오기
+                            // 서버에서 반환된 JSON 응답을 문자열로 받아옴
                             String responseStr = response.body().string();
-                            Log.d("UploadProfile", "서버에서 반환된 이미지 URL: " + responseStr);
+                            Log.d("UploadProfile", "서버에서 반환된 응답: " + responseStr);
 
-                            String imageUrl = responseStr; // 실제 URL 파싱 로직이 필요할 수 있음
-                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                            if (firebaseUser != null) {
-                                DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
-                                String uid = firebaseUser.getUid();
-                                mDatabaseRef.child(uid).child("profileImage").setValue(imageUrl)
-                                        .addOnSuccessListener(aVoid -> {
-                                            Toast.makeText(MyPageActivity.this, "프로필 사진이 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
-                                            Log.d("UploadProfile", "Firebase에 프로필 이미지 업데이트 성공");
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Toast.makeText(MyPageActivity.this, "프로필 사진 업데이트 실패", Toast.LENGTH_SHORT).show();
-                                            Log.e("UploadProfile", "Firebase 업데이트 실패: " + e.getMessage());
-                                        });
+                            // 서버 응답에서 image_url 추출 (예: JSON 형태의 응답에서 "image_url" 값을 파싱)
+                            JSONObject jsonResponse = new JSONObject(responseStr);
+                            String imageUrl = jsonResponse.getString("image_url");
+
+                            if (imageUrl != null && !imageUrl.isEmpty()) {
+                                // Firebase에 이미지 URL 저장
+                                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                if (firebaseUser != null) {
+                                    DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
+                                    String uid = firebaseUser.getUid();
+
+                                    // Firebase에 이미지 URL 업데이트
+                                    mDatabaseRef.child(uid).child("profileImage").setValue(imageUrl)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(MyPageActivity.this, "프로필 사진이 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
+                                                Log.d("UploadProfile", "Firebase에 프로필 이미지 업데이트 성공");
+
+                                                // Glide로 프로필 이미지 로드
+                                                Glide.with(MyPageActivity.this)
+                                                        .load(imageUrl)  // Firebase에서 저장된 이미지 URL
+                                                        .into(profile);  // ImageView에 로드
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(MyPageActivity.this, "프로필 사진 업데이트 실패", Toast.LENGTH_SHORT).show();
+                                                Log.e("UploadProfile", "Firebase 업데이트 실패: " + e.getMessage());
+                                            });
+                                }
+                            } else {
+                                Log.e("UploadProfile", "이미지 URL이 유효하지 않습니다.");
+                                Toast.makeText(MyPageActivity.this, "유효한 이미지 URL이 아닙니다.", Toast.LENGTH_SHORT).show();
                             }
-                        } catch (IOException e) {
+                        } catch (IOException | JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(MyPageActivity.this, "서버 응답 처리 실패", Toast.LENGTH_SHORT).show();
                             Log.e("UploadProfile", "서버 응답 처리 중 오류 발생: " + e.getMessage());
@@ -208,6 +227,7 @@ public class MyPageActivity extends AppCompatActivity {
                         Log.e("UploadProfile", "서버 오류 발생: " + response.code());
                     }
                 }
+
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
@@ -220,4 +240,6 @@ public class MyPageActivity extends AppCompatActivity {
             Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
