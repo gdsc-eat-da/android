@@ -46,6 +46,16 @@ public interface ApiService {
             @Query("longitude") double longitude,
             @Query("radius") double radius
     );
+    // 프로필 이미지 서버로 보내기
+    @Multipart
+    @POST("post_profile.php")
+    Call<ResponseBody> uploadProfile(
+            @Part MultipartBody.Part image_url // 프로필 이미지 주소
+    );
 
+    @GET("get_profile.php")
+    Call<ProfileImageResponse> getProfile(
+            @Query("id") int id // 기본키(id)를 쿼리로 받아서 이미지 URL 반환
+    );
 
 }
