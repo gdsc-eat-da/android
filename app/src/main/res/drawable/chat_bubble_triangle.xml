@@ -1,0 +1,6 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#3b82f6"/>
+    <path
+        android:fillColor="#3b82f6"
+        android:pathData="M 0,0 L 10,0 L 5,10 Z" /> <!-- 삼각형 모양 -->
+</shape>

@@ -41,9 +41,21 @@ import root.dongmin.eat_da.network.NearbyPostResponse;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한
+    private static final int REQUEST_STORAGE_PERMISSION = 1;
 
     public String Nickname;
     private FirebaseAuth mFirebaseAuth;
@@ -61,10 +73,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // 위치 서비스 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //  위치 권한 확인 및 요청
+        //  위치 권한 확인 및 요청, 저장소도
         checkLocationPermission();
+        checkBoxPermission();
 
         // Firebase 및 UI 요소 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -85,6 +100,24 @@ public class MainActivity extends AppCompatActivity {
         // 버튼 이벤트 처리
         setupButtons();
     }
+
+
+    // ✅ 저장소 권한 확인 및 요청
+    private void checkBoxPermission()
+    {
+        // 저장소 권한 체크 및 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_STORAGE_PERMISSION);
+            }
+        }
+    }
+
+
 
     // ✅ 위치 권한 확인 및 요청
     private void checkLocationPermission() {
@@ -110,6 +143,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+
+
+
 
     // ✅ 사용자 닉네임 가져오기
     private void loadUserInfo() {

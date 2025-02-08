@@ -3,9 +3,11 @@ package root.dongmin.eat_da;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +16,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,6 +75,9 @@ public class MyPageActivity extends AppCompatActivity {
 
         // 현재 로그인된 사용자 정보 가져오기
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+
+
 
         if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
@@ -149,18 +156,20 @@ public class MyPageActivity extends AppCompatActivity {
     }
 
     // *URI에서 실제 파일 경로를 가져오는 메서드*
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { android.provider.MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndexOrThrow(android.provider.MediaStore.Images.Media.DATA);
-            String filePath = cursor.getString(columnIndex);
-            cursor.close();
-            return filePath;
-        } else {
-            return null;
+    private String getRealPathFromURI(Uri uri) {
+        String filePath = null;
+        String[] projection = {MediaStore.Images.Media.DATA};
+
+        try (Cursor cursor = getContentResolver().query(uri, projection, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                filePath = cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return filePath;
     }
 
     // imageUri.getPath()로는 실제 경로를 얻지 못했음
