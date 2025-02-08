@@ -1,51 +1,105 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#909090"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailImage"
+        app:layout_constraintVertical_bias="0.155"
+        />
     <TextView
         android:id="@+id/detailTitle"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:text="ㅣ"
-        android:textSize="28sp"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:text="제목이 들어가는 공간입니다."
+        android:textSize="26sp"
         android:textStyle="bold"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.110000014" />
+        app:layout_constraintVertical_bias="0.60" />
 
     <ImageView
         android:id="@+id/detailImage"
         android:layout_width="match_parent"
-        android:layout_height="355dp"
-        android:scaleType="centerCrop" />
+        android:layout_height="410dp"
+        android:scaleType="centerCrop"
+        android:background="#909090"
+        app:layout_constraintBottom_toTopOf="@+id/detailIngredients"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
 
     <TextView
         android:id="@+id/detailIngredients"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="내용이 들어가는 공간입니다.내용이 들어가는 공간입니다.내용이 들어가는 공간입니다."
+        android:textStyle ="bold"
         android:textSize="16sp"
-        android:layout_marginTop="5dp"/>
+        android:padding="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.73" />
 
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
-    </FrameLayout>
-
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/chatButton"
+        android:layout_width="280dp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/black"
+        android:text="채팅하기"
+        android:textColor="@android:color/white"
+        app:cornerRadius="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.93"
+        app:layout_constraintHorizontal_bias="0.8"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:id="@+id/nick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:text="1대1 채팅하기"
-        android:textColor="@android:color/white" /> <!-- 텍스트는 흰색으로 설정 -->
+        android:text="닉네임"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintVertical_bias="0.49"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

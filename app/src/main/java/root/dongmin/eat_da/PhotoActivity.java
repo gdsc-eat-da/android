@@ -52,7 +52,7 @@ import root.dongmin.eat_da.network.RetrofitClient;
 public class PhotoActivity extends AppCompatActivity implements View.OnClickListener {
 
     // UI 요소
-    private Button btnCamera, btnGallery, btnUpload;
+    private Button btnGallery, btnUpload;
     private ImageView cameraView;
     private EditText eText, inText;
 
@@ -77,7 +77,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         apiService = RetrofitClient.getApiService(this);
 
         // UI 요소 연결
-        btnCamera = findViewById(R.id.btnPhoto);
         btnGallery = findViewById(R.id.btnGallery);
         btnUpload = findViewById(R.id.photoupload);
         cameraView = findViewById(R.id.carmeraView);
@@ -85,7 +84,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         inText = findViewById(R.id.ingredient);
 
         // 버튼 클릭 리스너 등록
-        btnCamera.setOnClickListener(this);
+        cameraView.setOnClickListener(this);
         btnGallery.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
 
@@ -120,7 +119,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.btnPhoto) {
+        if (view.getId() == R.id.carmeraView) {
             openCamera();
         } else if (view.getId() == R.id.btnGallery) {
             openGallery();
