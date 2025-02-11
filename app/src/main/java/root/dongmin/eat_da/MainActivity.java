@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private ApiService apiService;
     private boolean isNearbyActive = false; // "근처 게시물 보기" 상태 여부
     private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
+    private List<String> chatList = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
     private BottomNavigationView bottomNavigationView;
@@ -207,9 +208,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // ✅ 일단 전체 채팅 리스트 로드시켜 놓기.
+    private void loadChatList() {
+        //chatList = new ArrayList<>();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("chat");
 
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Toast.makeText(MainActivity.this, "채팅접근중.", Toast.LENGTH_SHORT).show();
+                Log.d("ChatData", "Children count: " + dataSnapshot.getChildrenCount());
 
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String chatId = snapshot.getKey(); // 최상위 키(채팅 ID) 가져오기
+                    if (chatId != null) {
+                        chatList.add(chatId);
+                    }
+                }
 
+                handleChatList(chatList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "채팅 데이터를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleChatList(List<String> chatList) {
+        for (String chat : chatList) {
+            Log.d("ChatData", chat);
+        }
+        //그리고 이걸 보내야 한다...!!!!
+    }
 
 
 
@@ -350,6 +382,13 @@ public class MainActivity extends AppCompatActivity {
 
 //        Button mypagebutton = findViewById(R.id.btnMyPage);
 //        mypagebutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MyPageActivity.class)));
+        findUserButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
+            intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
+            intent.putExtra("nickname", Nickname);
+            startActivity(intent);
+        });
+
     }
 
     // ✅ 오류 메시지 출력
