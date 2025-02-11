@@ -90,4 +90,6 @@ dependencies {
 
     implementation ("com.kakao.maps.open:android:2.12.8")
 
+    implementation("com.google.android.material:material:1.12.0")
+
 }

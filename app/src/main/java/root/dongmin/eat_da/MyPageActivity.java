@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,11 +55,47 @@ public class MyPageActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private ImageView profile;
     private Uri imageUri; // 갤러리에서 선택된 이미지 URI
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.nav_profile; // 초기 선택된 아이콘 (homeclicked 상태)
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                // 1️⃣ 이전 아이콘을 default로 변경
+                updateIcon(previousItemId, false);
+
+                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
+                updateIcon(item.getItemId(), true);
+
+                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
+                previousItemId = item.getItemId();
+
+
+                if (item.getItemId() == R.id.nav_profile) {
+                    Toast.makeText(MyPageActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if (item.getItemId() == R.id.chat) {
+                    Intent intent = new Intent(MyPageActivity.this, IdListActivity.class );
+                    startActivity(intent);
+                }else if (item.getItemId() == R.id.work_load){
+                    Intent intent = new Intent(MyPageActivity.this,MapActivity.class);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
 
         namePage = findViewById(R.id.nickname);
         transaction = findViewById(R.id.donationCount);
@@ -120,6 +159,25 @@ public class MyPageActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // 아이콘 업데이트 함수
+    private void updateIcon(int itemId, boolean isClicked) {
+        if (bottomNavigationView == null) return;
+
+        int iconRes;
+        if (itemId == R.id.nav_home) {
+            iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
+        } else if (itemId == R.id.chat) {
+            iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
+        } else if (itemId == R.id.nav_profile) {
+            iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
+        } else if (itemId == R.id.work_load) {
+            iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
+        } else {
+            return;
+        }
+        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
     }
 
     // 갤러리에서 이미지 선택 후 처리

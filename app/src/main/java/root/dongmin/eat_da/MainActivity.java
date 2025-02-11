@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -68,10 +73,48 @@ public class MainActivity extends AppCompatActivity {
     private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
     private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
+    private BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.nav_home; // 초기 선택된 아이콘 (homeclicked 상태)
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                // 1️⃣ 이전 아이콘을 default로 변경
+                updateIcon(previousItemId, false);
+
+                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
+                updateIcon(item.getItemId(), true);
+
+                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
+                previousItemId = item.getItemId();
+
+
+                if (item.getItemId() == R.id.nav_home) {
+                    Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_profile) {
+                    Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if (item.getItemId() == R.id.chat) {
+                    Intent intent = new Intent(MainActivity.this, IdListActivity.class );
+                    startActivity(intent);
+                }else if (item.getItemId() == R.id.work_load){
+                    Intent intent = new Intent(MainActivity.this,MapActivity.class);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
+
 
 
 
@@ -100,6 +143,26 @@ public class MainActivity extends AppCompatActivity {
         // 버튼 이벤트 처리
         setupButtons();
     }
+
+    // 아이콘 업데이트 함수
+    private void updateIcon(int itemId, boolean isClicked) {
+        if (bottomNavigationView == null) return;
+
+        int iconRes;
+        if (itemId == R.id.nav_home) {
+            iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
+        } else if (itemId == R.id.chat) {
+            iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
+        } else if (itemId == R.id.nav_profile) {
+            iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
+        } else if (itemId == R.id.work_load) {
+            iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
+        } else {
+            return;
+        }
+        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
+    }
+
 
 
     // ✅ 저장소 권한 확인 및 요청
@@ -276,8 +339,8 @@ public class MainActivity extends AppCompatActivity {
         Button photobutton = findViewById(R.id.btngotophoto);
         photobutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, PhotoActivity.class)));
 
-        Button chatbutton = findViewById(R.id.btnchat);
-        chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));
+//        Button chatbutton = findViewById(R.id.btnchat);
+//        chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));
 
         Button findUserButton = findViewById(R.id.btnFindUser);
         findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
@@ -285,8 +348,8 @@ public class MainActivity extends AppCompatActivity {
         Button nearbutton = findViewById(R.id.btnNearby);
         nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
 
-        Button mypagebutton = findViewById(R.id.btnMyPage);
-        mypagebutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MyPageActivity.class)));
+//        Button mypagebutton = findViewById(R.id.btnMyPage);
+//        mypagebutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MyPageActivity.class)));
     }
 
     // ✅ 오류 메시지 출력
