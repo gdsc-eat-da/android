@@ -87,4 +87,7 @@ dependencies {
 
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation ("com.kakao.maps.open:android:2.12.8")
+
 }
