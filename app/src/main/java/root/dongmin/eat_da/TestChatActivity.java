@@ -44,7 +44,7 @@ public class TestChatActivity extends AppCompatActivity {
 
     // Firebase 인증 관련 변수
     private FirebaseAuth mAuth;
-    private String userEmail, receivedId; // 현재 로그인한 사용자의 이메일 저장
+    private String userEmail, receivedId, postID; // 현재 로그인한 사용자의 이메일 저장
 
     // 채팅 입력 필드 및 전송 버튼
     private EditText EditText_chat;
@@ -70,6 +70,7 @@ public class TestChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("chatID")) {
             receivedId = intent.getStringExtra("chatID");
+            postID = intent.getStringExtra("postID");
             Toast.makeText(this, "채팅을 시작할 상대: " + receivedId, Toast.LENGTH_SHORT).show();
         }
 
@@ -112,7 +113,7 @@ public class TestChatActivity extends AppCompatActivity {
 
                         // 5. Firebase Realtime Database 참조 가져오기
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        myRef = database.getReference(sortedId);
+                        myRef = database.getReference("chat").child(postID + "_" + yourNick + "_" + receivedId);
 
                         // 6. UI 요소 초기화 및 이벤트 리스너 설정
                         initUI();

@@ -47,6 +47,7 @@ public class PostDetailActivity extends AppCompatActivity {
         String ingredients = intent.getStringExtra("ingredients");
         String image = intent.getStringExtra("image");
         String Nick = intent.getStringExtra("nickname");
+        String postID = intent.getStringExtra("postID");
 
         // 데이터 적용
         titleView.setText(title);
@@ -83,6 +84,7 @@ public class PostDetailActivity extends AppCompatActivity {
         chatbutton.setOnClickListener(view -> {
             Intent chatIntent = new Intent(PostDetailActivity.this, TestChatActivity.class);
             chatIntent.putExtra("chatID", Nick);  // 닉네임을 "chatID"라는 키로 전달
+            chatIntent.putExtra("postID",postID);
             startActivity(chatIntent);
         });
     }

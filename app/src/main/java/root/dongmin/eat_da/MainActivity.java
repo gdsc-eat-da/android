@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         // Firebase 및 UI 요소 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
+
         greed = findViewById(R.id.greeding);
         recyclerView = findViewById(R.id.recyclerView);
 
@@ -280,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));
 
         Button findUserButton = findViewById(R.id.btnFindUser);
-        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
+        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, chatRoomActivity.class)));
 
         Button nearbutton = findViewById(R.id.btnNearby);
         nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
