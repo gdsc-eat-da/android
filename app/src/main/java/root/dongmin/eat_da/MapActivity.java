@@ -70,31 +70,40 @@ public class MapActivity extends AppCompatActivity {
             }
         });
 
-        // KakaoMap SDK 초기화 (앱 키를 여기서 사용)
-        KakaoMapSdk.init(this, getString(R.string.KAKAO_MAP_KEY));  
+        try {
+            // KakaoMap SDK 초기화 (앱 키를 여기서 사용)
+            KakaoMapSdk.init(this, getString(R.string.KAKAO_MAP_KEY));
 
-        // MapView 객체를 찾아서 사용
-        mapView = findViewById(R.id.map_view);
-        mapView.start(new MapLifeCycleCallback() {
-            @Override
-            public void onMapDestroy() {
-                // 지도 API가 정상적으로 종료될 때 호출
-                Log.d("KakaoMap", "onMapDestroy: ");
-            }
+            // MapView 객체를 찾아서 사용
+            mapView = findViewById(R.id.map_view);
 
-            @Override
-            public void onMapError(Exception error) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
-                Log.e("KakaoMap", "onMapError: ", error);
-            }
-        }, new KakaoMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull KakaoMap map) {
-                // 정상적으로 인증이 완료되었을 때 호출
-                // KakaoMap 객체를 얻어 옵니다.
-                kakaoMap = map;
-            }
-        });
+            // MapLifeCycleCallback과 KakaoMapReadyCallback을 안전하게 처리
+            mapView.start(new MapLifeCycleCallback() {
+                @Override
+                public void onMapDestroy() {
+                    // 지도 API가 정상적으로 종료될 때 호출
+                    Log.d("KakaoMap", "onMapDestroy: ");
+                }
+
+                @Override
+                public void onMapError(Exception error) {
+                    // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출
+                    Log.e("KakaoMap", "onMapError: ", error);
+                    Toast.makeText(MapActivity.this, "지도 로딩 중 에러 발생", Toast.LENGTH_SHORT).show();
+                }
+            }, new KakaoMapReadyCallback() {
+                @Override
+                public void onMapReady(@NonNull KakaoMap map) {
+                    // 정상적으로 인증이 완료되었을 때 호출
+                    // KakaoMap 객체를 얻어 옵니다.
+                    kakaoMap = map;
+                }
+            });
+        } catch (Exception e) {
+            // 카카오 맵 SDK 초기화 또는 설정에서 문제가 발생할 경우
+            Log.e("MapActivity", "KakaoMap SDK 초기화 실패", e);
+            Toast.makeText(this, "지도 초기화 중 오류 발생", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // 아이콘 업데이트 함수

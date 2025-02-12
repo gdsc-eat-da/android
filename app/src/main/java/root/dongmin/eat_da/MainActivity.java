@@ -1,6 +1,8 @@
 package root.dongmin.eat_da;
 
 import android.Manifest;
+
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ import root.dongmin.eat_da.network.RetrofitClient;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -76,13 +79,28 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
+
+
+    // 1초에 한 번씩 loadChatList()를 호출
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            loadChatList();
+            handler.postDelayed(this, 1000); // 1초 후에 다시 실행
+        }
+    };
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
+        loadChatList();
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.nav_home; // 초기 선택된 아이콘 (homeclicked 상태)
             @Override
@@ -146,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 사용자 정보 및 게시글 불러오기
         loadUserInfo();
+        handler.post(runnable);
         loadPosts();
 
         // 버튼 이벤트 처리
@@ -224,12 +243,19 @@ public class MainActivity extends AppCompatActivity {
     // ✅ 일단 전체 채팅 리스트 로드시켜 놓기.
     private void loadChatList() {
         //chatList = new ArrayList<>();
+        // chatList가 null이 아니면 비워주기
+        if (chatList != null) {
+            chatList.clear(); // 기존 항목 모두 제거
+        } else {
+            chatList = new ArrayList<>(); // 만약 null이라면 새로 초기화
+        }
+
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("chat");
 
         mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(MainActivity.this, "채팅접근중.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "채팅접근중.", Toast.LENGTH_SHORT).show();
                 Log.d("ChatData", "Children count: " + dataSnapshot.getChildrenCount());
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
