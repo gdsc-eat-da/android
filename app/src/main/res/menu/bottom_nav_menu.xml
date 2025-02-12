@@ -6,28 +6,24 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/homeclicked"
         app:showAsAction="always"
-        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/chat"
         android:icon="@drawable/chatdefault"
         app:showAsAction="always"
-        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/mypagedefault"
         app:showAsAction="always"
-        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/work_load"
         android:icon="@drawable/workloaddefault"
         app:showAsAction="always"
-        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 </menu>
 

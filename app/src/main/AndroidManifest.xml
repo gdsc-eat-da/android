@@ -25,15 +25,17 @@
         android:theme="@style/Theme.Eat_da"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".MyPostActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.kakao.vectormap.KAKAO_MAP_KEY"
-            android:value="@string/KAKAO_MAP_KEY"
-            />
+            android:value="@string/KAKAO_MAP_KEY" />
+
         <activity
             android:name=".MapActivity"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".chatRoomActivity"
             android:exported="false" />

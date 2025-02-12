@@ -118,5 +118,7 @@ public class IdListActivity extends AppCompatActivity {
             return;
         }
         bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
+
+        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
     }
 }

@@ -114,5 +114,7 @@ public class MapActivity extends AppCompatActivity {
             return;
         }
         bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
+
+        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
     }
 }

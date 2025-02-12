@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +58,7 @@ public class MyPageActivity extends AppCompatActivity {
     private ImageView profile;
     private Uri imageUri; // 갤러리에서 선택된 이미지 URI
     private BottomNavigationView bottomNavigationView;
+    private Button myPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,13 +142,13 @@ public class MyPageActivity extends AppCompatActivity {
 
                         // 텍스트뷰에 사용자 정보 설정
                         if (nickname != null) {
-                            namePage.setText(nickname + " 님의 페이지");
+                            namePage.setText(nickname);
                         } else {
                             namePage.setText("닉네임이 없습니다.");
                         }
 
                         if (transactionCount != null) {
-                            transaction.setText(String.format("기부횟수 %d 회", transactionCount));
+                            transaction.setText(String.format("%d", transactionCount));
                         } else {
                             transaction.setText("0");
                         }
@@ -166,6 +169,21 @@ public class MyPageActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
         }
+
+
+        // 내 게시물들 보기 -> 삭제 및 수정 구현 필요
+        myPost = findViewById(R.id.btnMyPost);
+        myPost.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyPageActivity.this, MyPostActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
     }
 
     // 아이콘 업데이트 함수
@@ -185,6 +203,8 @@ public class MyPageActivity extends AppCompatActivity {
             return;
         }
         bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
+
+        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
     }
 
     // 갤러리에서 이미지 선택 후 처리

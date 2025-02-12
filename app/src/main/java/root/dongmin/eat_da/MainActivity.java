@@ -158,17 +158,23 @@ public class MainActivity extends AppCompatActivity {
 
         int iconRes;
         if (itemId == R.id.nav_home) {
+            Log.d("하단바 동작","하단바 클릭됨");
             iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
         } else if (itemId == R.id.chat) {
+            Log.d("하단바 동작","하단바 클릭됨");
             iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
         } else if (itemId == R.id.nav_profile) {
+            Log.d("하단바 동작","하단바 클릭됨");
             iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
         } else if (itemId == R.id.work_load) {
+            Log.d("하단바 동작","하단바 클릭됨");
             iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
         } else {
             return;
         }
         bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
+
+        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
     }
 
 
