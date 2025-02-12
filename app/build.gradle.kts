@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+
 android {
     namespace = "root.dongmin.eat_da"
     compileSdk = 35
@@ -88,7 +89,8 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
-    implementation ("com.kakao.maps.open:android:2.12.8")
+    implementation ("com.kakao.maps.open:android:2.11.0")
+
 
     implementation("com.google.android.material:material:1.12.0")
 

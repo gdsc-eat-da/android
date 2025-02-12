@@ -32,8 +32,8 @@
             />
         <activity
             android:name=".MapActivity"
-            android:exported="false"
-            />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".chatRoomActivity"
             android:exported="false" />
