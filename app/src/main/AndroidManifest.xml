@@ -25,9 +25,11 @@
         android:theme="@style/Theme.Eat_da"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
             android:name=".MyPostActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <meta-data
             android:name="com.kakao.vectormap.KAKAO_MAP_KEY"
