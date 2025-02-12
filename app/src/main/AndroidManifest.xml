@@ -31,6 +31,10 @@
             android:value="@string/KAKAO_MAP_KEY"
             />
         <activity
+            android:name=".MapActivity"
+            android:exported="false"
+            />
+        <activity
             android:name=".chatRoomActivity"
             android:exported="false" />
         <activity

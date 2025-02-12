@@ -68,6 +68,9 @@ public class MyPageActivity extends AppCompatActivity {
             private int previousItemId = R.id.nav_profile; // 초기 선택된 아이콘 (homeclicked 상태)
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) {
+                    return false; // 동일한 아이템 클릭 방지
+                }
 
                 // 1️⃣ 이전 아이콘을 default로 변경
                 updateIcon(previousItemId, false);
@@ -77,6 +80,10 @@ public class MyPageActivity extends AppCompatActivity {
 
                 // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
                 previousItemId = item.getItemId();
+
+                // 아이템 선택 해제 (중요)
+                item.setCheckable(false);
+                item.setChecked(false);
 
 
                 if (item.getItemId() == R.id.nav_profile) {

@@ -1,23 +1,33 @@
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/homeclicked"
+        app:showAsAction="always"
+        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/chat"
         android:icon="@drawable/chatdefault"
-        tools:ignore="MenuTitle"
-        />
+        app:showAsAction="always"
+        app:itemIconTint="@null"
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/mypagedefault"
+        app:showAsAction="always"
+        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/work_load"
         android:icon="@drawable/workloaddefault"
+        app:showAsAction="always"
+        app:itemIconTint="@null"
         tools:ignore="MenuTitle" />
 </menu>
+
