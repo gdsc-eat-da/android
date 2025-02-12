@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:fillViewport="true"> <!-- 화면을 꽉 채우도록 설정 -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
