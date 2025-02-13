@@ -5,6 +5,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -60,4 +61,9 @@ public interface ApiService {
 
     @GET("get_my_posts.php")
     Call<ResponseBody> getMyPosts(@Query("nickname") String nickname);
+
+    // ApiService 인터페이스에 DELETE 메서드 추가
+    @DELETE("delete_post.php")
+    Call<ResponseBody> deletePost(@Query("postID") String postID);
+
 }
