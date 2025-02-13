@@ -3,6 +3,7 @@ package root.dongmin.eat_da;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -126,8 +127,6 @@ public class MyPageActivity extends AppCompatActivity {
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
 
-
-
         if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
 
@@ -137,6 +136,7 @@ public class MyPageActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         String nickname = dataSnapshot.child("nickname").getValue(String.class);
+
                         Integer transactionCount = dataSnapshot.child("transactionCount").getValue(Integer.class);
                         String profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
 

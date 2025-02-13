@@ -58,4 +58,6 @@ public interface ApiService {
             @Query("id") int id // 기본키(id)를 쿼리로 받아서 이미지 URL 반환
     );
 
+    @GET("get_my_posts.php")
+    Call<ResponseBody> getMyPosts(@Query("nickname") String nickname);
 }
