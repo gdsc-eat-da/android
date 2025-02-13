@@ -1,5 +1,6 @@
 package root.dongmin.eat_da.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.google.android.material.imageview.ShapeableImageView;
 import java.util.List;
 
 import root.dongmin.eat_da.R;
+import root.dongmin.eat_da.UserFindActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +37,24 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     public ChatRoomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // RecyclerView의 각 항목 레이아웃을 설정
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_room, parent, false);
+
+        // 클릭 리스너 설정
+        view.setOnClickListener(v -> {
+            // View가 속한 RecyclerView에서 아이템의 포지션을 가져옵니다.
+            RecyclerView recyclerView = (RecyclerView) parent;
+            int position = recyclerView.getChildAdapterPosition(v);  // RecyclerView에서 직접 호출
+
+            if (position != RecyclerView.NO_POSITION) {
+                // 클릭된 항목의 chatRoom 정보 가져오기
+                String selectedChatRoom = chatRoomList.get(position);
+
+                // UserFind 액티비티로 채팅방 정보 전달
+                Intent intent = new Intent(v.getContext(), UserFindActivity.class);
+                intent.putExtra("chatRoom", selectedChatRoom); // 클릭된 채팅방 정보 전달
+                v.getContext().startActivity(intent);
+            }
+        });
+
         return new ChatRoomViewHolder(view);
     }
 
@@ -41,11 +62,16 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     public void onBindViewHolder(ChatRoomViewHolder holder, int position) {
         // 각 채팅방의 이름을 해당 항목에 바인딩
         String chatRoom = chatRoomList.get(position);
-        holder.chatRoomNameTextView.setText(chatRoom);
+        // "_" 기준으로 문자열 분리
+        String[] parts1 = chatRoom.split("_");
+        String chatRoomName = parts1[0]; // "_" 앞부분만 가져옴
+
+        // 채팅방 이름을 TextView에 설정
+        holder.chatRoomNameTextView.setText(chatRoomName);
 
         // ":"을 기준으로 채팅방 정보를 분리
-        String[] parts = chatRoom.split(":");
-        String receivedID = parts[0]; // 받는 사람의 ID
+        String[] parts2 = chatRoom.split(":");
+        String receivedID = parts2[0]; // 받는 사람의 ID
 
         // Firebase에서 해당 ID에 맞는 프로필 이미지를 불러옴
         loadProfileImage(receivedID, holder.profileImageView);

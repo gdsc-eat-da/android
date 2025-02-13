@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Toast.makeText(MainActivity.this, "채팅접근중.", Toast.LENGTH_SHORT).show();
-                Log.d("ChatData", "Children count: " + dataSnapshot.getChildrenCount());
+                //Log.d("ChatData", "Children count: " + dataSnapshot.getChildrenCount());
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String chatId = snapshot.getKey(); // 최상위 키(채팅 ID) 가져오기
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleChatList(List<String> chatList) {
         for (String chat : chatList) {
-            Log.d("ChatData", chat);
+            //Log.d("ChatData", chat);
         }
         //그리고 이걸 보내야 한다...!!!!
     }
