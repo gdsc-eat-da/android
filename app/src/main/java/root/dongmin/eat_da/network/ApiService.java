@@ -26,6 +26,16 @@ public interface ApiService {
             @Part("nickname") RequestBody nickname  //  닉네임 추가
             );
 
+    // 필요 게시글 업로드 (글 내용)
+    @Multipart
+    @POST("needpost.php")
+    Call<ResponseBody> needuploadPost(
+            @Part("contents") RequestBody contents, // 내용
+            @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
+            @Part("nickname") RequestBody nickname  //  닉네임 추가
+    );
+
+
     // 게시글 목록 가져오기
     @GET("get_post.php")
     Call<List<Post>> getPosts();
