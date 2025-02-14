@@ -13,22 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
-        tools:context=".PhotoActivity">
+        tools:context=".NeedActivity">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/carmeraView"
-            android:layout_width="363dp"
-            android:layout_height="170dp"
-            android:layout_marginTop="24dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredient"
-            app:shapeAppearanceOverlay="@style/RoundedImageView2"
-            app:srcCompat="@drawable/takephoto" />
 
         <EditText
-            android:id="@+id/context"
+            android:id="@+id/needcontext"
             android:layout_width="363dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -39,41 +28,42 @@
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+            app:layout_constraintTop_toBottomOf="@+id/needradioGroup" />
 
         <EditText
-            android:id="@+id/ingredient"
+            android:id="@+id/needingredient"
             android:layout_width="363dp"
             android:layout_height="100dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/edit_text_background"
             android:ems="10"
             android:hint="게시물 내용을 작성해주세요"
+
             android:inputType="text"
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/context" />
+            app:layout_constraintTop_toBottomOf="@+id/needcontext" />
+
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/photoupload"
+            android:id="@+id/needphotoupload"
             android:layout_width="363dp"
             android:layout_height="60dp"
-            android:layout_marginTop="76dp"
+            android:layout_marginTop="300dp"
             android:backgroundTint="@color/black"
             android:text="작성완료"
             app:cornerRadius="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/carmeraView" />
-
+            app:layout_constraintTop_toBottomOf="@+id/needingredient" />
 
         <TextView
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="56dp"
-            android:text="음식 나눠주기(("
+            android:text="음식 필요해요(("
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +72,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RadioGroup
-            android:id="@+id/radioGroup"
+            android:id="@+id/needradioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -91,21 +81,21 @@
             app:layout_constraintTop_toBottomOf="@+id/textView17">
 
             <RadioButton
-                android:id="@+id/foodNeed"
+                android:id="@+id/needfoodNeed"
                 android:layout_width="363dp"
                 android:layout_height="75dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/edit_text_background"
                 android:text="음식이 필요해요"
+                android:checked="true"
                 android:buttonTint="@color/black"/>
 
             <RadioButton
-                android:id="@+id/foodDistribute"
+                android:id="@+id/needfoodDistribute"
                 android:layout_width="363dp"
                 android:layout_height="75dp"
                 android:background="@drawable/edit_text_background"
                 android:text="음식을 나눠줄래요"
-                android:checked="true"
                 android:buttonTint="@color/black"/>
         </RadioGroup>
 

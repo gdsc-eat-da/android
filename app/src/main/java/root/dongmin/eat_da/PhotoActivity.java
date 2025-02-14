@@ -3,7 +3,9 @@ package root.dongmin.eat_da;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -52,7 +56,7 @@ import root.dongmin.eat_da.network.RetrofitClient;
 public class PhotoActivity extends AppCompatActivity implements View.OnClickListener {
 
     // UI 요소
-    private Button btnGallery, btnUpload;
+    private Button btnUpload;
     private ImageView cameraView;
     private EditText eText, inText;
 
@@ -68,6 +72,11 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     // 카메라 & 갤러리 실행 결과 처리
     private ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
 
+    // 라디오버튼 요소
+    private RadioGroup radioGroup;
+
+    private RadioButton radioNeed, radioDistribute;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +86,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         apiService = RetrofitClient.getApiService(this);
 
         // UI 요소 연결
-        btnGallery = findViewById(R.id.btnGallery);
         btnUpload = findViewById(R.id.photoupload);
         cameraView = findViewById(R.id.carmeraView);
         eText = findViewById(R.id.context);
@@ -85,8 +93,31 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
         // 버튼 클릭 리스너 등록
         cameraView.setOnClickListener(this);
-        btnGallery.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
+
+        // 라디오 버튼 클릭 리스너 설정
+        radioGroup = findViewById(R.id.radioGroup);
+        radioNeed = findViewById(R.id.foodNeed);
+        radioDistribute = findViewById(R.id.foodDistribute);
+        radioNeed.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+        radioDistribute.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+
+
+        // 기본 선택값을 foodDistribute로
+        radioGroup.check(R.id.foodDistribute);
+
+        // 음식필요해요 라디오 버튼클릭시
+        radioNeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PhotoActivity.this,NeedActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
+
 
         // 카메라 실행 결과 처리
         cameraLauncher = registerForActivityResult(
@@ -121,8 +152,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view.getId() == R.id.carmeraView) {
             openCamera();
-        } else if (view.getId() == R.id.btnGallery) {
-            openGallery();
         } else if (view.getId() == R.id.photoupload) {
             uploadPost();
         }
