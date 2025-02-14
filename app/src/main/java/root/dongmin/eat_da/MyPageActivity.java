@@ -1,6 +1,8 @@
 package root.dongmin.eat_da;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -59,7 +61,8 @@ public class MyPageActivity extends AppCompatActivity {
     private ImageView profile;
     private Uri imageUri; // 갤러리에서 선택된 이미지 URI
     private BottomNavigationView bottomNavigationView;
-    private Button myPost;
+    private Button myPost,logout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +184,31 @@ public class MyPageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // 로그아웃 구현
+        logout = findViewById(R.id.btnLogout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(v.getContext()) // context 대신 v.getContext() 사용 가능
+                        .setTitle("로그아웃하시겠습니까?")
+                        .setMessage("로그인 창으로 돌아가시겠습니까?")
+                        .setPositiveButton("확인", (dialog, which) -> {
+                            // Firebase 로그아웃 처리
+                            FirebaseAuth.getInstance().signOut();
+
+                            // 로그인 화면으로 이동
+                            Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish(); // 현재 액티비티 종료
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+            }
+        });
+
+
 
 
 
