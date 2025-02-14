@@ -86,6 +86,14 @@ public class PostDetailActivity extends AppCompatActivity {
             chatIntent.putExtra("chatID", Nick);  // 닉네임을 "chatID"라는 키로 전달
             chatIntent.putExtra("postID",postID);
             startActivity(chatIntent);
+
+
+        });
+
+        Button chatbutton2 = findViewById(R.id.alergicButton);
+        chatbutton2.setOnClickListener(view -> {
+            Intent chatIntent = new Intent(PostDetailActivity.this, alergicActivity.class);
+            startActivity(chatIntent);
         });
     }
 }
