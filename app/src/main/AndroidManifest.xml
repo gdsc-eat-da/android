@@ -29,6 +29,9 @@
             android:name=".NeedActivity"
             android:exported="false" />
         <activity
+            android:name=".alergicActivity"
+            android:exported="false" />
+        <activity
             android:name=".MyPostActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

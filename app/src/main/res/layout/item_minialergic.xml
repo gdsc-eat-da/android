@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:contentDescription="배경 이미지"
+        android:src="@drawable/alreadyselected" />
+
+    <TextView
+        android:id="@+id/tv_mini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="-10dp"
+        android:text="토마토"
+        android:textColor="#070707"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+</FrameLayout>

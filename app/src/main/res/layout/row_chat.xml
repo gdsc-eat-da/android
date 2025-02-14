@@ -30,6 +30,7 @@
             android:textSize="20sp"
             android:padding="12dp"
             android:textColor="#ffffff"
+            android:text = ""
             android:background="@drawable/chat_bubble"
             android:maxWidth="250dp" />
 
