@@ -1,8 +1,12 @@
 package root.dongmin.eat_da;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +18,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +31,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONObject;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -40,6 +51,9 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
     private EditText eText, inText;
     private RadioGroup radioGroup;
     private RadioButton radioNeed, radioDistribute;
+
+    // 위치 서비스
+    private FusedLocationProviderClient fusedLocationClient;
 
     // API 서비스
     private ApiService apiService;
@@ -87,8 +101,20 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // 위치 권한이 있는지 확인
+    private boolean isLocationPermissionGranted() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+
     // 📤 게시글 업로드
     private void needUploadPost() {
+        if (!isLocationPermissionGranted()) {
+            Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String contents = eText.getText().toString().trim();
         String ingredients = inText.getText().toString().trim();
 
@@ -97,51 +123,76 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        // ✅ 닉네임을 가져온 후 API 요청 실행  완성해야함
-//        getNickname(nickname -> {
-//            if (nickname == null) {
-//                Toast.makeText(NeedActivity.this, "닉네임을 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//
-//            Log.d("Upload", "닉네임 포함하여 업로드: " + nickname);
-//
-//            // ✅ 다른 데이터 RequestBody로 변환
-//            RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
-//            RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
-//            RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname); // ✅ 닉네임 추가
-//
-//            // ✅ 라디오 버튼 값 (음식 필요 여부)
-//            String foodStatus = radioNeed.isChecked() ? "음식이 필요해요" : "음식을 나눠줄래요";
-//            RequestBody foodStatusBody = RequestBody.create(MediaType.parse("text/plain"), foodStatus);
-//
-//            // ✅ API 호출 (닉네임 포함)
-//            Call<ResponseBody> call = apiService.uploadPost(contentsBody, ingredientsBody, nicknameBody, foodStatusBody);
-//            call.enqueue(new Callback<ResponseBody>() {
-//                @Override
-//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                    try {
-//                        if (response.isSuccessful() && response.body() != null) {
-//                            String responseBody = response.body().string();
-//                            Log.d("Upload", "Response: " + responseBody);
-//                            // 서버 응답을 확인하여 게시물 업로드 성공 여부 처리
-//                            Toast.makeText(NeedActivity.this, "게시물이 업로드되었습니다!", Toast.LENGTH_SHORT).show();
-//                            finish();
-//                        } else {
-//                            Log.e("Upload", "게시물 업로드 실패: " + response.code() + " " + response.message());
-//                        }
-//                    } catch (Exception e) {
-//                        Log.e("Upload", "응답 처리 중 오류 발생: " + e.getMessage());
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                    Log.e("Upload", "게시물 업로드 실패: " + t.getMessage());
-//                }
-//            });
-//        });
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            return;
+        }
+
+        // ✅ 현재 위치 가져오기
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                Log.d("Location", "현재 위치: " + latitude + ", " + longitude);
+
+                // ✅ 닉네임 가져와서 API 호출
+                getNickname(nickname -> {
+                    if (nickname == null) {
+                        Toast.makeText(NeedActivity.this, "닉네임을 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Log.d("Upload", "닉네임 포함하여 업로드: " + nickname);
+
+                    // ✅ 로그 추가: API 요청 전에 데이터 확인
+                    Log.d("Upload", "전송 데이터: contents=" + contents +
+                            ", ingredients=" + ingredients +
+                            ", nickname=" + nickname +
+                            ", latitude=" + latitude +
+                            ", longitude=" + longitude);
+
+                    // ✅ RequestBody 변환
+                    RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
+                    RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
+                    RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname);
+                    RequestBody latitudeBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(latitude));
+                    RequestBody longitudeBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(longitude));
+
+                    // ✅ API 호출 (게시물과 위치 함께 업로드)
+                    Call<ResponseBody> call = apiService.needuploadPost(contentsBody, ingredientsBody, nicknameBody, latitudeBody, longitudeBody);
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Log.d("Upload", "게시물 업로드 성공!");
+                                    Toast.makeText(NeedActivity.this, "게시물이 업로드되었습니다!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(NeedActivity.this, MainActivity.class)
+                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    finish();
+                                } else {
+                                    Log.e("Upload", "Failed: " + response.code() + " " + response.message());
+                                }
+                            } catch (Exception e) {
+                                Log.e("Upload", "응답 처리 중 오류 발생: " + e.getMessage());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.e("Upload", "게시물 업로드 실패: " + t.getMessage());
+                        }
+                    });
+                });
+            } else {
+                Log.e("Location", "현재 위치를 가져올 수 없습니다.");
+            }
+        });
     }
+
+
 
     // 🔥 Firebase에서 현재 사용자의 닉네임 가져오는 메서드
     private void getNickname(OnNicknameReceivedListener listener) {

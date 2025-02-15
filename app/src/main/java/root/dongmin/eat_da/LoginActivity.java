@@ -59,24 +59,6 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // 파이어베이스 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
         mdatabaseRef = FirebaseDatabase.getInstance().getReference();
@@ -95,6 +77,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
+
+                // 이메일과 비밀번호가 비어있는지 체크
+                if (strEmail.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "이메일(아이디)을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return; // 이메일이 비어있으면 로그인 진행하지 않음
+                }
+
+                if (strPwd.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return; // 비밀번호가 비어있으면 로그인 진행하지 않음
+                }
 
                 mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {

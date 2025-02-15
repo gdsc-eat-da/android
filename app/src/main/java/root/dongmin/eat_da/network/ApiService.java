@@ -32,7 +32,9 @@ public interface ApiService {
     Call<ResponseBody> needuploadPost(
             @Part("contents") RequestBody contents, // 내용
             @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
-            @Part("nickname") RequestBody nickname  //  닉네임 추가
+            @Part("nickname") RequestBody nickname,  //  닉네임 추가
+            @Part("latitude") RequestBody latitude,  // 위도 추가
+            @Part("longitude") RequestBody longitude // 경도 추가
     );
 
 
