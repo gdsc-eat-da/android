@@ -42,6 +42,13 @@ public interface ApiService {
     @GET("get_post.php")
     Call<List<Post>> getPosts();
 
+
+    // 필요한 게시글 목록 가져오기
+
+    @GET("needpost.php")
+    Call<NeedPostResponseWrapper> getNeedPosts();
+
+
     // 위치 저장
 
     // 오늘의 교훈 phpmyadmin 에서 영문자 대소문자 구별합니다. 이것 때문에 2시간 버림

@@ -8,9 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +23,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +31,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,23 +38,17 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.adapter.PostAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.NearbyPostResponse;
+import root.dongmin.eat_da.network.NeedPost;
+import root.dongmin.eat_da.network.NeedPostResponseWrapper;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Bundle;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private TextView greed; // 사용자 환영 메시지
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView, needrecyclerView;
     private PostAdapter postAdapter;
+    private NeedPostAdapter needPostAdapter;
     private ApiService apiService;
     private boolean isNearbyActive = false; // "근처 게시물 보기" 상태 여부
     private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
@@ -156,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
         greed = findViewById(R.id.greeding);
         recyclerView = findViewById(R.id.recyclerView);
 
+        needrecyclerView = findViewById(R.id.recyclerNeedView);
+        needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+
         // RecyclerView 설정
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -166,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         loadUserInfo();
         handler.post(runnable);
         loadPosts();
+        loadNeedPosts();
 
         // 버튼 이벤트 처리
         setupButtons();
@@ -340,6 +336,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    // 필요 게시물 목록 불러오기
+    private void loadNeedPosts() {
+        Call<NeedPostResponseWrapper> call = apiService.getNeedPosts();
+        call.enqueue(new Callback<NeedPostResponseWrapper>() {
+            @Override
+            public void onResponse(@NonNull Call<NeedPostResponseWrapper> call, @NonNull Response<NeedPostResponseWrapper> response) {
+                Log.d("API_RESPONSE", "HTTP Status Code: " + response.code());
+                Log.d("API_RESPONSE", "Response Message: " + response.message());
+
+                if (response.body() != null && response.body().getNeedPosts() != null) {
+                    List<NeedPost> needPosts = response.body().getNeedPosts();
+
+                    if (needPosts.isEmpty()) {
+                        Log.d("API_RESPONSE", "NeedPost List is empty.");
+                    } else {
+                        Log.d("API_RESPONSE", "NeedPost List: " + needPosts.toString());
+                        for (NeedPost post : needPosts) {
+                            Log.d("API_RESPONSE", "Post ID: " + post.getPostID());
+                            Log.d("API_RESPONSE", "Contents: " + post.getContents());
+                            Log.d("API_RESPONSE", "Nickname: " + post.getNickname());
+                            Log.d("API_RESPONSE", "Latitude: " + post.getLatitude());
+                            Log.d("API_RESPONSE", "Longitude: " + post.getLongitude());
+                        }
+                    }
+
+                    // RecyclerView에 데이터 설정 (needPosts가 null이면 빈 리스트로 설정)
+                    needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>(needPosts));
+                    needrecyclerView.setAdapter(needPostAdapter);
+                } else {
+                    Log.d("API_RESPONSE", "Response Body or NeedPost List is null");
+                    showErrorMessage("필요 게시글을 불러올 수 없습니다.");
+                    needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>()); // 빈 리스트로 초기화
+                    needrecyclerView.setAdapter(needPostAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<NeedPostResponseWrapper> call, @NonNull Throwable t) {
+                Log.e("API_ERROR", "네트워크 오류: " + t.getMessage());
+                showErrorMessage("네트워크 오류로 필요 게시글을 불러올 수 없습니다.");
+
+                // 네트워크 오류 발생 시 RecyclerView에 빈 리스트 적용
+                needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>());
+                needrecyclerView.setAdapter(needPostAdapter);
+            }
+        });
+    }
+
+
 
     // ✅ 근처 게시글 불러오기
     private void loadNearbyPosts(double latitude, double longitude) {

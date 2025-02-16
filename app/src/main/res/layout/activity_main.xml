@@ -41,6 +41,19 @@
         app:layout_constraintTop_toBottomOf="@id/greeding"
         app:layout_constraintVertical_bias="0.0" />
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerNeedView"
+        android:layout_width="0dp"
+        android:layout_height="156dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/btngotophoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/greeding"
+        app:layout_constraintVertical_bias="0.755" />
+
     <Button
         android:id="@+id/btngotophoto"
         android:layout_width="wrap_content"
@@ -48,20 +61,10 @@
         android:text="사진 업로드"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.455"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.572" />
-
-<!--    <Button-->
-<!--        android:id="@+id/btnchat"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="채팅 열기"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.47"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+        app:layout_constraintVertical_bias="0.912" />
 
     <Button
         android:id="@+id/btnFindUser"
@@ -71,10 +74,11 @@
         android:text="사용자 찾기"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintHorizontal_bias="0.054"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.63" />
+        app:layout_constraintVertical_bias="0.855" />
+
 
     <Button
         android:id="@+id/btnNearby"
@@ -86,19 +90,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.64" />
-
-<!--    <Button-->
-<!--        android:id="@+id/btnMyPage"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@drawable/mypagedefault"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.767"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.786" />-->
+        app:layout_constraintVertical_bias="0.855" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
