@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNearbyActive = false; // "근처 게시물 보기" 상태 여부
     private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
     private List<String> chatList = new ArrayList<>();
+    private List<NeedPost> needPosts;
     private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
     private BottomNavigationView bottomNavigationView;
@@ -346,8 +347,25 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("API_RESPONSE", "HTTP Status Code: " + response.code());
                 Log.d("API_RESPONSE", "Response Message: " + response.message());
 
+                // ✅ 추가한 디버깅 코드
+                if (response.body() == null) {
+                    Log.e("API_DEBUG", "response.body()가 null입니다.");
+                } else {
+                    String jsonResponse = new Gson().toJson(response.body());
+                    Log.d("API_DEBUG", "Response Body JSON: " + jsonResponse);
+
+                    if (response.body().getNeedPosts() == null) {
+                        Log.e("API_DEBUG", "getNeedPosts()가 null입니다.");
+                    } else {
+                        Log.d("API_DEBUG", "Need Posts List Size: " + response.body().getNeedPosts().size());
+                    }
+                }
+
                 if (response.body() != null && response.body().getNeedPosts() != null) {
-                    List<NeedPost> needPosts = response.body().getNeedPosts();
+                    //List<NeedPost> needPosts = response.body().getNeedPosts();
+                    needPosts = response.body().getNeedPosts();
+                    needPostAdapter = new NeedPostAdapter(MainActivity.this, needPosts);
+                    needrecyclerView.setAdapter(needPostAdapter);
 
                     if (needPosts.isEmpty()) {
                         Log.d("API_RESPONSE", "NeedPost List is empty.");
@@ -363,8 +381,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // RecyclerView에 데이터 설정 (needPosts가 null이면 빈 리스트로 설정)
-                    needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>(needPosts));
-                    needrecyclerView.setAdapter(needPostAdapter);
+                    //needPostAdapter = new NeedPostAdapter(MainActivity.this, needPosts);
+                    //needrecyclerView.setAdapter(needPostAdapter);
                 } else {
                     Log.d("API_RESPONSE", "Response Body or NeedPost List is null");
                     showErrorMessage("필요 게시글을 불러올 수 없습니다.");

@@ -45,7 +45,7 @@ public interface ApiService {
 
     // 필요한 게시글 목록 가져오기
 
-    @GET("needpost.php")
+    @GET("get_needpost.php")
     Call<NeedPostResponseWrapper> getNeedPosts();
 
 
