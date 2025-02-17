@@ -35,7 +35,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:text="알레르기를 입력해주세요"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -65,10 +65,10 @@
         android:id="@+id/constraintLayout"
         android:layout_width="404dp"
         android:layout_height="102dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="10dp"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButton5">
 
@@ -246,6 +246,7 @@
         android:id="@+id/imageButton5"
         android:layout_width="373dp"
         android:layout_height="85dp"
+        android:layout_marginTop="32dp"
         android:backgroundTint="#F0EEEE"
         android:contentDescription="선택 이미지 버튼"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
@@ -259,12 +260,13 @@
         android:id="@+id/recyclerViewBig"
         android:layout_width="412dp"
         android:layout_height="227dp"
+        android:layout_marginTop="-10dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_complete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.328" />
+        app:layout_constraintVertical_bias="0.098" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMini"
@@ -272,10 +274,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/btn_complete"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerViewBig"
-        app:layout_constraintVertical_bias="0.466"
-        app:layout_constraintHorizontal_bias="0.428" />
+        app:layout_constraintVertical_bias="0.466" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
