@@ -1,10 +1,15 @@
 package root.dongmin.eat_da;
 
+import android.app.Dialog;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,32 +41,55 @@ public class alergicActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewBig);
         selectedRecyclerView = findViewById(R.id.recyclerViewMini); // 새로운 리사이클러뷰
+        ImageButton imageButton = findViewById(R.id.imageButton5);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 버튼 클릭 시 showCustomDialog() 호출
+                showCustomDialog();
+            }
+        });
+
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);  // 4열로 설정
         selectedRecyclerView.setLayoutManager(layoutManager);
+        //selectedRecyclerView.setLayoutManager(layoutManager);
 
-        // ItemDecoration을 통해 간격 조정 (아이템이 왼쪽 정렬되도록)
+// ItemDecoration을 통해 간격 조정 (아이템이 가로로 가득 차면 다음 줄로 넘어가게 설정)
         selectedRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
 
-                // 첫 번째 열에서 간격을 줄여서 왼쪽 정렬을 하도록 설정
+                // 아이템 위치 확인
                 int position = parent.getChildAdapterPosition(view);
                 int spanCount = 4; // 4열
+                int column = position % spanCount; // 현재 아이템이 위치한 열
 
-                if (position % spanCount != 0) {
-                    outRect.left = 0;  // 첫 번째 열이 아니면 간격을 없앰
+                // 아이템 간격 설정
+                int spacing = 1; // 간격 (px)
+
+                // 왼쪽 간격 설정 (첫 번째 열은 간격을 주지 않음)
+                if (column != 0) {
+                    outRect.left = spacing;
                 } else {
-                    outRect.left = 0;  // 첫 번째 열이 아닌 경우에만 왼쪽 간격 추가 (없음)
+                    outRect.left = 0;
                 }
 
-                outRect.right = 0; // 오른쪽 간격 없애기
-                outRect.top = 4;  // 상단 간격
-                outRect.bottom = 4;  // 하단 간격
+                // 오른쪽 간격 설정
+                if (column != spanCount - 1) {
+                    outRect.right = spacing;
+                } else {
+                    outRect.right = 0;
+                }
+
+                // 상단과 하단 간격 설정
+                outRect.top = spacing;  // 상단 간격
+                outRect.bottom = spacing;  // 하단 간격
             }
         });
+
 
         alergicItems = new ArrayList<>();
         selectedItems = new ArrayList<>(); // 선택된 항목 저장 리스트
@@ -110,10 +138,22 @@ public class alergicActivity extends AppCompatActivity {
         setClickListener(R.id.textView_msgvega);
     }
 
+    private TextView selectedTextView = null; // 현재 선택된 TextView 저장
+    private ImageView selectedImageView = null; // 현재 선택된 ImageView 저장
+
     private void setClickListener(int textViewId) {
         TextView textView = findViewById(textViewId);
         if (textView != null) {
             textView.setOnClickListener(v -> {
+                // 기존에 선택된 TextView가 있다면 배경을 원래대로 변경
+                if (selectedTextView != null) {
+                    selectedTextView.setBackgroundResource(R.drawable.minisel);
+                }
+
+                // 새로 선택된 TextView의 배경을 변경하고 저장
+                textView.setBackgroundResource(R.drawable.miniunsel);
+                selectedTextView = textView;
+
                 String viewId = getResources().getResourceEntryName(textViewId);
                 List<String> items = alergicMap.get(viewId);
 
@@ -133,10 +173,41 @@ public class alergicActivity extends AppCompatActivity {
         alergicAdapter.notifyDataSetChanged();
     }
 
+
+    private void showCustomDialog() {
+        // 1. 다이얼로그 생성
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_item);
+
+        // 2. 다이얼로그 내부 UI 요소 가져오기
+        EditText editTextInput = dialog.findViewById(R.id.editTextInput);
+        ImageView btnAdd = dialog.findViewById(R.id.btnAdd);
+        //Button btnCancel = dialog.findViewById(R.id.btnCancel);
+
+        // 3. 추가 버튼 클릭 시 아이템 리스트에 추가
+        btnAdd.setOnClickListener(v -> {
+            String newItem = editTextInput.getText().toString().trim();
+            if (!newItem.isEmpty() && !selectedItems.contains(newItem)) {
+                selectedItems.add(newItem);
+                miniAlergicAdapter.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(), newItem + " 추가됨!", Toast.LENGTH_SHORT).show();
+                dialog.dismiss(); // 다이얼로그 닫기
+            } else {
+                Toast.makeText(getApplicationContext(), "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        // 5. 다이얼로그 표시
+        dialog.show();
+    }
+
+
     public class AlergicAdapter extends RecyclerView.Adapter<AlergicAdapter.ViewHolder> {
 
         private List<String> items;
         private OnItemClickListener onItemClickListener;
+        private ViewHolder selectedViewHolder = null; // 선택된 아이템 저장
 
         public AlergicAdapter(List<String> items) {
             this.items = items;
@@ -156,11 +227,21 @@ public class alergicActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder holder, int position) {
             String item = items.get(position);
             holder.tvInsideImage.setText(item);
+            holder.imageView.setImageResource(R.drawable.bigunselected);
 
             holder.itemView.setOnClickListener(v -> {
                 if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(item);
                 }
+
+                // 기존 선택된 항목을 원래 상태로 되돌림
+                if (selectedViewHolder != null) {
+                    selectedViewHolder.imageView.setImageResource(R.drawable.bigunselected);
+                }
+
+                // 새로운 선택 항목 변경
+                holder.imageView.setImageResource(R.drawable.bigselected);
+                selectedViewHolder = holder;
             });
         }
 
@@ -171,13 +252,16 @@ public class alergicActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvInsideImage;
+            ImageView imageView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 tvInsideImage = itemView.findViewById(R.id.tv_inside_image);
+                imageView = itemView.findViewById(R.id.imageView);
             }
         }
     }
+
 
     public class MiniAlergicAdapter extends RecyclerView.Adapter<MiniAlergicAdapter.ViewHolder> {
 
@@ -197,6 +281,12 @@ public class alergicActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder holder, int position) {
             String item = items.get(position);
             holder.textView.setText(item);
+
+            holder.itemView.setOnClickListener(v -> {
+                items.remove(position); // 리스트에서 삭제
+                notifyDataSetChanged(); // RecyclerView 업데이트
+                Toast.makeText(v.getContext(), item + " 삭제됨!", Toast.LENGTH_SHORT).show();
+            });
         }
 
         @Override
@@ -213,6 +303,7 @@ public class alergicActivity extends AppCompatActivity {
             }
         }
     }
+
 
     public interface OnItemClickListener {
         void onItemClick(String item);

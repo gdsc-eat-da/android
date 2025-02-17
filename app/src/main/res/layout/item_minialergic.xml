@@ -21,7 +21,7 @@
         android:layout_marginStart="-10dp"
         android:text="토마토"
         android:textColor="#070707"
-        android:textSize="10sp"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
 </FrameLayout>
