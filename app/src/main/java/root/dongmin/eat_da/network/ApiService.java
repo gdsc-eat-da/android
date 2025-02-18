@@ -23,7 +23,8 @@ public interface ApiService {
             @Part MultipartBody.Part photo, //사진
             @Part("contents") RequestBody contents, // 내용
             @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
-            @Part("nickname") RequestBody nickname  //  닉네임 추가
+            @Part("nickname") RequestBody nickname, //  닉네임 추가
+            @Part("selectedJoinedItems")RequestBody selectedJoinedItems
             );
 
     // 필요 게시글 업로드 (글 내용)

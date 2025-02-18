@@ -1,6 +1,8 @@
 package root.dongmin.eat_da;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,13 +40,31 @@ public class alergicActivity extends AppCompatActivity {
     private List<String> selectedItems;  // 클릭된 아이템 저장 리스트
     private Map<String, List<String>> alergicMap;
 
+    private List<String> modifiedItems; // 수정된 데이터 리스트 (예시)
+    public MaterialButton btnComplete;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alergic);
 
+
+
+        // 기존의 selectedItems를 받기 (PhotoActivity에서 보낸 값)
+        Intent intent = getIntent();
+        selectedItems = (List<String>) intent.getSerializableExtra("selectedItems");
+
         recyclerView = findViewById(R.id.recyclerViewBig);
         selectedRecyclerView = findViewById(R.id.recyclerViewMini); // 새로운 리사이클러뷰
+        btnComplete = findViewById(R.id.btn_complete);
+        btnComplete.setOnClickListener(v -> {
+            modifiedItems = selectedItems != null ? new ArrayList<>(selectedItems) : new ArrayList<>();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("modifiedItems", (Serializable) modifiedItems); // 수정된 데이터 전달
+            setResult(RESULT_OK, resultIntent); // 결과 전달
+            finish(); // AlergicActivity 종료
+        });
         ImageButton imageButton = findViewById(R.id.imageButton5);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +146,7 @@ public class alergicActivity extends AppCompatActivity {
                 selectedItems.add(item);
                 miniAlergicAdapter.notifyDataSetChanged();
             }
-            Toast.makeText(getApplicationContext(), item + " 선택됨!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), item + " 선택됨!", Toast.LENGTH_SHORT).show();
         });
 
         setClickListener(R.id.TextView_msgegg);
@@ -158,7 +182,7 @@ public class alergicActivity extends AppCompatActivity {
                 List<String> items = alergicMap.get(viewId);
 
                 if (items != null && !items.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), String.join(", ", items) + " 클릭됨!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), String.join(", ", items) + " 클릭됨!", Toast.LENGTH_SHORT).show();
                     updateRecyclerView(items);
                 } else {
                     Toast.makeText(getApplicationContext(), "해당 항목이 없습니다!", Toast.LENGTH_SHORT).show();
@@ -190,10 +214,11 @@ public class alergicActivity extends AppCompatActivity {
             if (!newItem.isEmpty() && !selectedItems.contains(newItem)) {
                 selectedItems.add(newItem);
                 miniAlergicAdapter.notifyDataSetChanged();
-                Toast.makeText(getApplicationContext(), newItem + " 추가됨!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), newItem + " 추가됨!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss(); // 다이얼로그 닫기
             } else {
                 Toast.makeText(getApplicationContext(), "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -281,11 +306,16 @@ public class alergicActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder holder, int position) {
             String item = items.get(position);
             holder.textView.setText(item);
+            btnComplete = findViewById(R.id.btn_complete);
+            btnComplete.setText(selectedItems.size() + "개 선택완료");
 
             holder.itemView.setOnClickListener(v -> {
                 items.remove(position); // 리스트에서 삭제
                 notifyDataSetChanged(); // RecyclerView 업데이트
-                Toast.makeText(v.getContext(), item + " 삭제됨!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(v.getContext(), item + " 삭제됨!", Toast.LENGTH_SHORT).show();
+                btnComplete = findViewById(R.id.btn_complete);
+                btnComplete.setText(selectedItems.size() + "개 선택완료");
+
             });
         }
 

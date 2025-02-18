@@ -2,6 +2,7 @@ package root.dongmin.eat_da;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,11 +39,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -77,10 +84,18 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
     private RadioButton radioNeed, radioDistribute;
 
+    //알레르기 리스트!!!!
+    public List<String> selectedItems;
+
+
+    public String selectedJoinedItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
+        //빈칸 초기화
+        selectedJoinedItems = "";
 
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
@@ -101,6 +116,22 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         radioDistribute = findViewById(R.id.foodDistribute);
         radioNeed.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
         radioDistribute.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+
+
+        // 알레르기 버튼 클릭 리스너 설정
+        Button alergicButton = findViewById(R.id.alergicButton);
+        alergicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 알레르기 액티비티로 이동하면서 데이터 전달
+                Intent intent = new Intent(PhotoActivity.this, alergicActivity.class);
+
+                // 예시: "selectedItems"라는 값을 전달
+                intent.putExtra("selectedItems", (Serializable) selectedItems);
+
+                startActivityForResult(intent, 100); // 100은 요청 코드, 뒤에서 결과 받기 위해 사용
+            }
+        });
 
 
         // 기본 선택값을 foodDistribute로
@@ -147,6 +178,28 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
                 }
         );
     }
+
+
+    // 알레르기 액티비티에서 요소 받아오는 코드
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            // AlergicActivity에서 보낸 데이터를 받기
+            if (data != null) {
+                List<String> modifiedItems = (List<String>) data.getSerializableExtra("modifiedItems");
+                if (modifiedItems != null) {
+                    // 변경된 리스트를 처리
+                    selectedItems = modifiedItems;
+                    // 예: 새로운 리스트를 처리하는 코드 작성
+                    Log.d("PhotoActivity", "Modified items: " + selectedItems);
+                    selectedJoinedItems = TextUtils.join("_", selectedItems);
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -199,7 +252,11 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        // ✅ 닉네임을 가져온 후 API 요청 실행 (닉네임의 비동기 처리를 위해 어쩔 수 없이 api 요청 코드를 닉네임 가져오는 함수 안에 넣었습니다...)
+        // ✅ selectedJoinedItems가 null이면 빈 문자열로 설정
+        if (selectedJoinedItems == null) {
+            selectedJoinedItems = "";
+        }
+
         getNickname(nickname -> {
             if (nickname == null) {
                 Toast.makeText(PhotoActivity.this, "닉네임을 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -208,19 +265,17 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
             Log.d("Upload", "닉네임 포함하여 업로드: " + nickname);
 
-
             // ✅ 이미지 Multipart 변환
             MultipartBody.Part filePart = createImagePart(imageBitmap);
 
             // ✅ 다른 데이터 RequestBody로 변환
             RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
             RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
-            RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname); // ✅ 닉네임 추가
+            RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname);
+            RequestBody selectedJoinedItemsBody = RequestBody.create(MediaType.parse("text/plain"), selectedJoinedItems); // ✅ 추가된 부분
 
-
-
-            // ✅ API 호출 (닉네임 포함)
-            Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody, nicknameBody);
+            // ✅ API 호출 (닉네임 + selectedJoinedItems 포함)
+            Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody, nicknameBody, selectedJoinedItemsBody);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -257,6 +312,18 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
 
 
+
+
+
+    public void checkMyList()
+    {
+        // SharedPreferences에서 리스트 불러오기
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("selectedItems", null);
+        Type type = new TypeToken<List<String>>(){}.getType();
+        selectedItems = gson.fromJson(json, type);
+    }
 
 
     // 📍 위치 업로드
