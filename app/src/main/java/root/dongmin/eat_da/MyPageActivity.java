@@ -209,9 +209,6 @@ public class MyPageActivity extends AppCompatActivity {
         });
 
 
-
-
-
     }
 
     // 아이콘 업데이트 함수
