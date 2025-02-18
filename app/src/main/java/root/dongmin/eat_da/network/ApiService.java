@@ -85,4 +85,12 @@ public interface ApiService {
     @DELETE("delete_post.php")
     Call<ResponseBody> deletePost(@Query("postID") String postID);
 
+    @GET("get_my_need_posts.php")
+    Call<ResponseBody> getMyNeedPosts(@Query("nickname") String nickname);
+
+    @FormUrlEncoded
+    @POST("delete_needpost.php")
+    Call<ResponseBody> deleteNeedPost(@Field("postID") String postID);
+
+
 }

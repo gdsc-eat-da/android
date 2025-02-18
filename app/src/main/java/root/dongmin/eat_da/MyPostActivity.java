@@ -27,17 +27,21 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.adapter.PostAdapter;
 import root.dongmin.eat_da.network.ApiResponse;
 import root.dongmin.eat_da.network.ApiService;
+import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
 
 public class MyPostActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView ,needrecyclerView;
     private PostAdapter postAdapter;
+    private NeedPostAdapter needPostAdapter;
     private List<Post> allPosts;
+    private List<NeedPost> needPosts;
     private ApiService apiService;
 
     @Override
@@ -48,11 +52,17 @@ public class MyPostActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.myrecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        needrecyclerView = findViewById(R.id.myneedrecyclerView);
+        needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+
+
         // ✅ RetrofitClient를 사용하여 apiService 인스턴스를 생성
         apiService = RetrofitClient.getApiService(MyPostActivity.this);
 
         // Firebase에서 현재 사용자의 닉네임을 가져와서 게시글 로드
         loadMyPosts();
+        loadMyNeedPosts();
     }
 
     private void loadMyPosts() {
@@ -101,6 +111,80 @@ public class MyPostActivity extends AppCompatActivity {
                                     allPosts = posts;
                                     postAdapter = new PostAdapter(MyPostActivity.this, allPosts);
                                     recyclerView.setAdapter(postAdapter);
+                                } else {
+                                    Toast.makeText(MyPostActivity.this, "게시글이 없습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                String message = jsonResponse.getString("message");
+                                Toast.makeText(MyPostActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Log.e("MyPostActivity", "JSON 파싱 오류: " + e.getMessage());
+                            Toast.makeText(MyPostActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.d("MyPostActivity", "Error: " + response.message());
+                        Toast.makeText(MyPostActivity.this, "게시글을 불러올 수 없습니다. 서버 오류.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    // 네트워크 오류 처리
+                    Log.d("MyPostActivity", "Failure: " + t.getMessage());
+                    Toast.makeText(MyPostActivity.this, "네트워크 오류로 게시글을 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    private void loadMyNeedPosts() {
+        // ✅ Firebase에서 닉네임 가져오기
+        getNickname(nickname -> {
+            if (nickname == null || nickname.isEmpty()) {
+                Toast.makeText(MyPostActivity.this, "닉네임을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Log.d("MyPostActivity", "닉네임: " + nickname);
+
+            // ✅ 서버에 내 닉네임으로 게시글 요청
+            Call<ResponseBody> call = apiService.getMyNeedPosts(nickname);  // 수정된 부분: ResponseBody로 요청
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            // 서버로부터 받은 응답을 String으로 변환
+                            String responseBody = response.body().string();
+                            Log.d("MyPostActivity", "응답 본문: " + responseBody);
+                            Log.d("MyPostActivity", "응답: " + responseBody);
+
+                            // JSON 파싱하여 응답 처리
+                            JSONObject jsonResponse = new JSONObject(responseBody);
+                            boolean success = jsonResponse.getBoolean("success");
+
+                            if (success) {
+                                // 게시글 목록 추출
+                                JSONArray postsArray = jsonResponse.getJSONArray("posts");
+
+                                List<NeedPost> needPosts = new ArrayList<>();
+
+                                for (int i = 0; i < postsArray.length(); i++) {
+                                    JSONObject postObject = postsArray.getJSONObject(i);
+                                    NeedPost needPost = new NeedPost();
+                                    needPost.setPostID(String.valueOf(postObject.getInt("postID")));
+                                    needPost.setContents(postObject.getString("contents"));
+                                    needPost.setIngredients(postObject.getString("ingredients"));
+                                    needPost.setNickname(postObject.getString("nickname"));
+                                    // 다른 필드도 필요에 맞게 추출
+                                    needPosts.add(needPost);
+                                }
+
+                                if (!needPosts.isEmpty()) {
+                                    MyPostActivity.this.needPosts = needPosts;
+                                    needPostAdapter = new NeedPostAdapter(MyPostActivity.this, needPosts);
+                                    needrecyclerView.setAdapter(needPostAdapter);
                                 } else {
                                     Toast.makeText(MyPostActivity.this, "게시글이 없습니다.", Toast.LENGTH_SHORT).show();
                                 }
