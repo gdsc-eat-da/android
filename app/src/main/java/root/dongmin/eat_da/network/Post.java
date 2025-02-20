@@ -19,6 +19,8 @@ public class Post {
     @SerializedName("distance") // 실제 DB에 distance 컬럼은 없지만 php 의 sql 쿼리의 계산 값으로 존재함
     private double distance; // *즉 JSON 은 distance 컬럼 까지 반환 하는데 distance 가 없었기 때문에 오류가 났음*
 
+    @SerializedName("selectedJoinedItems")
+    private String selectedJoinedItems; // ✅ 알레르기 추가
 
     @SerializedName("nickname")
     private String nickname; // ✅ 닉네임 추가
@@ -27,13 +29,15 @@ public class Post {
     public Post() {}
 
     // ✅ 모든 필드를 포함한 생성자
-    public Post(String postID, String contents, String ingredients, String photo, double distance, String nickname) {
+    public Post(String postID, String contents, String ingredients, String photo, double distance, String nickname, String selectedJoinedItems) {
         this.postID = postID;
         this.contents = contents;
         this.ingredients = ingredients;
         this.photo = photo;
         this.distance = distance;
         this.nickname = nickname;
+        this.selectedJoinedItems = selectedJoinedItems;
+
     }
 
     // ✅ Getter & Setter (JSON 매핑에 필요)
@@ -52,6 +56,9 @@ public class Post {
     public String getNickname(){return nickname;}
 
     public void setNickname(String nickname){this.nickname = nickname;}
+
+    public String getselectedJoinedItems(){return selectedJoinedItems;}
+    public void setselectedJoinedItems(String selectedJoinedItems){this.selectedJoinedItems = selectedJoinedItems;}
 
     public double getDistance() { return distance; }
     public void setDistance(double distance) { this.distance = distance; }
