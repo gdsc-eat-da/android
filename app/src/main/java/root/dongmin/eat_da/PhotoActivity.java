@@ -118,7 +118,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         radioDistribute.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
 
 
-        // 알레르기 버튼 클릭 리스너 설정
+        // 알레르기 버튼 클릭 리스너 설정                                                 <알레르기!>
         Button alergicButton = findViewById(R.id.alergicButton);
         alergicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +180,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    // 알레르기 액티비티에서 요소 받아오는 코드
+    // 알레르기 액티비티에서 요소 받아오는 코드                                                                 <알레르기!>
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -315,15 +315,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-    public void checkMyList()
-    {
-        // SharedPreferences에서 리스트 불러오기
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("selectedItems", null);
-        Type type = new TypeToken<List<String>>(){}.getType();
-        selectedItems = gson.fromJson(json, type);
-    }
+
 
 
     // 📍 위치 업로드

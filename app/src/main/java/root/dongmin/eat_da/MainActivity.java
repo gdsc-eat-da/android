@@ -124,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
-                    Intent intent = new Intent(MainActivity.this, IdListActivity.class );
+                    Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
+                    intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
+                    intent.putExtra("nickname", Nickname);
                     startActivity(intent);
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(MainActivity.this,MapActivity.class);

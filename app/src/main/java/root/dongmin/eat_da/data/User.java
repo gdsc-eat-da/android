@@ -6,7 +6,7 @@ public class User {
     private String name;
     private String email;
     private String uId;
-
+    private String alergic;
     private String nickname;
 
     // 기본 생성자
@@ -14,6 +14,7 @@ public class User {
         this.name = "";
         this.email = "";
         this.uId = "";
+        this.alergic = "";
     }
 
     // 매개변수가 있는 생성자
@@ -21,6 +22,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.uId = uId;
+
     }
 
     // Getter 및 Setter

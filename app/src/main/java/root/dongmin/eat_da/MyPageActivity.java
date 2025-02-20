@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -62,6 +65,8 @@ public class MyPageActivity extends AppCompatActivity {
     private Uri imageUri; // 갤러리에서 선택된 이미지 URI
     private BottomNavigationView bottomNavigationView;
     private Button myPost,logout;
+    public List<String> selectedItems;
+    public String selectedJoinedItems;
 
 
     @Override
@@ -122,12 +127,32 @@ public class MyPageActivity extends AppCompatActivity {
             startActivityForResult(intent, 100);  // 100은 요청 코드, 나중에 onActivityResult에서 사용할 코드
         });
 
+        // 알레르기 버튼 클릭 리스너 설정                                                 <알레르기!>
+        Button alergicButton = findViewById(R.id.alergicButton);
+        alergicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 알레르기 액티비티로 이동하면서 데이터 전달
+                Intent intent = new Intent(MyPageActivity.this, alergicActivity.class);
+
+                // 예시: "selectedItems"라는 값을 전달
+                intent.putExtra("selectedItems", (Serializable) selectedItems);
+
+                startActivityForResult(intent, 101); // 100은 요청 코드, 뒤에서 결과 받기 위해 사용
+            }
+        });
+
         // Firebase 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
 
         // 현재 로그인된 사용자 정보 가져오기
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+
+
+
+
 
 
         if (firebaseUser != null) {
@@ -211,6 +236,17 @@ public class MyPageActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
     // 아이콘 업데이트 함수
     private void updateIcon(int itemId, boolean isClicked) {
         if (bottomNavigationView == null) return;
@@ -232,11 +268,36 @@ public class MyPageActivity extends AppCompatActivity {
         bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
     }
 
-    // 갤러리에서 이미지 선택 후 처리
+    // 갤러리에서 이미지 선택 후 처리. 또한 알레르기 데이터 가져오기
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Firebase Database Reference
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabaseRef = database.getReference("UserAccount"); // UserAccount 테이블 기준
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 현재 로그인한 사용자 UID 가져오기
+
+        // 1️⃣ 알레르기 액티비티에서 데이터를 받아오는 경우 (requestCode: 101)
+        if (requestCode == 101 && resultCode == RESULT_OK) {
+            if (data != null) {
+                List<String> modifiedItems = (List<String>) data.getSerializableExtra("modifiedItems");
+                if (modifiedItems != null) {
+                    selectedItems = modifiedItems;
+                    Log.d("PhotoActivity", "Modified items: " + selectedItems);
+                    selectedJoinedItems = TextUtils.join("_", selectedItems);
+
+                    // Firebase Realtime Database에 저장
+                    if (uid != null) {
+                        mDatabaseRef.child(uid).child("myalergic").setValue(selectedJoinedItems)
+                                .addOnSuccessListener(aVoid -> Log.d("Firebase", "myalergic 데이터 저장 성공"))
+                                .addOnFailureListener(e -> Log.e("Firebase", "myalergic 데이터 저장 실패", e));
+                    }
+                }
+            }
+        }
+
+        // 2️⃣ 갤러리에서 이미지 선택 후 처리하는 경우 (requestCode: 100)
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData(); // 선택된 이미지 URI
 
@@ -247,7 +308,6 @@ public class MyPageActivity extends AppCompatActivity {
                 Log.d("UploadProfile", "실제 파일 경로: " + realFilePath);
                 File file = new File(realFilePath);
                 if (file.exists()) {
-                    // 파일이 존재하면 이미지를 업로드
                     uploadProfileImage(file);
                 } else {
                     Log.e("UploadProfile", "파일이 존재하지 않습니다.");
@@ -264,6 +324,8 @@ public class MyPageActivity extends AppCompatActivity {
                     .into(profile);
         }
     }
+
+
 
     // *URI에서 실제 파일 경로를 가져오는 메서드*
     private String getRealPathFromURI(Uri uri) {

@@ -71,6 +71,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             String postImage = post.getPhoto();  // 이미지 URL
             String postNickname = post.getNickname();
             String postID = post.getPostID();
+            String selectedJoinedItems = post.getselectedJoinedItems();
+
 
             // ✅ 클릭한 게시글 정보를 새로운 액티비티로 전달
             Intent intent = new Intent(context, PostDetailActivity.class);
@@ -79,6 +81,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             intent.putExtra("image", postImage);
             intent.putExtra("nickname", postNickname);
             intent.putExtra("postID",postID);
+            intent.putExtra("selectedJoinedItems",selectedJoinedItems);
             context.startActivity(intent);
         });
 
