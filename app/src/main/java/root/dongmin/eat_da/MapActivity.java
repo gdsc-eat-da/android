@@ -36,11 +36,20 @@ import com.kakao.vectormap.KakaoMapReadyCallback;
 import com.kakao.vectormap.KakaoMapSdk;
 import com.kakao.vectormap.LatLng;
 import com.kakao.vectormap.MapView;
+import com.kakao.vectormap.RoadViewRequest;
 import com.kakao.vectormap.label.Label;
 import com.kakao.vectormap.label.LabelLayer;
+import com.kakao.vectormap.label.LabelManager;
 import com.kakao.vectormap.label.LabelOptions;
 import com.kakao.vectormap.label.LabelStyle;
+import com.kakao.vectormap.label.LabelStyles;
 import com.kakao.vectormap.label.TrackingManager;
+import com.kakao.vectormap.shape.MapPoints;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import root.dongmin.eat_da.network.NeedPost;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -62,12 +71,21 @@ public class MapActivity extends AppCompatActivity {
     private LatLng userLocation = null;
     private Label userMarker;
     private boolean requestingLocationUpdates = false;
+    private List<NeedPost> needPosts;
+
+     // 음식 필요 게시물 리스트
 
     private final KakaoMapReadyCallback readyCallback = new KakaoMapReadyCallback() {
         @Override
         public void onMapReady(@NonNull KakaoMap map) {
+            Log.d("MAP_DEBUG", "✅ onMapReady() 실행됨!"); // 확인용 로그
             progressBar.setVisibility(View.GONE);
             kakaoMap = map;
+
+            if (kakaoMap == null) {
+                Log.e("MAP_ERROR", "❌ kakaoMap이 null입니다. 초기화가 실패한 것 같습니다.");
+                return;
+            }
 
             LabelLayer labelLayer = kakaoMap.getLabelManager().getLayer();
             userMarker = labelLayer.addLabel(LabelOptions.from("userMarker", userLocation)
@@ -78,6 +96,7 @@ public class MapActivity extends AppCompatActivity {
             trackingManager.startTracking(userMarker);
 
             startLocationUpdates();
+            needLabel();  // 음식 필요 게시물에 대한 레이블 표시
         }
 
         @NonNull
@@ -98,10 +117,26 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
 
+        Log.d("MAP_DEBUG", "onCreate 실행됨");
 
+        // Intent에서 데이터 받기
+        Intent intent = getIntent();
+        needPosts = intent.getParcelableArrayListExtra("needPostList");  // 전달받은 음식 필요 게시물 리스트 할당
+        if (needPosts != null && !needPosts.isEmpty()) {
+            Log.d("MAP_DEBUG", "Received needPostList with size: " + needPosts.size());
+            for (NeedPost post : needPosts) {
+                Log.d("MAP_DEBUG", "Post ID: " + post.getPostID());
+                Log.d("MAP_DEBUG", "Contents: " + post.getContents());
+                Log.d("MAP_DEBUG", "Nickname: " + post.getNickname());
+                Log.d("MAP_DEBUG", "Latitude: " + post.getLatitude());
+                Log.d("MAP_DEBUG", "Longitude: " + post.getLongitude());
+            }
+        } else {
+            Log.d("MAP_DEBUG", "NeedPost List is null or empty");
+        }
 
         mapView = findViewById(R.id.map_view);
-        //progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -118,24 +153,86 @@ public class MapActivity extends AppCompatActivity {
         setupBottomNavigationView();
 
         if (checkLocationPermissions()) {
-            getUserLocation();
+            getUserLocation(); // 위치 권한 확인 후 초기화
         } else {
             requestLocationPermissions();
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (requestingLocationUpdates) {
-            startLocationUpdates();
+    private void needLabel() {
+        Log.d("MAP_DEBUG", "needLabel() 함수 호출됨");
+        if (kakaoMap == null) {
+            Log.e("MAP_ERROR", "kakaoMap이 아직 초기화되지 않았습니다.");
+            return;
+        }
+
+        LabelManager labelManager = kakaoMap.getLabelManager();
+        if (needPosts == null || needPosts.isEmpty()) {
+            Log.d("MAP_DEBUG", "needPosts 리스트가 비어 있습니다.");
+            return;
+        }
+
+        LabelLayer labelLayer = labelManager.getLayer();// ✅ 라벨을 추가할 레이어 가져오기
+
+
+        for (NeedPost post : needPosts) {
+            try {
+                Log.d("MAP_DEBUG", "위도: " + post.getLatitude() + ", 경도: " + post.getLongitude());
+
+                double lat = Double.parseDouble(post.getLatitude());
+                double lng = Double.parseDouble(post.getLongitude());
+
+                Log.d("MAP_DEBUG", "변환된 위도: " + lat + ", 변환된 경도: " + lng);
+
+                LabelStyles styles = LabelStyles.from(
+                        LabelStyle.from(R.drawable.red_dot_marker) // ✅ 마커 스타일 지정
+                );
+
+                LabelOptions options = LabelOptions.from(LatLng.from(lat, lng))
+                        .setStyles(styles);
+
+                labelLayer.addLabel(options); // ✅ 라벨 추가
+
+                Log.d("MAP_DEBUG", "라벨 추가됨: " + post.getNickname() + " (" + lat + ", " + lng + ")");
+            } catch (NumberFormatException e) {
+                Log.e("MAP_ERROR", "위도/경도 변환 오류: " + post.getLatitude() + ", " + post.getLongitude());
+            }
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        fusedLocationClient.removeLocationUpdates(locationCallback);
+    private void setupBottomNavigationView() {
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.work_load;
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) return false;
+
+                updateIcon(previousItemId, false);
+                updateIcon(item.getItemId(), true);
+                previousItemId = item.getItemId();
+
+                if (item.getItemId() == R.id.work_load) {
+                    return true;
+                } else if (item.getItemId() == R.id.nav_profile) {
+                    startActivity(new Intent(MapActivity.this, MyPageActivity.class));
+                    return true;
+                } else if (item.getItemId() == R.id.chat) {
+                    startActivity(new Intent(MapActivity.this, IdListActivity.class));
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    startActivity(new Intent(MapActivity.this, MainActivity.class));
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void updateIcon(int itemId, boolean isClicked) {
+        if (bottomNavigationView == null) return;
+        int iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
+        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
     }
 
     private boolean checkLocationPermissions() {
@@ -185,11 +282,18 @@ public class MapActivity extends AppCompatActivity {
                 });
     }
 
-
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
         requestingLocationUpdates = true;
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (requestingLocationUpdates) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
     }
 
     @Override
@@ -199,63 +303,29 @@ public class MapActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getUserLocation();
             } else {
-                showPermissionDeniedDialog();
+                showPermissionExplanation();
             }
         }
     }
 
-    private void showPermissionDeniedDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("위치 권한이 필요합니다. 설정에서 권한을 허용해주세요.")
-                .setPositiveButton("설정으로 이동", (dialog, which) -> {
-                    try {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                .setData(Uri.parse("package:" + getPackageName()));
-                        startActivity(intent);
-                    } catch (ActivityNotFoundException e) {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
-                        startActivity(intent);
-                    } finally {
-                        finish();
+    private void showPermissionExplanation() {
+        new AlertDialog.Builder(this)
+                .setTitle("위치 권한 필요")
+                .setMessage("위치 서비스를 사용하기 위해 권한을 허용해주세요.")
+                .setPositiveButton("설정", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        try {
+                            startActivity(intent);
+                        } catch (ActivityNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 })
-                .setNegativeButton("종료", (dialog, which) -> finish())
-                .setCancelable(false)
+                .setNegativeButton("취소", null)
                 .show();
-    }
-
-    private void setupBottomNavigationView() {
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            private int previousItemId = R.id.work_load;
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (previousItemId == item.getItemId()) return false;
-
-                updateIcon(previousItemId, false);
-                updateIcon(item.getItemId(), true);
-                previousItemId = item.getItemId();
-
-                if (item.getItemId() == R.id.work_load) {
-                    return true;
-                } else if (item.getItemId() == R.id.nav_profile) {
-                    startActivity(new Intent(MapActivity.this, MyPageActivity.class));
-                    return true;
-                } else if (item.getItemId() == R.id.chat) {
-                    startActivity(new Intent(MapActivity.this, IdListActivity.class));
-                    return true;
-                } else if (item.getItemId() == R.id.nav_home) {
-                    startActivity(new Intent(MapActivity.this, MainActivity.class));
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
-
-    private void updateIcon(int itemId, boolean isClicked) {
-        if (bottomNavigationView == null) return;
-        int iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
-        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
     }
 }
