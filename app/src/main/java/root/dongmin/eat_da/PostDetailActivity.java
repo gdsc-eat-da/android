@@ -1,12 +1,14 @@
 package root.dongmin.eat_da;
 
-import android.os.Bundle;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -17,11 +19,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class PostDetailActivity extends AppCompatActivity {
 
     private TextView nickNameView, ingredientsTextView, titleView;
     private ImageView postImageView, profileImage;
-
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
 
@@ -48,12 +54,47 @@ public class PostDetailActivity extends AppCompatActivity {
         String image = intent.getStringExtra("image");
         String Nick = intent.getStringExtra("nickname");
         String postID = intent.getStringExtra("postID");
+        String selectedJoinedItems = intent.getStringExtra("selectedJoinedItems");
 
         // 데이터 적용
         titleView.setText(title);
         nickNameView.setText(Nick);
         ingredientsTextView.setText(ingredients);
         Glide.with(this).load(image).into(postImageView);
+
+        // ✅ selectedJoinedItems를 리스트로 변환
+        if (selectedJoinedItems == null) {
+            selectedJoinedItems = "";
+        }
+        List<String> foodAllergies = Arrays.asList(selectedJoinedItems.split("_"));
+        Set<String> foodAllergySet = new HashSet<>(foodAllergies); // 중복 제거
+
+        // 현재 로그인한 사용자 UID 가져오기
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // ✅ Firebase에서 사용자 myalergic 데이터 가져오기
+        mDatabaseRef.child(uid).child("myalergic").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String myAlergicData = dataSnapshot.getValue(String.class);
+                    List<String> userAllergies = Arrays.asList(myAlergicData.split("_"));
+                    Set<String> userAllergySet = new HashSet<>(userAllergies);
+
+                    // ✅ 두 리스트 비교 (교집합 찾기)
+                    userAllergySet.retainAll(foodAllergySet);
+                    if (!userAllergySet.isEmpty()) {
+                        // 교집합이 존재하면 팝업 띄우기
+                        showAllergyWarningPopup(userAllergySet);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
 
         // 사용자 프로필 이미지 가져오기
         mDatabaseRef.orderByChild("nickname").equalTo(Nick).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -64,10 +105,9 @@ public class PostDetailActivity extends AppCompatActivity {
                     String profileImageUrl = null;
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         profileImageUrl = snapshot.child("profileImage").getValue(String.class);
-                        break;  // 첫 번째 사용자만 가져오면 되므로 반복문을 종료합니다.
+                        break;  // 첫 번째 사용자만 가져오면 되므로 반복문을 종료
                     }
                     if (profileImageUrl != null) {
-                        // 프로필 이미지 URL이 존재하면 Glide로 로드
                         Glide.with(PostDetailActivity.this).load(profileImageUrl).into(profileImage);
                     }
                 }
@@ -83,17 +123,20 @@ public class PostDetailActivity extends AppCompatActivity {
         Button chatbutton = findViewById(R.id.chatButton);
         chatbutton.setOnClickListener(view -> {
             Intent chatIntent = new Intent(PostDetailActivity.this, TestChatActivity.class);
-            chatIntent.putExtra("chatID", Nick);  // 닉네임을 "chatID"라는 키로 전달
-            chatIntent.putExtra("postID",postID);
-            startActivity(chatIntent);
-
-
-        });
-
-        Button chatbutton2 = findViewById(R.id.alergicButton);
-        chatbutton2.setOnClickListener(view -> {
-            Intent chatIntent = new Intent(PostDetailActivity.this, alergicActivity.class);
+            chatIntent.putExtra("chatID", Nick);
+            chatIntent.putExtra("postID", postID);
             startActivity(chatIntent);
         });
+    }
+
+    // ✅ 알레르기 경고 팝업 띄우는 함수
+    private void showAllergyWarningPopup(Set<String> allergySet) {
+        String message = "⚠️ 해당 음식에 포함된 알레르기 성분: " + String.join(", ", allergySet);
+
+        new AlertDialog.Builder(this)
+                .setTitle("알레르기 경고")
+                .setMessage(message)
+                .setPositiveButton("확인", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }
