@@ -1,12 +1,7 @@
 package root.dongmin.eat_da;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,12 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.activity.result.ActivityResultLauncher;
+import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -199,7 +191,7 @@ public class MyPageActivity extends AppCompatActivity {
         }
 
 
-        // 내 게시물들 보기 -> 삭제 및 수정 구현 필요
+        // 내 게시물들 보기
         myPost = findViewById(R.id.btnMyPost);
         myPost.setOnClickListener(new View.OnClickListener(){
 
@@ -215,10 +207,10 @@ public class MyPageActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(v.getContext()) // context 대신 v.getContext() 사용 가능
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext()) // context 대신 v.getContext() 사용 가능
                         .setTitle("로그아웃하시겠습니까?")
                         .setMessage("로그인 창으로 돌아가시겠습니까?")
-                        .setPositiveButton("확인", (dialog, which) -> {
+                        .setPositiveButton("확인", (dialogInterface, which) -> {
                             // Firebase 로그아웃 처리
                             FirebaseAuth.getInstance().signOut();
 
@@ -230,19 +222,17 @@ public class MyPageActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("취소", null)
                         .show();
+
+                // "확인" 버튼의 텍스트 색을 검정으로 설정
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+
+                // "취소" 버튼의 텍스트 색을 검정으로 설정
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
         });
 
 
     }
-
-
-
-
-
-
-
-
 
 
 

@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mEtEmail, mEtPwd, checkPwd;
     private MaterialButton mBtnRegister;  // MaterialButton 사용
     private TextView ack1, ack2, ack3, ack4;
-    private ImageView mBtnTogglePwd1, mBtnTogglePwd2;
+    private ImageView mBtnTogglePwd1, mBtnTogglePwd2 ,back;
 
     private boolean isPasswordVisible = false; // 비밀번호 표시 상태 저장 변수
 
@@ -58,6 +58,9 @@ public class RegisterActivity extends AppCompatActivity {
         mEtPwd = findViewById(R.id.et_re_p);
         checkPwd = findViewById(R.id.check_et_re_p);
         mBtnRegister = findViewById(R.id.et_re_gogo);
+
+        back = findViewById(R.id.btnback1);
+        back.setOnClickListener(v -> finish());
 
         // 입력 확인 알림 텍스트
         ack1 = findViewById(R.id.acktext1);
@@ -139,7 +142,6 @@ public class RegisterActivity extends AppCompatActivity {
                                     // 닉네임 입력 화면으로 이동
                                     Intent intent = new Intent(RegisterActivity.this, NicknameActivity.class);
                                     startActivity(intent);
-                                    finish();  // 현재 액티비티 종료
                                 } else {
                                     Toast.makeText(RegisterActivity.this, "아이디나 비밀번호를 확인하세요", Toast.LENGTH_SHORT).show();
                                 }

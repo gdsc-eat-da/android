@@ -64,7 +64,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
     // UI 요소
     private Button btnUpload;
-    private ImageView cameraView;
+    private ImageView cameraView,back;
     private EditText eText, inText;
 
     // 사진 저장 변수
@@ -106,9 +106,13 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         eText = findViewById(R.id.context);
         inText = findViewById(R.id.ingredient);
 
+        back = findViewById(R.id.btnback5);
+        back.setOnClickListener(v -> finish());
+
         // 버튼 클릭 리스너 등록
         cameraView.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
+
 
         // 라디오 버튼 클릭 리스너 설정
         radioGroup = findViewById(R.id.radioGroup);

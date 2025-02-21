@@ -3,6 +3,7 @@ package root.dongmin.eat_da.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,15 +94,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     Log.d("PostAdapter", "로그인한 사용자 닉네임: " + nickname);
                     Log.d("PostAdapter", "게시글 작성자 닉네임: " + post.getNickname());
                     // 자신이 작성한 게시물만 삭제 가능
-                    new AlertDialog.Builder(context)
+                    AlertDialog dialog = new AlertDialog.Builder(context)
                             .setTitle("삭제하시겠습니까?")
                             .setMessage("이 게시물을 삭제하시겠습니까?")
-                            .setPositiveButton("확인", (dialog, which) -> {
+                            .setPositiveButton("확인", (dialogInterface, which) -> {
                                 // 서버에 게시물 삭제 요청
                                 deletePost(post.getPostID());
                             })
                             .setNegativeButton("취소", null)
                             .show();
+
+                    // "확인" 버튼의 텍스트 색을 검정으로 설정
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+
+                    // "취소" 버튼의 텍스트 색을 검정으로 설정
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+
                 } else {
                     // 자신이 작성한 게시물이 아니라면 삭제 불가
                     Toast.makeText(context, "자신의 게시물만 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
@@ -110,6 +118,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             return true;  // 길게 클릭 이벤트 처리 후 다른 이벤트 방지
         });
+
     }
 
     private void getNickname(OnNicknameReceivedListener listener) {

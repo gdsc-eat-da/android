@@ -145,7 +145,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this,ForgotpwActivity.class);
                 startActivity(intent);
-                finish(); // 현재 액티비티 종료 (필요한 경우)
             }
         });
     }

@@ -2,6 +2,7 @@ package root.dongmin.eat_da.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,14 +62,21 @@ public class NeedPostAdapter extends RecyclerView.Adapter<NeedPostAdapter.ViewHo
                     Log.d("NeedPostAdapter", "게시글 작성자 닉네임: " + post.getNickname());
 
                     // ✅ 삭제 확인 다이얼로그
-                    new AlertDialog.Builder(context)
+                    AlertDialog dialog = new AlertDialog.Builder(context)
                             .setTitle("삭제하시겠습니까?")
                             .setMessage("이 게시물을 삭제하시겠습니까?")
-                            .setPositiveButton("확인", (dialog, which) -> {
+                            .setPositiveButton("확인", (dialogInterface, which) -> {
                                 deleteNeedPost(post.getPostID());
                             })
                             .setNegativeButton("취소", null)
                             .show();
+
+                    // "확인" 버튼의 텍스트 색을 검정으로 설정
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+
+                    // "취소" 버튼의 텍스트 색을 검정으로 설정
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+
                 } else {
                     Toast.makeText(context, "자신의 게시물만 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -76,6 +84,7 @@ public class NeedPostAdapter extends RecyclerView.Adapter<NeedPostAdapter.ViewHo
 
             return true;  // 이벤트 소비 (다른 이벤트 방지)
         });
+        ;
     }
 
     @Override

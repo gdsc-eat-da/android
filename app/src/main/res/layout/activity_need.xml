@@ -50,7 +50,7 @@
             android:id="@+id/needphotoupload"
             android:layout_width="363dp"
             android:layout_height="60dp"
-            android:layout_marginTop="300dp"
+            android:layout_marginTop="272dp"
             android:backgroundTint="@color/black"
             android:text="작성완료"
             app:cornerRadius="6dp"
@@ -62,7 +62,7 @@
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="84dp"
             android:text="음식 필요해요(("
             android:textSize="20sp"
             android:textStyle="bold"
@@ -98,6 +98,18 @@
                 android:text="음식을 나눠줄래요"
                 android:buttonTint="@color/black"/>
         </RadioGroup>
+
+        <ImageView
+            android:id="@+id/btnback6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.042"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.038"
+            app:srcCompat="@drawable/back" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

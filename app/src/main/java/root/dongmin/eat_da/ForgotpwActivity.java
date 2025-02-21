@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class ForgotpwActivity extends AppCompatActivity {
     private Button mBtnResetPassword;
     private FirebaseAuth mFirebaseAuth;
     private TextView ack5,ack6;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,10 @@ public class ForgotpwActivity extends AppCompatActivity {
         // 초기에는 전부 안 보이도록 설정
         ack5.setVisibility(View.GONE);
         ack6.setVisibility(View.GONE);
+
+        //뒤로가기
+        back = findViewById(R.id.btnback3);
+        back.setOnClickListener(v -> finish());
 
 
 

@@ -2,6 +2,7 @@ package root.dongmin.eat_da;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ public class MyPostActivity extends AppCompatActivity {
     private List<Post> allPosts;
     private List<NeedPost> needPosts;
     private ApiService apiService;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MyPostActivity extends AppCompatActivity {
         needrecyclerView = findViewById(R.id.myneedrecyclerView);
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        back = findViewById(R.id.btnback4);
+        back.setOnClickListener(v -> finish());
 
 
         // ✅ RetrofitClient를 사용하여 apiService 인스턴스를 생성
@@ -64,6 +68,8 @@ public class MyPostActivity extends AppCompatActivity {
         loadMyPosts();
         loadMyNeedPosts();
     }
+
+
 
     private void loadMyPosts() {
         // ✅ Firebase에서 닉네임 가져오기

@@ -3,8 +3,10 @@ package root.dongmin.eat_da;
 import android.Manifest;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -90,6 +93,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this) // ✅ 다이얼로그 띄우기
+                        .setTitle("앱 종료")
+                        .setMessage("정말로 종료하시겠습니까?")
+                        .setPositiveButton("확인", (dialogInterface, which) -> finish()) // 🔴 앱 종료
+                        .setNegativeButton("취소", null) // 취소 버튼 클릭 시 아무 동작 없음
+                        .show();
+
+                // "확인" 버튼의 텍스트 색을 검정으로 설정
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+
+                // "취소" 버튼의 텍스트 색을 검정으로 설정
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+            }
+        });
+        ;
+
 
 
         loadChatList();
@@ -175,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
         // 버튼 이벤트 처리
         setupButtons();
     }
+
+
+
 
     // 아이콘 업데이트 함수
     private void updateIcon(int itemId, boolean isClicked) {

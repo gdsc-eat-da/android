@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,7 @@ public class NicknameActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef; // Firebase 실시간 데이터베이스 객체
     private EditText mEtNickname; // 닉네임 입력 필드
     private Button mBtnSaveNickname; // 저장 버튼
+    private ImageView back;
 
 
 
@@ -61,6 +63,9 @@ public class NicknameActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        back = findViewById(R.id.btnback2);
+        back.setOnClickListener(v -> finish());
     }
 
 

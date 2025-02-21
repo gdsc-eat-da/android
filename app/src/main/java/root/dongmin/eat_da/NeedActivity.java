@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
     private EditText eText, inText;
     private RadioGroup radioGroup;
     private RadioButton radioNeed, radioDistribute;
+    private ImageView back;
 
     // 위치 서비스
     private FusedLocationProviderClient fusedLocationClient;
@@ -73,6 +75,17 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
         radioGroup = findViewById(R.id.needradioGroup);
         radioNeed = findViewById(R.id.needfoodNeed);
         radioDistribute = findViewById(R.id.needfoodDistribute);
+
+        back = findViewById(R.id.btnback6);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NeedActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish(); // 현재 액티비티 종료
+            }
+        });
+
 
         // 버튼 클릭 리스너 등록
         btnComplete.setOnClickListener(this);
