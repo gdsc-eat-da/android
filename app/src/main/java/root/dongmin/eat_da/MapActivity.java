@@ -166,13 +166,32 @@ public class MapActivity extends AppCompatActivity {
             return;
         }
 
-        LabelManager labelManager = kakaoMap.getLabelManager();
+
         if (needPosts == null || needPosts.isEmpty()) {
             Log.d("MAP_DEBUG", "needPosts 리스트가 비어 있습니다.");
             return;
         }
 
-        LabelLayer labelLayer = labelManager.getLayer();// ✅ 라벨을 추가할 레이어 가져오기
+        // LabelManager 확인
+        LabelManager labelManager = kakaoMap.getLabelManager();
+        if (labelManager == null) {
+            Log.e("MAP_ERROR", "LabelManager를 가져올 수 없습니다.");
+            return;
+        }
+
+        // 라벨 스타일 생성
+        LabelStyles styles = labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.eat_da_logo)));
+        if (styles == null) {
+            Log.e("MAP_ERROR", "라벨 스타일을 생성할 수 없습니다.");
+            return;
+        }
+
+        // LabelLayer 가져오기
+        LabelLayer layer = labelManager.getLayer();
+        if (layer == null) {
+            Log.e("MAP_ERROR", "LabelLayer를 가져올 수 없습니다.");
+            return;
+        }
 
 
         for (NeedPost post : needPosts) {
@@ -184,14 +203,11 @@ public class MapActivity extends AppCompatActivity {
 
                 Log.d("MAP_DEBUG", "변환된 위도: " + lat + ", 변환된 경도: " + lng);
 
-                LabelStyles styles = LabelStyles.from(
-                        LabelStyle.from(R.drawable.red_dot_marker) // ✅ 마커 스타일 지정
-                );
-
+                // LabelOptions 생성하기
                 LabelOptions options = LabelOptions.from(LatLng.from(lat, lng))
                         .setStyles(styles);
 
-                labelLayer.addLabel(options); // ✅ 라벨 추가
+                layer.addLabel(options);
 
                 Log.d("MAP_DEBUG", "라벨 추가됨: " + post.getNickname() + " (" + lat + ", " + lng + ")");
             } catch (NumberFormatException e) {
