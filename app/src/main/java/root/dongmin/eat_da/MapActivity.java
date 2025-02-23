@@ -22,6 +22,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -49,7 +51,10 @@ import com.kakao.vectormap.shape.MapPoints;
 import java.util.ArrayList;
 import java.util.List;
 
+import root.dongmin.eat_da.adapter.MapDistanceAdapter;
+import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.network.NeedPost;
+import root.dongmin.eat_da.utils.DistanceCalculator;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -72,6 +77,7 @@ public class MapActivity extends AppCompatActivity {
     private Label userMarker;
     private boolean requestingLocationUpdates = false;
     private List<NeedPost> needPosts;
+    private RecyclerView mapRecyclerView;
 
      // 음식 필요 게시물 리스트
 
@@ -119,6 +125,9 @@ public class MapActivity extends AppCompatActivity {
 
         Log.d("MAP_DEBUG", "onCreate 실행됨");
 
+        mapRecyclerView = findViewById(R.id.needMapPosts);
+        mapRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         // Intent에서 데이터 받기
         Intent intent = getIntent();
         needPosts = intent.getParcelableArrayListExtra("needPostList");  // 전달받은 음식 필요 게시물 리스트 할당
@@ -138,6 +147,9 @@ public class MapActivity extends AppCompatActivity {
         mapView = findViewById(R.id.map_view);
         progressBar = findViewById(R.id.progressBar);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        MapDistanceAdapter adapter = new MapDistanceAdapter(this, needPosts);
+        mapRecyclerView.setAdapter(adapter);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L).build();
@@ -203,6 +215,12 @@ public class MapActivity extends AppCompatActivity {
 
                 Log.d("MAP_DEBUG", "변환된 위도: " + lat + ", 변환된 경도: " + lng);
 
+                // 현재 사용자 위치와 게시물 위치 간의 거리 계산
+                float distance = DistanceCalculator.calculateDistance(userLocation, LatLng.from(lat, lng));
+                Log.d("MAP_DEBUG", "현재 위치와 게시물 간의 거리: " + distance + "미터");
+
+
+
                 // LabelOptions 생성하기
                 LabelOptions options = LabelOptions.from(LatLng.from(lat, lng))
                         .setStyles(styles);
@@ -214,6 +232,8 @@ public class MapActivity extends AppCompatActivity {
                 Log.e("MAP_ERROR", "위도/경도 변환 오류: " + post.getLatitude() + ", " + post.getLongitude());
             }
         }
+
+
     }
 
     private void setupBottomNavigationView() {
@@ -267,6 +287,7 @@ public class MapActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, location -> {
                     if (location != null) {
                         userLocation = LatLng.from(location.getLatitude(), location.getLongitude());
+                        Log.d("MAP_DEBUG", "현재 위치: " + location.getLatitude() + ", " + location.getLongitude());
 
                         // 카카오맵 SDK 초기화
                         try {
@@ -344,4 +365,5 @@ public class MapActivity extends AppCompatActivity {
                 .setNegativeButton("취소", null)
                 .show();
     }
+
 }

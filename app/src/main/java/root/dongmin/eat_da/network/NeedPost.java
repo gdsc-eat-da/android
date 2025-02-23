@@ -27,8 +27,20 @@ public class NeedPost implements Parcelable {
     @SerializedName("longitude")
     private String longitude; // 경도 (String으로 받기)
 
+    private float distance;
+
     // 기본 생성자
     public NeedPost() {}
+
+    public NeedPost(float distance) {
+        this.distance = distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    public float getDistance() { return distance; }  // ✅ int → Integer 변경
 
     // Parcelable 생성자
     protected NeedPost(Parcel in) {
@@ -130,4 +142,6 @@ public class NeedPost implements Parcelable {
             return new NeedPost[size];
         }
     };
+
+
 }
