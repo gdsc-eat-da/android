@@ -59,6 +59,8 @@ public class MapDistanceAdapter extends RecyclerView.Adapter<MapDistanceAdapter.
                 return;
             }
 
+
+
             // 위도와 경도를 String에서 double로 변환
             double lat = Double.parseDouble(post.getLatitude());
             double lng = Double.parseDouble(post.getLongitude());

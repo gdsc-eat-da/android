@@ -78,6 +78,8 @@ public class MapActivity extends AppCompatActivity {
     private boolean requestingLocationUpdates = false;
     private List<NeedPost> needPosts;
     private RecyclerView mapRecyclerView;
+    private MapDistanceAdapter mapDistanceAdapter;
+
 
      // 음식 필요 게시물 리스트
 
@@ -127,6 +129,9 @@ public class MapActivity extends AppCompatActivity {
 
         mapRecyclerView = findViewById(R.id.needMapPosts);
         mapRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        mapDistanceAdapter = new MapDistanceAdapter(this, needPosts);
+        mapRecyclerView.setAdapter(mapDistanceAdapter);  // 어댑터 설정
 
         // Intent에서 데이터 받기
         Intent intent = getIntent();
@@ -219,8 +224,6 @@ public class MapActivity extends AppCompatActivity {
                 float distance = DistanceCalculator.calculateDistance(userLocation, LatLng.from(lat, lng));
                 Log.d("MAP_DEBUG", "현재 위치와 게시물 간의 거리: " + distance + "미터");
 
-
-
                 // LabelOptions 생성하기
                 LabelOptions options = LabelOptions.from(LatLng.from(lat, lng))
                         .setStyles(styles);
@@ -288,6 +291,18 @@ public class MapActivity extends AppCompatActivity {
                     if (location != null) {
                         userLocation = LatLng.from(location.getLatitude(), location.getLongitude());
                         Log.d("MAP_DEBUG", "현재 위치: " + location.getLatitude() + ", " + location.getLongitude());
+
+                        // 위치가 정상적으로 받아왔으므로 userLocation이 null이 아님
+                        if (userLocation != null) {
+                            Log.d("MAP_DEBUG", "userLocation 업데이트됨: " + userLocation.toString());
+                        } else {
+                            Log.e("MAP_ERROR", "userLocation이 여전히 null입니다.");
+                        }
+
+                        // 위치 정보가 업데이트된 후 MapDistanceAdapter에 전달
+                        if (mapDistanceAdapter != null) {
+                            mapDistanceAdapter.updateUserLocation(userLocation);
+                        }
 
                         // 카카오맵 SDK 초기화
                         try {
