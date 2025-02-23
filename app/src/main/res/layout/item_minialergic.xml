@@ -1,27 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp">
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-
-        android:layout_height="35dp"
-        android:layout_gravity="center"
-        android:contentDescription="배경 이미지"
-        android:src="@drawable/alreadyselected" />
+    android:layout_margin="0dp">
 
     <TextView
         android:id="@+id/tv_mini"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="-10dp"
-        android:text="토마토"
-        android:textColor="#070707"
-        android:textSize="11sp"
-        android:textStyle="bold" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/minisel"
+        android:drawablePadding="4dp"
+        android:maxWidth="250dp"
+        android:padding="6dp"
+        android:text=" 새로운 아이템 "
+        android:textColor="#121111"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TextView_msgegg" />
 
 </FrameLayout>

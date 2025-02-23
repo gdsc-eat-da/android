@@ -97,4 +97,6 @@ dependencies {
 
     implementation ("com.google.code.gson:gson:2.8.8")
 
+    implementation ("com.google.android.flexbox:flexbox:3.0.0") //FlexboxLayoutManager 추가임
+
 }

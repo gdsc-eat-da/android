@@ -63,12 +63,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="404dp"
-        android:layout_height="102dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="387dp"
+        android:layout_height="98dp"
+        android:layout_marginTop="8dp"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButton5">
 
@@ -270,14 +269,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMini"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="383dp"
+        android:layout_height="190dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_complete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerViewBig"
-        app:layout_constraintVertical_bias="0.466" />
+        app:layout_constraintVertical_bias="0.4" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

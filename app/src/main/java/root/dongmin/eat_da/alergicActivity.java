@@ -1,10 +1,15 @@
 package root.dongmin.eat_da;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +21,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.flexbox.FlexWrap;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -76,41 +86,40 @@ public class alergicActivity extends AppCompatActivity {
 
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 4);  // 4열로 설정
-        selectedRecyclerView.setLayoutManager(layoutManager);
-        //selectedRecyclerView.setLayoutManager(layoutManager);
 
-// ItemDecoration을 통해 간격 조정 (아이템이 가로로 가득 차면 다음 줄로 넘어가게 설정)
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //이거 수정 ㄱㄱ
+
+
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this);
+        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW); // 가로 방향으로 아이템 배치
+        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP); // 여러 줄로 표시
+        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START); // 왼쪽부터 아이템 배치
+        selectedRecyclerView.setLayoutManager(flexboxLayoutManager);
+
+        // 아이템 간격 조정
         selectedRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
 
-                // 아이템 위치 확인
-                int position = parent.getChildAdapterPosition(view);
-                int spanCount = 4; // 4열
-                int column = position % spanCount; // 현재 아이템이 위치한 열
-
-                // 아이템 간격 설정
-                int spacing = 1; // 간격 (px)
-
-                // 왼쪽 간격 설정 (첫 번째 열은 간격을 주지 않음)
-                if (column != 0) {
-                    outRect.left = spacing;
-                } else {
-                    outRect.left = 0;
-                }
-
-                // 오른쪽 간격 설정
-                if (column != spanCount - 1) {
-                    outRect.right = spacing;
-                } else {
-                    outRect.right = 0;
-                }
-
-                // 상단과 하단 간격 설정
-                outRect.top = spacing;  // 상단 간격
-                outRect.bottom = spacing;  // 하단 간격
+                int spacing = 0; // 간격 (px)
+                outRect.left = spacing;
+                outRect.right = spacing;
+                outRect.top = spacing;
+                outRect.bottom = spacing;
             }
         });
 
@@ -136,7 +145,7 @@ public class alergicActivity extends AppCompatActivity {
         alergicMap.put("textView_msgvega", new ArrayList<String>() {{ add("토마토"); }});
 
         alergicAdapter = new AlergicAdapter(alergicItems);
-        miniAlergicAdapter = new MiniAlergicAdapter(selectedItems);
+        miniAlergicAdapter = new MiniAlergicAdapter(this, selectedItems, btnComplete);
 
         recyclerView.setAdapter(alergicAdapter);
         selectedRecyclerView.setAdapter(miniAlergicAdapter);
@@ -291,33 +300,54 @@ public class alergicActivity extends AppCompatActivity {
     public class MiniAlergicAdapter extends RecyclerView.Adapter<MiniAlergicAdapter.ViewHolder> {
 
         private List<String> items;
+        private Context context;
+        private Button btnComplete; // 버튼 추가
+        private List<String> selectedItems = new ArrayList<>(); // 선택된 아이템 목록
 
-        public MiniAlergicAdapter(List<String> items) {
+        public MiniAlergicAdapter(Context context, List<String> items, Button btnComplete) {
+            this.context = context;
             this.items = items;
+            this.btnComplete = btnComplete;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_minialergic, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_minialergic, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             String item = items.get(position);
-            holder.textView.setText(item);
-            btnComplete = findViewById(R.id.btn_complete);
-            btnComplete.setText(selectedItems.size() + "개 선택완료");
+
+
+            //SpannableStringBuilder를 사용하여 텍스트에 이미지 추가
+            SpannableStringBuilder builder = new SpannableStringBuilder(item + " ");
+            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.exex);
+            if (drawable != null) {
+                drawable.setBounds(0, 0, 30, 30);
+                ImageSpan imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
+                builder.setSpan(imageSpan, builder.length() - 1, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            holder.textView.setText(builder);
+
+            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.itemView.setLayoutParams(layoutParams);
+
+
+            btnComplete.setText(items.size() + "개 선택완료");
 
             holder.itemView.setOnClickListener(v -> {
-                items.remove(position); // 리스트에서 삭제
-                notifyDataSetChanged(); // RecyclerView 업데이트
-                //Toast.makeText(v.getContext(), item + " 삭제됨!", Toast.LENGTH_SHORT).show();
-                btnComplete = findViewById(R.id.btn_complete);
-                btnComplete.setText(selectedItems.size() + "개 선택완료");
-
+                // 아이템을 클릭했을 때, items에서만 해당 아이템 삭제
+                String selectedItem = items.get(position);
+                items.remove(position);  // items 리스트에서 삭제
+                notifyDataSetChanged();
+                btnComplete.setText(items.size() + "개 선택완료");  // 남은 개수로 버튼 텍스트 업데이트
             });
         }
+
 
         @Override
         public int getItemCount() {
@@ -333,6 +363,7 @@ public class alergicActivity extends AppCompatActivity {
             }
         }
     }
+
 
 
     public interface OnItemClickListener {
