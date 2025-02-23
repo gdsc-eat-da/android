@@ -1,7 +1,6 @@
 package root.dongmin.eat_da.adapter;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import com.kakao.vectormap.LatLng;
 
 import java.util.List;
 
-import root.dongmin.eat_da.MapActivity;
+
 import root.dongmin.eat_da.R;
 import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.utils.DistanceCalculator;
@@ -25,6 +24,7 @@ public class MapDistanceAdapter extends RecyclerView.Adapter<MapDistanceAdapter.
     private List<NeedPost> needPostList;
     private LatLng userLocation;
     private boolean isLocationReady =false;
+
 
 
 
@@ -52,13 +52,14 @@ public class MapDistanceAdapter extends RecyclerView.Adapter<MapDistanceAdapter.
         NeedPost post = needPostList.get(position);
 
         try {
+            holder.textNickName.setText(post.getNickname()); // 닉네임을 UI에 표시
+
             // 위치 정보 준비 여부 확인
             if (!isLocationReady) {
                 Log.e("MapDistanceAdapter", "위치 정보가 아직 준비되지 않았습니다.");
                 holder.textDistance.setText("위치 정보 불가");
                 return;
             }
-
 
 
             // 위도와 경도를 String에서 double로 변환
@@ -104,10 +105,13 @@ public class MapDistanceAdapter extends RecyclerView.Adapter<MapDistanceAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textDistance;
+        TextView textNickName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textDistance = itemView.findViewById(R.id.textMeter);  // mapdistance.xml에 맞춰서 ID 설정
+            textDistance = itemView.findViewById(R.id.textMeter);
+            textNickName = itemView.findViewById(R.id.textNickName);
+            // mapdistance.xml에 맞춰서 ID 설정
         }
     }
 }

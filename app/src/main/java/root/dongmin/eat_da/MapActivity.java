@@ -130,8 +130,6 @@ public class MapActivity extends AppCompatActivity {
         mapRecyclerView = findViewById(R.id.needMapPosts);
         mapRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        mapDistanceAdapter = new MapDistanceAdapter(this, needPosts);
-        mapRecyclerView.setAdapter(mapDistanceAdapter);  // 어댑터 설정
 
         // Intent에서 데이터 받기
         Intent intent = getIntent();
@@ -153,8 +151,8 @@ public class MapActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        MapDistanceAdapter adapter = new MapDistanceAdapter(this, needPosts);
-        mapRecyclerView.setAdapter(adapter);
+        mapDistanceAdapter = new MapDistanceAdapter(this, needPosts);
+        mapRecyclerView.setAdapter(mapDistanceAdapter);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L).build();
