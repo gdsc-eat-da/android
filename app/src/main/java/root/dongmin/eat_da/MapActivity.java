@@ -74,7 +74,7 @@ public class MapActivity extends AppCompatActivity {
     private LocationCallback locationCallback;
 
     private LatLng userLocation = null;
-    private Label userMarker;
+    private Label label;
     private boolean requestingLocationUpdates = false;
     private List<NeedPost> needPosts;
     private RecyclerView mapRecyclerView;
@@ -95,13 +95,30 @@ public class MapActivity extends AppCompatActivity {
                 return;
             }
 
-            LabelLayer labelLayer = kakaoMap.getLabelManager().getLayer();
-            userMarker = labelLayer.addLabel(LabelOptions.from("userMarker", userLocation)
-                    .setStyles(LabelStyle.from(R.drawable.red_dot_marker).setAnchorPoint(0.5f, 0.5f))
-                    .setRank(1));
+            LabelStyles styles = kakaoMap.getLabelManager()
+                    .addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.mymarker)));
 
+            LabelOptions options = LabelOptions.from(LatLng.from(userLocation))
+                    .setStyles(styles);
+
+            LabelLayer layer = kakaoMap.getLabelManager().getLayer();
+
+            label = layer.addLabel(options);
+
+            if (label == null) {
+                Log.e("MAP_ERROR", "❌ label 생성 실패!");
+            } else {
+                Log.d("MAP_SUCCESS", "✅ label 생성 완료!");
+            }
+
+
+
+            // 유저 위치 추적
             TrackingManager trackingManager = kakaoMap.getTrackingManager();
-            trackingManager.startTracking(userMarker);
+            trackingManager.startTracking(label);
+
+            // 지도 이동 할 수 있도록
+            trackingManager.stopTracking();
 
             startLocationUpdates();
             needLabel();  // 음식 필요 게시물에 대한 레이블 표시
@@ -160,7 +177,7 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
-                    userMarker.moveTo(LatLng.from(location.getLatitude(), location.getLongitude()));
+                    label.moveTo(LatLng.from(location.getLatitude(), location.getLongitude()));
                 }
             }
         };
