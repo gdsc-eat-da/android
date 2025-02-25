@@ -54,6 +54,10 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
     private RadioButton radioNeed, radioDistribute;
     private ImageView back;
 
+    //문고리
+    private RadioGroup radioNeedFaceGroup;
+    private RadioButton radioNeedFace, radioNeedNoFace;
+
     // 위치 서비스
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -75,6 +79,10 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
         radioGroup = findViewById(R.id.needradioGroup);
         radioNeed = findViewById(R.id.needfoodNeed);
         radioDistribute = findViewById(R.id.needfoodDistribute);
+
+        radioNeedFaceGroup = findViewById(R.id.radioNeedFace);
+        radioNeedFace = findViewById(R.id.needface);
+        radioNeedNoFace = findViewById(R.id.neednoface);
 
         back = findViewById(R.id.btnback6);
         back.setOnClickListener(new View.OnClickListener() {

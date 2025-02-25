@@ -50,20 +50,20 @@
             android:id="@+id/needphotoupload"
             android:layout_width="363dp"
             android:layout_height="60dp"
-            android:layout_marginTop="272dp"
+            android:layout_marginTop="100dp"
             android:backgroundTint="@color/black"
             android:text="작성완료"
             app:cornerRadius="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/needingredient" />
+            app:layout_constraintTop_toBottomOf="@+id/radioNeedFace" />
 
         <TextView
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="84dp"
-            android:text="음식 필요해요(("
+            android:text="이제 걱정하지 않아도 괜찮아요"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +88,8 @@
                 android:background="@drawable/edit_text_background"
                 android:text="음식이 필요해요"
                 android:checked="true"
-                android:buttonTint="@color/black"/>
+                android:buttonTint="@color/black"
+                android:button="@null"/>
 
             <RadioButton
                 android:id="@+id/needfoodDistribute"
@@ -96,7 +97,8 @@
                 android:layout_height="75dp"
                 android:background="@drawable/edit_text_background"
                 android:text="음식을 나눠줄래요"
-                android:buttonTint="@color/black"/>
+                android:buttonTint="@color/black"
+                android:button="@null"/>
         </RadioGroup>
 
         <ImageView
@@ -109,7 +111,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.038"
-            app:srcCompat="@drawable/back" />
+            app:srcCompat="@drawable/x" />
+
+        <RadioGroup
+            android:id="@+id/radioNeedFace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/needingredient">
+
+            <RadioButton
+                android:id="@+id/needface"
+                android:layout_width="363dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/checkedface"
+                android:checked="true"
+                android:button="@null"
+                />
+
+            <RadioButton
+                android:id="@+id/neednoface"
+                android:layout_width="363dp"
+                android:layout_height="130dp"
+                android:background="@drawable/noface"
+                android:button="@null"
+                />
+        </RadioGroup>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

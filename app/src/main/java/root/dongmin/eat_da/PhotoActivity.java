@@ -90,6 +90,10 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
     public String selectedJoinedItems;
 
+    //문고리
+    private RadioGroup radioFaceGroup;
+    private RadioButton radioFace, radioNoFace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +124,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         radioDistribute = findViewById(R.id.foodDistribute);
         radioNeed.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
         radioDistribute.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+
+        radioFaceGroup = findViewById(R.id.radioFace);
+        radioFace = findViewById(R.id.face);
+        radioNoFace = findViewById(R.id.noface);
+
+        //클릭했을때 이미지 변하도록 하고 , 서버랑 API 부분 수정해야함
 
 
         // 알레르기 버튼 클릭 리스너 설정                                                 <알레르기!>

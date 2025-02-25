@@ -85,24 +85,22 @@ public class MyPageActivity extends AppCompatActivity {
                 // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
                 previousItemId = item.getItemId();
 
-                // 아이템 선택 해제 (중요)
-                item.setCheckable(false);
-                item.setChecked(false);
-
 
                 if (item.getItemId() == R.id.nav_profile) {
                     Toast.makeText(MyPageActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
-                    return true;
+                    //return true;
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                     startActivity(intent);
-                    return true;
+                    //return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MyPageActivity.this, IdListActivity.class );
                     startActivity(intent);
+                    //return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(MyPageActivity.this,MapActivity.class);
                     startActivity(intent);
+                    //return true;
                 }
                 return false;
             }

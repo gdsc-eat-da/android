@@ -2,6 +2,7 @@ package root.dongmin.eat_da;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -68,6 +70,7 @@ public class MapActivity extends AppCompatActivity {
     private KakaoMap kakaoMap;
     private ProgressBar progressBar;
     private BottomNavigationView bottomNavigationView;
+    private ImageView refreshLocation;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
@@ -182,13 +185,60 @@ public class MapActivity extends AppCompatActivity {
             }
         };
 
-        setupBottomNavigationView();
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.work_load; // 초기 선택된 아이콘 (homeclicked 상태)
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) {
+                    return false; // 동일한 아이템 클릭 방지
+                }
+
+                // 1️⃣ 이전 아이콘을 default로 변경
+                updateIcon(previousItemId, false);
+
+                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
+                updateIcon(item.getItemId(), true);
+
+                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
+                previousItemId = item.getItemId();
+
+
+                if (item.getItemId() == R.id.work_load) {
+                    Toast.makeText(MapActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    Intent intent = new Intent(MapActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if (item.getItemId() == R.id.chat) {
+                    Intent intent = new Intent(MapActivity.this, IdListActivity.class );
+                    startActivity(intent);
+                    return true;
+                }else if (item.getItemId() == R.id.nav_profile){
+                    Intent intent = new Intent(MapActivity.this, MyPageActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         if (checkLocationPermissions()) {
             getUserLocation(); // 위치 권한 확인 후 초기화
         } else {
             requestLocationPermissions();
         }
+
+        refreshLocation = findViewById(R.id.refreshMyLocation);
+        refreshLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                overridePendingTransition(0, 0);
+                finish();  // 현재 액티비티 종료
+                startActivity(intent);  // 같은 액티비티 다시 시작
+            }
+        });
+
     }
 
     private void needLabel() {
@@ -254,34 +304,6 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
-    private void setupBottomNavigationView() {
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            private int previousItemId = R.id.work_load;
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (previousItemId == item.getItemId()) return false;
-
-                updateIcon(previousItemId, false);
-                updateIcon(item.getItemId(), true);
-                previousItemId = item.getItemId();
-
-                if (item.getItemId() == R.id.work_load) {
-                    return true;
-                } else if (item.getItemId() == R.id.nav_profile) {
-                    startActivity(new Intent(MapActivity.this, MyPageActivity.class));
-                    return true;
-                } else if (item.getItemId() == R.id.chat) {
-                    startActivity(new Intent(MapActivity.this, IdListActivity.class));
-                    return true;
-                } else if (item.getItemId() == R.id.nav_home) {
-                    startActivity(new Intent(MapActivity.this, MainActivity.class));
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
 
     private void updateIcon(int itemId, boolean isClicked) {
         if (bottomNavigationView == null) return;

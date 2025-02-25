@@ -34,11 +34,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-        android:text="알레르기 유무"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/ingredient"
-        app:layout_constraintTop_toBottomOf="@id/carmeraView" /> <!-- carmeraView 아래에 배치 -->
+            android:text="알레르기 유무"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/ingredient"
+            app:layout_constraintTop_toBottomOf="@id/carmeraView" /> <!-- carmeraView 아래에 배치 -->
 
         <!-- 기존 뷰들 생략 (변경되지 않은 부분) -->
 
@@ -48,8 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="음식이 해당 알레르기에 포함되진 않나요?"
-            android:textSize="14sp"
             android:textColor="#808080"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/allergyText"
             app:layout_constraintTop_toBottomOf="@id/allergyText" />
         <!-- RecyclerView 추가 -->
@@ -64,14 +64,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/allergyDescription" />
-
-
-
-
-
-
-
-
 
 
         <EditText
@@ -112,18 +104,18 @@
             app:cornerRadius="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@+id/radioFace" />
 
         <TextView
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:text="음식 나눠주기(("
+            android:layout_marginTop="100dp"
+            android:text="주변 이웃을 도울 수 있어요!"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.085"
+            app:layout_constraintHorizontal_bias="0.134"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -142,17 +134,17 @@
                 android:layout_height="75dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/edit_text_background"
-                android:text="음식이 필요해요"
-                android:buttonTint="@color/black"/>
+                android:buttonTint="@color/black"
+                android:text="음식이 필요해요" />
 
             <RadioButton
                 android:id="@+id/foodDistribute"
                 android:layout_width="363dp"
                 android:layout_height="75dp"
                 android:background="@drawable/edit_text_background"
-                android:text="음식을 나눠줄래요"
+                android:buttonTint="@color/black"
                 android:checked="true"
-                android:buttonTint="@color/black"/>
+                android:text="음식을 나눠줄래요" />
         </RadioGroup>
 
         <Button
@@ -179,7 +171,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.038"
-            app:srcCompat="@drawable/back" />
+            app:srcCompat="@drawable/x" />
+
+        <RadioGroup
+            android:id="@+id/radioFace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView">
+
+            <RadioButton
+                android:id="@+id/face"
+                android:layout_width="363dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/checkedface"
+                android:checked="true"
+                android:button="@null"
+                />
+
+            <RadioButton
+                android:id="@+id/noface"
+                android:layout_width="363dp"
+                android:layout_height="130dp"
+                android:background="@drawable/noface"
+                android:button="@null"
+                />
+        </RadioGroup>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
