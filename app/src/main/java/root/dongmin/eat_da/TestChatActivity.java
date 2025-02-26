@@ -59,6 +59,7 @@ public class TestChatActivity extends AppCompatActivity {
 
     // 클래스 멤버 변수로 yourNick 선언
     private String yourNick = "";
+    private int isnotMine = 0; // 기본값 0
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +67,16 @@ public class TestChatActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_test_chat);
 
+        Toast.makeText(this, "isnotMine: " + isnotMine, Toast.LENGTH_SHORT).show();
+
+
         // 1. Intent에서 데이터 가져오기 (상대방 아이디)       (receivedID)
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("chatID")) {
             receivedId = intent.getStringExtra("chatID");
             postID = intent.getStringExtra("postID");
+            isnotMine = getIntent().getIntExtra("isnotMine", 0);
+
             Toast.makeText(this, "채팅을 시작할 상대: " + receivedId, Toast.LENGTH_SHORT).show();
         }
 
@@ -113,7 +119,14 @@ public class TestChatActivity extends AppCompatActivity {
 
                         // 5. Firebase Realtime Database 참조 가져오기
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        myRef = database.getReference("chat").child(postID + "_" + yourNick + "_" + receivedId);
+                        if(isnotMine == 0)
+                        {
+                            myRef = database.getReference("chat").child(postID + "_" + yourNick + "_" + receivedId);
+                        }
+                        else {
+                            myRef = database.getReference("chat").child(postID + "_" + receivedId + "_" + yourNick);
+                        }
+
 
                         // 6. UI 요소 초기화 및 이벤트 리스너 설정
                         initUI();

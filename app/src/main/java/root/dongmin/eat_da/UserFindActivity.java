@@ -2,6 +2,7 @@ package root.dongmin.eat_da;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,6 +48,7 @@ public class UserFindActivity extends AppCompatActivity {
 
     private Button leftButton;
     private Button rightButton;
+    private int isnotMine = 3; // 기본값 0
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,9 @@ public class UserFindActivity extends AppCompatActivity {
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isnotMine = 0; // 왼쪽 버튼 클릭 시 0으로 설정
+                Log.d("UserFind", "isnotMine value: " + isnotMine);
+                adapter.setIsNotMine(isnotMine);
                 selectLeftButton();
             }
         });
@@ -69,6 +74,9 @@ public class UserFindActivity extends AppCompatActivity {
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isnotMine = 1; // 오른족
+                Log.d("UserFind", "isnotMine value: " + isnotMine);
+                adapter.setIsNotMine(isnotMine);
                 selectRightButton();
             }
         });
@@ -77,9 +85,10 @@ public class UserFindActivity extends AppCompatActivity {
         //chatList = getIntent().getStringArrayListExtra("chatList");
         nickname = getIntent().getStringExtra("nickname");
         String chatRoom = getIntent().getStringExtra("chatRoom");
+        int isnotMinea = getIntent().getIntExtra("isnotMinea", 2);
         if (chatRoom != null) {
             // 전달된 채팅방 정보를 사용하여 명령어 처리
-            handleChatRoomAction(chatRoom);
+            handleChatRoomAction(chatRoom, isnotMinea);
         }
 
         // RecyclerView 초기화
@@ -266,10 +275,23 @@ public class UserFindActivity extends AppCompatActivity {
 
 
     // 채팅방 정보를 처리하는 메서드
-    private void handleChatRoomAction(String chatRoom) {
-        // 여기서 chatRoom에 대한 명령어 처리 구현
-        // 예를 들어, 채팅방 이름을 로그로 출력하거나, Firebase에서 해당 채팅방의 메시지를 불러오는 등의 작업을 할 수 있습니다.
+    private void handleChatRoomAction(String chatRoom, int isnotMinea) {
+        if (chatRoom == null) return; // 방 정보가 없으면 실행 안 함
+
+        int a = 2; // 기본값
+
+        // 현재 선택된 버튼 확인 (배경색 기준)
+        if (leftButton.getBackground() instanceof ColorDrawable && ((ColorDrawable) leftButton.getBackground()).getColor() == Color.WHITE) {
+            a = 1; // 왼쪽 버튼 선택됨
+            Log.d("UserFind", "왼쪽 버튼 선택됨: " + a);
+        } else if (rightButton.getBackground() instanceof ColorDrawable && ((ColorDrawable) rightButton.getBackground()).getColor() == Color.WHITE) {
+            a = 0; // 오른쪽 버튼 선택됨
+            Log.d("UserFind", "오른쪽 버튼 선택됨: " + a);
+        }
+
         Log.d("UserFind", "Selected Chat Room: " + chatRoom);
+        Log.d("UserFind", "Detected isnotMine value: " + isnotMinea);
+
         Intent chatIntent = new Intent(UserFindActivity.this, TestChatActivity.class);
 
         String[] parts = chatRoom.split(":");
@@ -279,17 +301,16 @@ public class UserFindActivity extends AppCompatActivity {
         String[] parts2 = parts[1].split("_");
         String number = parts2[1];  // 번호 ("_" 뒤부분)
 
+        chatIntent.putExtra("chatID", nickname);
+        chatIntent.putExtra("postID", number);
+        chatIntent.putExtra("isnotMine", isnotMinea);  // 버튼 클릭 상태 기반으로 전달
+        Log.d("UserFind", "Final isnotMine value sent: " + isnotMinea);
 
-        chatIntent.putExtra("chatID", nickname);  // 닉네임을 "chatID"라는 키로 전달
-            chatIntent.putExtra("postID",number);
-    startActivity(chatIntent);
-        // 현재 액티비티 종료
+        startActivity(chatIntent);
         finish();
-
-
-        // Firebase 또는 다른 처리 로직을 추가
-        // 예: Firebase에서 채팅방 메시지 불러오기, 채팅방에 대한 세부 작업 처리 등
     }
+
+
 
 }
 
