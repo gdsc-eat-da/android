@@ -98,8 +98,8 @@ public class NicknameActivity extends AppCompatActivity {
                     Toast.makeText(NicknameActivity.this, "닉네임이 저장되었습니다.", Toast.LENGTH_SHORT).show();
                     setTransactionCount(uid);
                     setDefaultProfileImage(uid);
-                    // MainActivity로 이동
-                    Intent intent = new Intent(NicknameActivity.this, MainActivity.class);
+                    // 온보딩 1로 이동
+                    Intent intent = new Intent(NicknameActivity.this, Onboarding1.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
 
