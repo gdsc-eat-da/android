@@ -1,6 +1,6 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#3b82f6"/>
-    <path
-        android:fillColor="#3b82f6"
-        android:pathData="M 0,0 L 10,0 L 5,10 Z" /> <!-- 삼각형 모양 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#55EEE0"/> <!-- 배경과 동일한 색 -->
+
+    <size android:width="12dp" android:height="12dp"/> <!-- 크기 조절 -->
+    <rotate android:fromDegrees="45"/> <!-- 45도 회전 -->
 </shape>

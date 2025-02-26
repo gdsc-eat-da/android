@@ -29,17 +29,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     /**
      * ViewHolder 클래스 - 하나의 채팅 메시지에 해당하는 뷰를 저장
      */
+    // MyViewHolder 클래스 정의
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView TextView_nickname; // 닉네임을 표시할 TextView
         public TextView TextView_msg; // 메시지를 표시할 TextView
+        public View tailView; // 꼬리표를 표시할 View
 
         public MyViewHolder(View v) {
             super(v);
-            // XML에서 정의한 TextView를 찾아 연결
+            // XML에서 정의한 TextView와 View를 찾아 연결
             TextView_nickname = v.findViewById(R.id.TextView_nickname);
             TextView_msg = v.findViewById(R.id.TextView_msg);
+            tailView = v.findViewById(R.id.tailView); // 꼬리표 View
         }
     }
+
 
     /**
      * 생성자 - 어댑터가 사용할 데이터 및 컨텍스트를 받아 초기화
@@ -79,6 +83,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         // 현재 로그인한 사용자의 닉네임과 비교하여 정렬 방향 변경
         if (chat.getNickname().equals(myNickName)) {
             Log.d("ChatAdapter", "일치성공!!!!!!: [" + chat.getNickname() + "]");
+
             // 본인이 보낸 메시지는 오른쪽 정렬
             holder.TextView_msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
             holder.TextView_nickname.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
@@ -89,6 +94,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
             // 닉네임을 오른쪽 정렬로 변경
             holder.TextView_nickname.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.END));
+
+//            // 꼬리표를 오른쪽으로 배치
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) holder.tailView.getLayoutParams();
+//            params.gravity = Gravity.END; // 오른쪽 정렬
+//            holder.tailView.setLayoutParams(params);
+//            holder.tailView.setRotation(-47); // 오른쪽 꼬리표 각도
         } else {
             // 상대방이 보낸 메시지는 왼쪽 정렬
             holder.TextView_msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -100,6 +111,23 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
             // 닉네임을 왼쪽 정렬로 변경
             holder.TextView_nickname.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.START));
+
+            // 꼬리표를 왼쪽으로 배치
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) holder.tailView.getLayoutParams();
+            params.gravity = Gravity.START | Gravity.BOTTOM; // 왼쪽 하단 정렬
+            holder.tailView.setLayoutParams(params);
+            holder.tailView.setRotation(133); // 왼쪽 꼬리표 각도 (180 - 47)
+        }
+
+        // ✅ 배경 변경
+        if (chat.getNickname().equals(myNickName)) {
+            // 본인이 보낸 메시지
+            holder.TextView_msg.setBackgroundResource(R.drawable.chat_bubble);
+            holder.tailView.setBackgroundResource(R.drawable.chat_bubble_triangle);
+        } else {
+            // 상대방이 보낸 메시지
+            holder.TextView_msg.setBackgroundResource(R.drawable.chat_bubble2);
+            holder.tailView.setBackgroundResource(R.drawable.chat_bubble_triangle2);
         }
     }
 

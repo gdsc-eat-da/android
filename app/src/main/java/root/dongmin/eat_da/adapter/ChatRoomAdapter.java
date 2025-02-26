@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRoomViewHolder> {
 
     private List<String> chatRoomList;
+    private int isnotMine; // isnotMine 변수 추가
 
     // 생성자
     public ChatRoomAdapter(List<String> chatRoomList) {
@@ -51,6 +52,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
                 // UserFind 액티비티로 채팅방 정보 전달
                 Intent intent = new Intent(v.getContext(), UserFindActivity.class);
                 intent.putExtra("chatRoom", selectedChatRoom); // 클릭된 채팅방 정보 전달
+                intent.putExtra("isnotMinea", isnotMine); // isnotMine 값 추가
                 v.getContext().startActivity(intent);
             }
         });
@@ -80,6 +82,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     @Override
     public int getItemCount() {
         return chatRoomList.size();
+    }
+
+    // isnotMine 값을 외부에서 업데이트 할 수 있게 하는 메서드
+    public void setIsNotMine(int isnotMine) {
+        this.isnotMine = isnotMine;
+        notifyDataSetChanged(); // 값 변경 시 RecyclerView 갱신
     }
 
     // Firebase에서 프로필 이미지를 로드하는 메서드
