@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,16 @@ public class NeedPostAdapter extends RecyclerView.Adapter<NeedPostAdapter.ViewHo
         holder.textNeedContents.setText(post.getContents());
         holder.textNeedIngredients.setText(post.getIngredients());
 
+        if (post.isFace()) {
+            // face가 0일 때 toface 이미지를 보이게 설정
+            holder.tofaceImageView.setVisibility(View.VISIBLE);
+            holder.tonofaceImageView.setVisibility(View.GONE);
+        } else {
+            // face가 1일 때 tonoface 이미지를 보이게 설정
+            holder.tofaceImageView.setVisibility(View.GONE);
+            holder.tonofaceImageView.setVisibility(View.VISIBLE);
+        }
+
         // 🔥 게시글 길게 클릭 시 삭제 기능 추가
         holder.itemView.setOnLongClickListener(v -> {
             getNickname(nickname -> {
@@ -94,11 +105,15 @@ public class NeedPostAdapter extends RecyclerView.Adapter<NeedPostAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textNeedContents, textNeedIngredients;
+        ImageView tofaceImageView, tonofaceImageView;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textNeedContents = itemView.findViewById(R.id.textNeedContents);
             textNeedIngredients = itemView.findViewById(R.id.textNeedIngredients);
+            tofaceImageView = itemView.findViewById(R.id.needtoface);
+            tonofaceImageView = itemView.findViewById(R.id.needtonoface);
         }
     }
 

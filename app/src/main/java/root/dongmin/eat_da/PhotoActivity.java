@@ -94,6 +94,9 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     private RadioGroup radioFaceGroup;
     private RadioButton radioFace, radioNoFace;
 
+    // face 값 저장할 변수 (0: face 선택, 1: noface 선택)
+    private int isFaceSelected = 0; // 기본값은 face(0)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +131,23 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         radioFaceGroup = findViewById(R.id.radioFace);
         radioFace = findViewById(R.id.face);
         radioNoFace = findViewById(R.id.noface);
+
+        //라디오 이미지 토글
+        radioFaceGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.face) {
+                    radioFace.setBackgroundResource(R.drawable.checkedface);
+                    radioNoFace.setBackgroundResource(R.drawable.noface);
+                    isFaceSelected = 0; // ✅ face 선택 시 0
+                } else if (checkedId == R.id.noface) {
+                    radioFace.setBackgroundResource(R.drawable.face);
+                    radioNoFace.setBackgroundResource(R.drawable.checkednoface);
+                    isFaceSelected = 1; // ✅ noface 선택 시 1
+                }
+            }
+        });
+
 
         //클릭했을때 이미지 변하도록 하고 , 서버랑 API 부분 수정해야함
 
@@ -286,10 +306,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
             RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
             RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname);
-            RequestBody selectedJoinedItemsBody = RequestBody.create(MediaType.parse("text/plain"), selectedJoinedItems); // ✅ 추가된 부분
+            RequestBody selectedJoinedItemsBody = RequestBody.create(MediaType.parse("text/plain"), selectedJoinedItems);
+
+            RequestBody faceBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(isFaceSelected));// ✅ 추가된 부분
 
             // ✅ API 호출 (닉네임 + selectedJoinedItems 포함)
-            Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody, nicknameBody, selectedJoinedItemsBody);
+            Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody, nicknameBody, selectedJoinedItemsBody, faceBody);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

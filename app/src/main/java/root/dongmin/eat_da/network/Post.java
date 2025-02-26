@@ -25,11 +25,14 @@ public class Post {
     @SerializedName("nickname")
     private String nickname; // ✅ 닉네임 추가
 
+    @SerializedName("face") // 추가된 face 컬럼
+    private int face; // 추가된 face 필드
+
     // ✅ 기본 생성자
     public Post() {}
 
     // ✅ 모든 필드를 포함한 생성자
-    public Post(String postID, String contents, String ingredients, String photo, double distance, String nickname, String selectedJoinedItems) {
+    public Post(String postID, String contents, String ingredients, String photo, double distance, String nickname, String selectedJoinedItems, int face) {
         this.postID = postID;
         this.contents = contents;
         this.ingredients = ingredients;
@@ -37,6 +40,7 @@ public class Post {
         this.distance = distance;
         this.nickname = nickname;
         this.selectedJoinedItems = selectedJoinedItems;
+        this.face = face;
 
     }
 
@@ -62,4 +66,8 @@ public class Post {
 
     public double getDistance() { return distance; }
     public void setDistance(double distance) { this.distance = distance; }
+
+    // 추가된 face getter & setter
+    public boolean isFace() { return face == 0; }  // boolean 타입의 getter는 isFace()로 작성
+    public void setFace(int face) { this.face = face; }  // face 값 setter
 }

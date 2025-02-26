@@ -24,7 +24,8 @@ public interface ApiService {
             @Part("contents") RequestBody contents, // 내용
             @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
             @Part("nickname") RequestBody nickname, //  닉네임 추가
-            @Part("selectedJoinedItems")RequestBody selectedJoinedItems
+            @Part("selectedJoinedItems")RequestBody selectedJoinedItems,
+            @Part("face") RequestBody face
             );
 
     // 필요 게시글 업로드 (글 내용)
@@ -35,7 +36,8 @@ public interface ApiService {
             @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
             @Part("nickname") RequestBody nickname,  //  닉네임 추가
             @Part("latitude") RequestBody latitude,  // 위도 추가
-            @Part("longitude") RequestBody longitude // 경도 추가
+            @Part("longitude") RequestBody longitude, // 경도 추가
+            @Part("face") RequestBody face
     );
 
 

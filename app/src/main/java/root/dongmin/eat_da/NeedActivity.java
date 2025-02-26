@@ -64,6 +64,9 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
     // API 서비스
     private ApiService apiService;
 
+    // face 값 저장할 변수 (0: face 선택, 1: noface 선택)
+    private int isFaceSelected = 0; // 기본값은 face(0)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +86,22 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
         radioNeedFaceGroup = findViewById(R.id.radioNeedFace);
         radioNeedFace = findViewById(R.id.needface);
         radioNeedNoFace = findViewById(R.id.neednoface);
+
+        //라디오 이미지 토글
+        radioNeedFaceGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.needface) {
+                    radioNeedFace.setBackgroundResource(R.drawable.checkedface);
+                    radioNeedNoFace.setBackgroundResource(R.drawable.noface);
+                    isFaceSelected = 0; // ✅ face 선택 시 0
+                } else if (checkedId == R.id.neednoface) {
+                    radioNeedFace.setBackgroundResource(R.drawable.face);
+                    radioNeedNoFace.setBackgroundResource(R.drawable.checkednoface);
+                    isFaceSelected = 1; // ✅ noface 선택 시 1
+                }
+            }
+        });
 
         back = findViewById(R.id.btnback6);
         back.setOnClickListener(new View.OnClickListener() {
@@ -181,8 +200,10 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
                     RequestBody latitudeBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(latitude));
                     RequestBody longitudeBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(longitude));
 
+                    RequestBody faceBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(isFaceSelected));// ✅ 추가된 부분
+
                     // ✅ API 호출 (게시물과 위치 함께 업로드)
-                    Call<ResponseBody> call = apiService.needuploadPost(contentsBody, ingredientsBody, nicknameBody, latitudeBody, longitudeBody);
+                    Call<ResponseBody> call = apiService.needuploadPost(contentsBody, ingredientsBody, nicknameBody, latitudeBody, longitudeBody, faceBody);
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

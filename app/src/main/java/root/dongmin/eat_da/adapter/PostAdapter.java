@@ -59,6 +59,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.contentsTextView.setText(post.getContents());
         holder.ingredientsTextView.setText(post.getIngredients());
 
+        if (post.isFace()) {
+            // face가 0일 때 toface 이미지를 보이게 설정
+            holder.tofaceImageView.setVisibility(View.VISIBLE);
+            holder.tonofaceImageView.setVisibility(View.GONE);
+        } else {
+            // face가 1일 때 tonoface 이미지를 보이게 설정
+            holder.tofaceImageView.setVisibility(View.GONE);
+            holder.tonofaceImageView.setVisibility(View.VISIBLE);
+        }
+
         // 🔥 이미지 로드
         Glide.with(context)
                 .load(post.getPhoto())
@@ -73,6 +83,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             String postNickname = post.getNickname();
             String postID = post.getPostID();
             String selectedJoinedItems = post.getselectedJoinedItems();
+
 
 
             // ✅ 클릭한 게시글 정보를 새로운 액티비티로 전달
@@ -159,6 +170,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView contentsTextView, ingredientsTextView;
+        ImageView tofaceImageView, tonofaceImageView;
         ImageView imageView;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -166,6 +178,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             contentsTextView = itemView.findViewById(R.id.textContents);
             ingredientsTextView = itemView.findViewById(R.id.textIngredients);
             imageView = itemView.findViewById(R.id.imagePost);
+            tofaceImageView = itemView.findViewById(R.id.toface);
+            tonofaceImageView = itemView.findViewById(R.id.tonoface);
         }
     }
 

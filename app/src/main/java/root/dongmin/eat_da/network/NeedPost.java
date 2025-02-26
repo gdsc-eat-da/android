@@ -29,6 +29,9 @@ public class NeedPost implements Parcelable {
 
     private float distance;
 
+    @SerializedName("face")
+    private String face;
+
     // 기본 생성자
     public NeedPost() {}
 
@@ -99,6 +102,14 @@ public class NeedPost implements Parcelable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isFace() {
+        return face != null && face.equals("0");
+    }
+
+    public String getFace() {
+        return face;
     }
 
     // Parcelable 인터페이스 구현

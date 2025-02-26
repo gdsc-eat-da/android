@@ -89,7 +89,7 @@
                 android:text="음식이 필요해요"
                 android:checked="true"
                 android:buttonTint="@color/black"
-                android:button="@null"/>
+                />
 
             <RadioButton
                 android:id="@+id/needfoodDistribute"
@@ -98,7 +98,7 @@
                 android:background="@drawable/edit_text_background"
                 android:text="음식을 나눠줄래요"
                 android:buttonTint="@color/black"
-                android:button="@null"/>
+                />
         </RadioGroup>
 
         <ImageView
