@@ -16,6 +16,12 @@
         tools:ignore="MenuTitle" />
 
     <item
+        android:id="@+id/recipe"
+        android:icon="@drawable/recipedefault"
+        app:showAsAction="always"
+        tools:ignore="MenuTitle" />
+
+    <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/mypagedefault"
         app:showAsAction="always"

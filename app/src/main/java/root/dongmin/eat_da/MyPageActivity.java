@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Color;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -88,19 +90,19 @@ public class MyPageActivity extends AppCompatActivity {
 
                 if (item.getItemId() == R.id.nav_profile) {
                     Toast.makeText(MyPageActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
-                    //return true;
+                    return true;
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                     startActivity(intent);
-                    //return true;
+                    return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MyPageActivity.this, IdListActivity.class );
                     startActivity(intent);
-                    //return true;
+                    return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(MyPageActivity.this,MapActivity.class);
                     startActivity(intent);
-                    //return true;
+                    return true;
                 }
                 return false;
             }
@@ -229,7 +231,14 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
 
-
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
 

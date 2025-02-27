@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -109,6 +110,15 @@ public class UserFindActivity extends AppCompatActivity {
                         updateRecyclerView(chatList, nickname, posts,0);
                     }
                 });
+            }
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
