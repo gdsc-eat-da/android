@@ -1,6 +1,7 @@
 package root.dongmin.eat_da;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -65,6 +66,9 @@ public class TestChatActivity extends AppCompatActivity {
     private int isnotMine = 0; // 기본값 0
     public String profileUrl;
 
+    private Handler handler = new Handler(); // Handler 객체 생성
+    private Runnable runnable; // Runnable 객체 생성
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +131,8 @@ public class TestChatActivity extends AppCompatActivity {
                         {
                             myRef = database.getReference("chat").child(postID + "_" + yourNick + "_" + receivedId);
                         }
-                        else {
+                        else
+                        {
                             myRef = database.getReference("chat").child(postID + "_" + receivedId + "_" + yourNick);
                         }
 
@@ -143,8 +148,52 @@ public class TestChatActivity extends AppCompatActivity {
                 }
             });
 
+            // Runnable 초기화
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    // 2초마다 실행할 코드
+                    updateIsNotReadForAllMessages();
+
+                    // 2초 후에 다시 실행
+                    handler.postDelayed(this, 2000);
+                }
+            };
+
+            // Runnable 시작
+            handler.post(runnable);
+
+
+
+
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 액티비티가 종료될 때 Handler 정리
+        handler.removeCallbacks(runnable);
+    }
+
+    // 모든 메시지의 isnotread 필드를 업데이트하는 메서드
+    private void updateIsNotReadForAllMessages() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {//데이터를 한 번만 가져오는 리스너
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    updateIsNotRead(snapshot); // 각 메시지에 대해 isnotread 업데이트
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("FirebaseError", "데이터 읽기 실패: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
 
 
 
@@ -202,7 +251,7 @@ public class TestChatActivity extends AppCompatActivity {
             });
         }
 
-        // 전송 버튼 클릭 시 채팅 데이터 Firebase에 저장
+
         // 전송 버튼 클릭 시 채팅 데이터 Firebase에 저장
         Button_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,6 +326,8 @@ public class TestChatActivity extends AppCompatActivity {
                 ChatData chat = snapshot.getValue(ChatData.class); // 새로 추가된 데이터 가져오기
                 ((ChatAdapter) mAdapter).addprofile(profileUrl);
                 ((ChatAdapter) mAdapter).addChat(chat); // 어댑터를 통해 리스트에 추가
+                // isnotread 필드 업데이트
+                updateIsNotRead(snapshot);//DataSnapshot은 Firebase Realtime Database에서 특정 경로에 있는 데이터를 읽어온 결과.
             }
 
             @Override
@@ -300,6 +351,24 @@ public class TestChatActivity extends AppCompatActivity {
             }
         });
     }
+
+    // isnotread 필드 업데이트 메서드
+    private void updateIsNotRead(DataSnapshot snapshot) {
+        ChatData chat = snapshot.getValue(ChatData.class);
+        if (chat != null) {
+            String isnotread = chat.getIsnotread();
+            if (isnotread != null) {
+                String[] parts = isnotread.split("_");
+                if (parts.length == 2 && parts[0].equals(yourNick) && parts[1].equals("O")) {
+                    // isnotread 필드 업데이트
+                    String newIsNotRead = yourNick + "_X";
+                    snapshot.getRef().child("isnotread").setValue(newIsNotRead);
+                }
+            }
+        }
+    }
+
+
 
 
 }

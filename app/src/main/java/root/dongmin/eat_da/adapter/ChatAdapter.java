@@ -46,7 +46,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         public MyViewHolder(View v) {
             super(v);
             // XML에서 정의한 TextView와 View를 찾아 연결
-            //TextView_nickname = v.findViewById(R.id.TextView_nickname);
+            TextView_nickname = v.findViewById(R.id.TextView_nickname);//사실 닉네임이 아니라 읽음/안읽음 처리하는거임
             TextView_msg = v.findViewById(R.id.TextView_msg);
             tailView = v.findViewById(R.id.tailView); // 꼬리표 View
             profile = v.findViewById(R.id.profile);
@@ -116,6 +116,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
             Log.d("ChatAdapter", "내 닉네임: [" + myNickName + "]");
             Log.d("ChatAdapter", "메시지 닉네임: [" + chat.getNickname() + "]");
             Log.d("ChatAdapter", "프로필 URL: [" + profileUrl + "]"); // 프로필 URL 로그 추가
+            Log.d("ChatAdapter", "읽었냐: " + chat.getIsnotread());
 
             // 현재 로그인한 사용자의 닉네임과 비교하여 정렬 방향 변경
             if (chat.getNickname().equals(myNickName)) {
@@ -123,6 +124,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
                 // 본인이 보낸 메시지는 오른쪽 정렬
                 holder.TextView_msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
+
+
+                String[] parts = chat.getIsnotread().split("_");
+
+                if(parts[1].equals("X"))
+                {
+                    holder.TextView_nickname.setText("읽음");
+                }
+                else {
+                    holder.TextView_nickname.setText("안읽음");
+                }
+
 
                 // LinearLayout의 gravity를 'end'로 설정하여 오른쪽 정렬
                 ((LinearLayout) holder.itemView).setGravity(Gravity.END);
@@ -249,10 +263,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
 
 
-
-//이전 메세지의 유저, 현재 메세지의 유저 호출한 뒤 만약 같다면 꼬리표 없는걸로 ㄱㄱ
-
-//row chat xml 하나 더 만들어서 상대방 거는 처음 치는건 프사있게 그리고 그다음 채팅의 이전 메세지의 유저, 현재 메세지의 유저 호출한 뒤 만약 같다면 프사랑 꼬리표 없는걸로 ㄱㄱ
 
 //원래 있는 row chat 밑에 읽음/안읽음으로 바꾸기 그리고 Firebase 쿼리 사용해서 들어갈때마다? 아니면 1초?마다 x로 바꾸기
     //
