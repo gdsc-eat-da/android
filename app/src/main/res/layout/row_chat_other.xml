@@ -1,17 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="8dp">
 
-    <!-- 닉네임 텍스트 -->
-    <TextView
-        android:id="@+id/TextView_nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:textColor="#000000"
-        android:textSize="14sp" />
+    <!-- 프로필 사진 -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <!-- 메시지와 꼬리표를 포함하는 FrameLayout -->
 
     <!-- 메시지와 꼬리표를 포함하는 FrameLayout -->
     <FrameLayout
@@ -24,7 +28,7 @@
             android:id="@+id/TextView_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/chat_bubble"
+            android:background="@drawable/chat_bubble2"
             android:maxWidth="250dp"
             android:padding="12dp"
             android:text=""
@@ -32,16 +36,14 @@
             android:textSize="20sp" />
 
         <!-- 삼각형 꼬리표 -->
-        <View
+        <ImageView
             android:id="@+id/tailView"
-            android:layout_width="11dp"
-            android:layout_height="8dp"
-            android:layout_gravity="top|end"
+            android:layout_width="13dp"
+            android:layout_height="12dp"
+            android:layout_gravity="top|start"
             android:layout_marginEnd="-0dp"
             android:layout_marginBottom="-5dp"
-            android:background="@drawable/chat_bubble_triangle"
-            android:rotation="-42"
-            android:rotationY="13" />
+            android:background="@drawable/chat_bubble_other"
+            android:rotation="0" />
     </FrameLayout>
-
 </LinearLayout>

@@ -27,9 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import root.dongmin.eat_da.adapter.ChatAdapter;
 import root.dongmin.eat_da.data.ChatData;
@@ -60,6 +63,7 @@ public class TestChatActivity extends AppCompatActivity {
     // 클래스 멤버 변수로 yourNick 선언
     private String yourNick = "";
     private int isnotMine = 0; // 기본값 0
+    public String profileUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +147,18 @@ public class TestChatActivity extends AppCompatActivity {
     }
 
 
+
+    public String getCurrentDateTime() {
+        // 현재 시간을 가져옴
+        Date now = new Date();
+
+        // 포맷 지정 (요일(한국어) HH:mm 형식)
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE HH:mm", Locale.KOREAN);
+
+        // 포맷된 날짜와 시간 반환
+        return formatter.format(now);
+    }
+
     // UI 초기화 및 이벤트 리스너 설정
     private void initUI() {
         Button_send = findViewById(R.id.sendButton);
@@ -162,6 +178,7 @@ public class TestChatActivity extends AppCompatActivity {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String nickname = snapshot.child("nickname").getValue(String.class);
                             String profileImageUrl = snapshot.child("profileImage").getValue(String.class);
+                            profileUrl = profileImageUrl;
 
                             if (nickname != null) {
                                 yourNickView.setText(nickname); // 상대방 닉네임 표시
@@ -186,14 +203,53 @@ public class TestChatActivity extends AppCompatActivity {
         }
 
         // 전송 버튼 클릭 시 채팅 데이터 Firebase에 저장
+        // 전송 버튼 클릭 시 채팅 데이터 Firebase에 저장
         Button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String msg = EditText_chat.getText().toString();
-                ChatData chat = new ChatData();
-                chat.setNickname(yourNick); // 사용자 이메일을 닉네임으로 설정
-                chat.setMsg(msg); // 입력된 메시지 설정
-                myRef.push().setValue(chat); // Firebase에 데이터 저장
+
+                // receivedId에 해당하는 사용자의 프로필 이미지 URL을 Firebase에서 가져오기
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UserAccount");
+                userRef.orderByChild("nickname").equalTo(yourNick).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                String profileImageUrl = snapshot.child("profileImage").getValue(String.class);
+
+                                // 프로필 이미지 URL이 있는 경우
+                                if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                                    profileUrl = profileImageUrl; // profileUrl 업데이트
+                                } else {
+                                    profileUrl = "default_profile_url"; // 기본값 설정
+                                }
+
+                                // 채팅 데이터 생성
+                                ChatData chat = new ChatData();
+                                chat.setNickname(yourNick); // 사용자 닉네임 설정
+                                chat.setMsg(msg); // 입력된 메시지 설정
+                                chat.setTime(getCurrentDateTime()); // 현재 시간 설정
+                                chat.setIsnotread(receivedId + "_O"); // 읽음 상태 설정
+                                chat.setUrl(profileUrl); // 프로필 이미지 URL 설정
+
+                                // Firebase에 데이터 저장
+                                myRef.push().setValue(chat);
+
+                                // 입력 필드 초기화
+                                EditText_chat.setText("");
+                                break; // 첫 번째 일치하는 사용자 정보만 사용
+                            }
+                        } else {
+                            Log.d("TestChatActivity", "일치하는 사용자가 없습니다.");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("FirebaseError", "프로필 정보 불러오기 실패: " + databaseError.getMessage());
+                    }
+                });
             }
         });
         Button_back.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +267,7 @@ public class TestChatActivity extends AppCompatActivity {
 
         // 채팅 데이터 리스트 및 어댑터 설정
         chatList = new ArrayList<>();
-        mAdapter = new ChatAdapter(chatList, TestChatActivity.this, yourNick);
+        mAdapter = new ChatAdapter(chatList, TestChatActivity.this, yourNick, profileUrl);
         mRecycleView.setAdapter(mAdapter);
 
         // Firebase에서 새로운 채팅 데이터가 추가될 때마다 실행되는 리스너 설정
@@ -219,6 +275,7 @@ public class TestChatActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 ChatData chat = snapshot.getValue(ChatData.class); // 새로 추가된 데이터 가져오기
+                ((ChatAdapter) mAdapter).addprofile(profileUrl);
                 ((ChatAdapter) mAdapter).addChat(chat); // 어댑터를 통해 리스트에 추가
             }
 

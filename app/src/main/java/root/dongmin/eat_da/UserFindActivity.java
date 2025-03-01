@@ -1,11 +1,18 @@
 package root.dongmin.eat_da;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,16 +58,21 @@ public class UserFindActivity extends AppCompatActivity {
     private Button rightButton;
     private int isnotMine = 3; // 기본값 0
 
+    int ischanged = 1;//좌우가 바뀌었는지?
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_find);
+
 
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+
+
 
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +133,17 @@ public class UserFindActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+
+
+
+
+
+        //leftButton.bringToFront(); // 버튼 1을 가장 앞으로 가져옴
+        defaultButton();
+
+
     }
 
     private void loadChatList(OnChatListLoadedListener listener) {
@@ -245,12 +268,130 @@ public class UserFindActivity extends AppCompatActivity {
 
 
 
-    private void selectLeftButton() {
-        leftButton.setBackgroundColor(Color.BLACK);
-        leftButton.setTextColor(Color.WHITE);
 
-        rightButton.setBackgroundColor(Color.WHITE);
-        rightButton.setTextColor(Color.BLACK);
+
+    void defaultButton()
+    {
+
+        leftButton.setZ(10f); // 왼쪽 버튼이 위로 올라옴
+        rightButton.setZ(5f);
+
+        // 왼쪽 버튼 이동 애니메이션
+        ObjectAnimator moveAnimator = ObjectAnimator.ofFloat(leftButton, "translationX", 0f, 40f);
+        moveAnimator.setDuration(400);
+
+        // 오른쪽 버튼 이동 애니메이션 (왼쪽으로 약간 이동)
+        ObjectAnimator moveAnimator2 = ObjectAnimator.ofFloat(rightButton, "translationX", 40f, 0f);
+        moveAnimator2.setDuration(400);
+
+        // 왼쪽 버튼 가로 크기 확대
+        ValueAnimator leftWidthAnimator = ValueAnimator.ofInt(leftButton.getWidth(), leftButton.getWidth() + 200);
+        leftWidthAnimator.setDuration(400);
+        leftWidthAnimator.addUpdateListener(animation -> {
+            int newWidth = (int) animation.getAnimatedValue();
+            ViewGroup.LayoutParams params = leftButton.getLayoutParams();
+            params.width = newWidth;
+            leftButton.setLayoutParams(params);
+        });
+
+        // 오른쪽 버튼 가로 크기 축소
+        ValueAnimator rightWidthAnimator = ValueAnimator.ofInt(rightButton.getWidth(), rightButton.getWidth() -0);
+        rightWidthAnimator.setDuration(400);
+        rightWidthAnimator.addUpdateListener(animation -> {
+            int newWidth = (int) animation.getAnimatedValue();
+            ViewGroup.LayoutParams params = rightButton.getLayoutParams();
+            params.width = newWidth;
+            rightButton.setLayoutParams(params);
+        });
+
+//        // 왼쪽 버튼 색상 변경 애니메이션 (민트색으로 변경)
+//        int mintColor = Color.parseColor("#55eee0"); // 민트색
+//        ValueAnimator colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), Color.WHITE, mintColor);
+//        colorAnimator.setDuration(1000);
+//        colorAnimator.addUpdateListener(animation ->
+//                leftButton.setBackgroundTintList(ColorStateList.valueOf((int) animation.getAnimatedValue()))
+//
+//        );
+
+
+
+        rightButton.setBackgroundResource(R.drawable.rounded_button_no);
+        leftButton.setBackgroundResource(R.drawable.rounded_button_yes);
+
+
+        rightButton.setZ(5f); // 오른쪽 버튼이 아래로 내려감
+        leftButton.setZ(10f); // 왼쪽 버튼이 위로 올라옴
+
+
+        rightButton.setTextColor(Color.parseColor("#babac0")); // 또는 Color.parseColor("#babac0")
+        leftButton.setTextColor(Color.parseColor("#FFFFFF")); // 또는 Color.parseColor("#000000")
+
+
+
+        // 애니메이션 실행
+        moveAnimator2.start();
+        moveAnimator.start();
+
+
+        rightWidthAnimator.start();
+        leftWidthAnimator.start();
+        //colorAnimator.start();
+        ischanged = 0;
+
+        rightButton.setZ(5f); // 오른쪽 버튼이 아래로 내려감
+        leftButton.setZ(10f); // 왼쪽 버튼이 위로 올라옴
+
+
+    }
+
+    private void selectLeftButton() {
+        if(ischanged == 1)
+        {
+            // 왼쪽 버튼 이동 애니메이션
+            //ObjectAnimator moveAnimator = ObjectAnimator.ofFloat(leftButton, "translationX", 0f, 30f);
+            //moveAnimator.setDuration(1000);
+
+            // 오른쪽 버튼 이동 애니메이션 (왼쪽으로 약간 이동)
+            //ObjectAnimator moveAnimator2 = ObjectAnimator.ofFloat(rightButton, "translationX", 0f, 0f);
+            //moveAnimator2.setDuration(1000);
+
+            // 왼쪽 버튼 가로 크기 확대
+            ValueAnimator leftWidthAnimator = ValueAnimator.ofInt(leftButton.getWidth(), leftButton.getWidth() + 200);
+            leftWidthAnimator.setDuration(400);
+            leftWidthAnimator.addUpdateListener(animation -> {
+                int newWidth = (int) animation.getAnimatedValue();
+                ViewGroup.LayoutParams params = leftButton.getLayoutParams();
+                params.width = newWidth;
+                leftButton.setLayoutParams(params);
+            });
+
+            // 오른쪽 버튼 가로 크기 축소
+            ValueAnimator rightWidthAnimator = ValueAnimator.ofInt(rightButton.getWidth(), rightButton.getWidth() -200);
+            rightWidthAnimator.setDuration(400);
+            rightWidthAnimator.addUpdateListener(animation -> {
+                int newWidth = (int) animation.getAnimatedValue();
+                ViewGroup.LayoutParams params = rightButton.getLayoutParams();
+                params.width = newWidth;
+                rightButton.setLayoutParams(params);
+            });
+
+            leftButton.setBackgroundResource(R.drawable.rounded_button_yes);
+            rightButton.setBackgroundResource(R.drawable.rounded_button_no);
+            leftButton.setZ(10f); // 왼쪽 버튼이 위로 올라옴
+            rightButton.setZ(5f); // 오른쪽 버튼이 아래로 내려감
+
+            leftButton.setTextColor(Color.parseColor("#FFFFFF")); // 또는 Color.parseColor("#000000")
+            rightButton.setTextColor(Color.parseColor("#babac0")); // 또는 Color.parseColor("#babac0")
+
+            // 애니메이션 실행
+            //moveAnimator.start();
+            //moveAnimator2.start();
+            leftWidthAnimator.start();
+            rightWidthAnimator.start();
+            //colorAnimator.start();
+            ischanged = 0;
+        }
+
         loadChatList(new OnChatListLoadedListener() {
             @Override
             public void onChatListLoaded(List<String> chatList) {
@@ -265,11 +406,64 @@ public class UserFindActivity extends AppCompatActivity {
     }
 
     private void selectRightButton() {
-        rightButton.setBackgroundColor(Color.BLACK);
-        rightButton.setTextColor(Color.WHITE);
+        if(ischanged == 0)
+        {
+            // 왼쪽 버튼 이동 애니메이션
+            //ObjectAnimator moveAnimator = ObjectAnimator.ofFloat(leftButton, "translationX", 0f, -0f);
+            //moveAnimator.setDuration(1000);
 
-        leftButton.setBackgroundColor(Color.WHITE);
-        leftButton.setTextColor(Color.BLACK);
+            // 오른쪽 버튼 이동 애니메이션 (왼쪽으로 약간 이동)
+            //ObjectAnimator moveAnimator2 = ObjectAnimator.ofFloat(rightButton, "translationX", 0f, -30f);
+            //moveAnimator2.setDuration(1000);
+
+            // 왼쪽 버튼 가로 크기 확대
+            ValueAnimator leftWidthAnimator = ValueAnimator.ofInt(leftButton.getWidth(), leftButton.getWidth() - 200);
+            leftWidthAnimator.setDuration(400);
+            leftWidthAnimator.addUpdateListener(animation -> {
+                int newWidth = (int) animation.getAnimatedValue();
+                ViewGroup.LayoutParams params = leftButton.getLayoutParams();
+                params.width = newWidth;
+                leftButton.setLayoutParams(params);
+            });
+
+            // 오른쪽 버튼 가로 크기 축소
+            ValueAnimator rightWidthAnimator = ValueAnimator.ofInt(rightButton.getWidth(), rightButton.getWidth() + 200);
+            rightWidthAnimator.setDuration(400);
+            rightWidthAnimator.addUpdateListener(animation -> {
+                int newWidth = (int) animation.getAnimatedValue();
+                ViewGroup.LayoutParams params = rightButton.getLayoutParams();
+                params.width = newWidth;
+                rightButton.setLayoutParams(params);
+            });
+
+            leftButton.setBackgroundResource(R.drawable.rounded_button_no);
+            rightButton.setBackgroundResource(R.drawable.rounded_button_yes);
+            leftButton.setZ(5f); // 왼쪽 버튼이 위로 올라옴
+            rightButton.setZ(10f); // 오른쪽 버튼이 아래로 내려감
+
+            leftButton.setTextColor(Color.parseColor("#babac0")); // 또는 Color.parseColor("#000000")
+            rightButton.setTextColor(Color.parseColor("#FFFFFF")); // 또는 Color.parseColor("#babac0")
+
+            // 애니메이션 실행
+            //moveAnimator.start();
+            //moveAnimator2.start();
+            leftWidthAnimator.start();
+            rightWidthAnimator.start();
+            //colorAnimator.start();
+            ischanged = 1;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         loadChatList(new OnChatListLoadedListener() {
             @Override
             public void onChatListLoaded(List<String> chatList) {
