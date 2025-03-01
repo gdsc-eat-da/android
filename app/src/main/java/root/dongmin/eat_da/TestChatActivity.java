@@ -137,6 +137,22 @@ public class TestChatActivity extends AppCompatActivity {
                         }
 
 
+                        // Runnable 초기화
+                        runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                // 2초마다 실행할 코드
+                                updateIsNotReadForAllMessages();
+
+                                // 2초 후에 다시 실행
+                                handler.postDelayed(this, 2000);
+                            }
+                        };
+
+                        // Runnable 시작
+                        handler.post(runnable);
+
+
                         // 6. UI 요소 초기화 및 이벤트 리스너 설정
                         initUI();
                     }
@@ -148,20 +164,7 @@ public class TestChatActivity extends AppCompatActivity {
                 }
             });
 
-            // Runnable 초기화
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    // 2초마다 실행할 코드
-                    updateIsNotReadForAllMessages();
 
-                    // 2초 후에 다시 실행
-                    handler.postDelayed(this, 2000);
-                }
-            };
-
-            // Runnable 시작
-            handler.post(runnable);
 
 
 
