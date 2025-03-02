@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -504,8 +505,11 @@ public class MainActivity extends AppCompatActivity {
 
     // ✅ 버튼 클릭 이벤트 처리
     private void setupButtons() {
-        Button photobutton = findViewById(R.id.btngotophoto);
-        photobutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, PhotoActivity.class)));
+        ImageButton photobutton = findViewById(R.id.btngotophoto);
+        photobutton.setOnClickListener(v -> {
+            CustomDialog customDialog = new CustomDialog(MainActivity.this);
+            customDialog.show();
+        });
 
 //        Button chatbutton = findViewById(R.id.btnchat);
 //        chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));

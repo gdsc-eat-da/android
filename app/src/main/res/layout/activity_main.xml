@@ -54,17 +54,18 @@
         app:layout_constraintTop_toBottomOf="@id/greeding"
         app:layout_constraintVertical_bias="0.797" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btngotophoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="사진 업로드"
+        android:background="@drawable/posting"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.455"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.912" />
+        app:layout_constraintVertical_bias="0.912"
+        />
 
     <Button
         android:id="@+id/btnFindUser"
@@ -96,6 +97,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
