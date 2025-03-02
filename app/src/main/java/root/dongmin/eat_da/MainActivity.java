@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -44,6 +45,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.adapter.PostAdapter;
+import root.dongmin.eat_da.data.PostLocation;
+import root.dongmin.eat_da.data.PostLocationResponseWrapper;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.NearbyPostResponse;
 import root.dongmin.eat_da.network.NeedPost;
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
     private BottomNavigationView bottomNavigationView;
+
+    public List<PostLocation> postLocations;
 
 
 
@@ -146,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
                     intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(postLocations));
                     intent.putExtra("nickname", Nickname);
                     startActivity(intent);
                     return true;
@@ -191,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         handler.post(runnable);
         loadPosts();
         loadNeedPosts();
+        loadPostLocations();
 
         // 버튼 이벤트 처리
         setupButtons();
@@ -433,6 +440,51 @@ public class MainActivity extends AppCompatActivity {
                 // 네트워크 오류 발생 시 RecyclerView에 빈 리스트 적용
                 needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>());
                 needrecyclerView.setAdapter(needPostAdapter);
+            }
+        });
+    }
+
+    // 지금까지 포스트된 위치 받기(나눔하는사람 포스트임)
+    private void loadPostLocations() {
+        Call<PostLocationResponseWrapper> call = apiService.getPostLocations();
+        call.enqueue(new Callback<PostLocationResponseWrapper>() {
+            @Override
+            public void onResponse(@NonNull Call<PostLocationResponseWrapper> call, @NonNull Response<PostLocationResponseWrapper> response) {
+                Log.d("API_RESPONSE", "HTTP Status Code: " + response.code());
+                Log.d("API_RESPONSE", "Response Message: " + response.message());
+
+                if (response.body() == null) {
+                    Log.e("API_DEBUG", "response.body()가 null입니다.");
+                } else {
+                    String jsonResponse = new Gson().toJson(response.body());
+                    Log.d("API_DEBUG", "Response Body JSON: " + jsonResponse);
+
+                    if (response.body().getPostLocations() == null) {
+                        Log.e("API_DEBUG", "getPostLocations()가 null입니다.");
+                    } else {
+                        Log.d("API_DEBUG", "Post Locations List Size: " + response.body().getPostLocations().size());
+                    }
+                }
+
+                if (response.body() != null && response.body().getPostLocations() != null) {
+                    postLocations = response.body().getPostLocations();
+                    Log.d("API_RESPONSE", "PostLocation List: " + postLocations.toString());
+
+                    for (PostLocation post : postLocations) {
+                        Log.d("API_RESPONSE", "Post ID: " + post.getPostID());
+                        Log.d("API_RESPONSE", "Latitude: " + post.getLatitude());
+                        Log.d("API_RESPONSE", "Longitude: " + post.getLongitude());
+                    }
+                } else {
+                    Log.d("API_RESPONSE", "Response Body or PostLocation List is null");
+                    showErrorMessage("위치 데이터를 불러올 수 없어.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<PostLocationResponseWrapper> call, @NonNull Throwable t) {
+                Log.e("API_ERROR", "네트워크 오류: " + t.getMessage());
+                showErrorMessage("네트워크 오류로 데이터를 불러올 수 없어 ㅅ뷰ㅠㅠㅠㅠ.");
             }
         });
     }

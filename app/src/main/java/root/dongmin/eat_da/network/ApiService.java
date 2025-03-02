@@ -13,6 +13,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import root.dongmin.eat_da.data.PostLocationResponseWrapper;
 
 // 컨트롤러의 역할
 public interface ApiService {
@@ -62,6 +63,10 @@ public interface ApiService {
             @Field("latitude") double latitude, // 위도
             @Field("longitude") double longitude // 경도
     );
+
+
+    @GET("getPostLocations.php") // 백엔드에서 실제로 구현된 PHP 파일명으로 변경 필요
+    Call<PostLocationResponseWrapper> getPostLocations();
 
     @GET("getNearbyPosts.php")
     Call<NearbyPostResponse> getNearbyPosts(

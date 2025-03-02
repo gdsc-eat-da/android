@@ -33,7 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import root.dongmin.eat_da.adapter.ChatRoomAdapter;
+import root.dongmin.eat_da.data.PostLocation;
 import root.dongmin.eat_da.network.ApiService;
+import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
 import retrofit2.Call;
@@ -50,6 +52,11 @@ public class UserFindActivity extends AppCompatActivity {
 
     private String nickname;
     private List<String> chatList;
+
+    private List<NeedPost> needPosts = new ArrayList<>(); // 거리 리스트!
+
+
+    ArrayList<PostLocation> postLocationList;// 거리 리스트!
 
     // API 서비스 객체
     private ApiService apiService;
@@ -95,6 +102,7 @@ public class UserFindActivity extends AppCompatActivity {
         });
 
         // Intent로 받은 채팅 리스트 가져오기
+        Intent intent = getIntent();
         //chatList = getIntent().getStringArrayListExtra("chatList");
         nickname = getIntent().getStringExtra("nickname");
         String chatRoom = getIntent().getStringExtra("chatRoom");
@@ -103,6 +111,19 @@ public class UserFindActivity extends AppCompatActivity {
             // 전달된 채팅방 정보를 사용하여 명령어 처리
             handleChatRoomAction(chatRoom, isnotMinea);
         }
+
+        postLocationList = getIntent().getParcelableArrayListExtra("needPostList");
+        if (postLocationList != null) {
+            for (PostLocation postLocation : postLocationList) {
+                Log.d("MAP_DEBUG", "Post ID_userfind: " + postLocation.getPostID());
+                Log.d("MAP_DEBUG", "Latitude_userfind: " + postLocation.getLatitude());
+                Log.d("MAP_DEBUG", "Longitude_userfind: " + postLocation.getLongitude());
+            }
+        } else {
+            Log.d("MAP_DEBUG", "PostLocation list is null");
+        }
+
+
 
         // RecyclerView 초기화
         chatRoomRecyclerView = findViewById(R.id.chatRoomRecyclerView);
