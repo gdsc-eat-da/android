@@ -67,9 +67,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
         // "_" 기준으로 문자열 분리
         String[] parts1 = chatRoom.split("_");
         String chatRoomName = parts1[0]; // "_" 앞부분만 가져옴
+        String chatRoomdis = parts1[2];
 
         // 채팅방 이름을 TextView에 설정
         holder.chatRoomNameTextView.setText(chatRoomName);
+        holder.distanceView.setText(chatRoomdis + "km");
 
         // ":"을 기준으로 채팅방 정보를 분리
         String[] parts2 = chatRoom.split(":");
@@ -121,11 +123,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     // ViewHolder 정의
     public static class ChatRoomViewHolder extends RecyclerView.ViewHolder {
         TextView chatRoomNameTextView;
+        TextView chatRoomSubtitleTextView;//나중에 아래 채팅도 만들자
+        TextView distanceView;
         ShapeableImageView profileImageView; // 프로필 이미지를 위한 ImageView
 
         public ChatRoomViewHolder(View itemView) {
             super(itemView);
             chatRoomNameTextView = itemView.findViewById(R.id.chatRoomNameTextView);
+            distanceView = itemView.findViewById(R.id.distanceView);
             profileImageView = itemView.findViewById(R.id.profile); // 프로필 이미지
         }
     }

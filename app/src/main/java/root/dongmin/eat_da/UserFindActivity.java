@@ -1,14 +1,21 @@
 package root.dongmin.eat_da;
 
+
+
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.location.Location;
+
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +27,17 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +56,17 @@ import root.dongmin.eat_da.network.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.Priority;
 
 public class UserFindActivity extends AppCompatActivity {
 
@@ -67,10 +93,38 @@ public class UserFindActivity extends AppCompatActivity {
 
     int ischanged = 1;//좌우가 바뀌었는지?
 
+
+
+
+
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private double currentLatitude = 0.0; // 현재 위도
+    private double currentLongitude = 0.0; // 현재 경도
+    private static final double EARTH_RADIUS = 6371.0; // 지구 반지름 (단위: km)
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한 요청 코드
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_find);
+
+
+
+        // FusedLocationProviderClient 초기화
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        // 위치 권한 체크
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // 권한이 없으면 요청
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // 권한이 이미 허용된 경우 위치 정보 가져오기
+            initializeLocation();
+        }
+
 
 
         // Retrofit API 초기화
@@ -78,6 +132,7 @@ public class UserFindActivity extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+
 
 
 
@@ -112,7 +167,7 @@ public class UserFindActivity extends AppCompatActivity {
             handleChatRoomAction(chatRoom, isnotMinea);
         }
 
-        postLocationList = getIntent().getParcelableArrayListExtra("needPostList");
+        postLocationList = getIntent().getParcelableArrayListExtra("needPostList");//채팅방의 경도,위도를 가져온다
         if (postLocationList != null) {
             for (PostLocation postLocation : postLocationList) {
                 Log.d("MAP_DEBUG", "Post ID_userfind: " + postLocation.getPostID());
@@ -140,7 +195,7 @@ public class UserFindActivity extends AppCompatActivity {
                 loadPosts(new OnPostsLoadedListener() {
                     @Override
                     public void onPostsLoaded(List<Post> posts) {
-                        updateRecyclerView(chatList, nickname, posts,0);
+                        updateRecyclerView(chatList, nickname, posts,0);//기본값으로 0번으로 로드 ㄱㄱ
                     }
                 });
             }
@@ -166,6 +221,109 @@ public class UserFindActivity extends AppCompatActivity {
 
 
     }
+
+
+//-------------------------------------------------------------위치-----------------------------------------------------------------
+//-------------------------------------------------------------위치-----------------------------------------------------------------
+//-------------------------------------------------------------위치-----------------------------------------------------------------
+    private void initializeLocation() {
+        createLocationRequest();
+        createLocationCallback();
+        getUserLocation(); // 현재 위치 가져오기
+        startLocationUpdates(); // 지속적인 위치 업데이트 시작
+    }//위치로드 종합 ㄱㄱ
+
+    // 위치 요청 설정
+    private void createLocationRequest() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY); // 높은 정확도
+        locationRequest.setInterval(10000); // 10초마다 업데이트
+        locationRequest.setFastestInterval(5000); // 최소 5초마다 업데이트
+    }
+
+
+    // 위치 업데이트 콜백 설정
+    private void createLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    // 위치가 업데이트될 때마다 위도와 경도 저장
+                    currentLatitude = location.getLatitude();
+                    currentLongitude = location.getLongitude();
+                    Log.d("LOCATION_UPDATE", "업데이트된 위치: " + currentLatitude + ", " + currentLongitude);
+                }
+            }
+        };
+    }
+
+    // 현재 위치 가져오기 (단일 요청)
+    @SuppressLint("MissingPermission")
+    private void getUserLocation() {
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            // 현재 위치를 변수에 저장
+                            currentLatitude = location.getLatitude();
+                            currentLongitude = location.getLongitude();
+                            Log.d("LOCATION_DEBUG", "현재 위치: " + currentLatitude + ", " + currentLongitude);
+                        } else {
+                            Log.e("LOCATION_ERROR", "위치 정보를 가져올 수 없습니다.");
+                        }
+                    }
+                });
+    }
+
+    // 지속적인 위치 업데이트 시작
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    // 위치 업데이트 중지
+    private void stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback);
+    }
+
+    // 권한 요청 결과 처리
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 허용된 경우 위치 정보 가져오기
+                initializeLocation();
+            } else {
+                Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 액티비티가 다시 시작될 때 위치 업데이트 시작
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 액티비티가 일시정지되면 위치 업데이트 중지
+        stopLocationUpdates();
+    }
+//-------------------------------------------------------------위치-----------------------------------------------------------------
+//-------------------------------------------------------------위치-----------------------------------------------------------------
+//-------------------------------------------------------------위치-----------------------------------------------------------------
+
+
+
 
     private void loadChatList(OnChatListLoadedListener listener) {
         chatList = new ArrayList<>();
@@ -214,44 +372,49 @@ public class UserFindActivity extends AppCompatActivity {
 
         for (String chat : chatList) {
             String[] chatDetails = chat.split("_");
-//            //------------------------------------------------------------
-//            if (chatDetails.length >= 2) {
-//                String receivingPerson = chatDetails[1];
-//                String receivingNum = chatDetails[0];
-//                String showingPerson = chatDetails[2];
-//                String zemok = "";
-//
-//                if (receivingPerson.equals(nickname)) {
-//                    for (Post post : posts) {
-//                        if (receivingNum.equals(post.getPostID())) {
-//                            zemok += post.getContents();
-//                        }
-//                    }
-//                    String mergechatList = showingPerson + ": " + zemok;
-//                    chatRoomList.add(mergechatList);
-//                }
-//            }
-//            //--------------------------------------------------------------
+            //------------------------------------------------------------만약
             if(a == 0)
             {
-                //------------------------------------------------------------
+
                 if (chatDetails.length >= 2) {
                     String receivingPerson = chatDetails[1];
-                    String receivingNum = chatDetails[0];
+                    String receivingNum = chatDetails[0];//이걸 가지고 위도,경도 추측하고 내 위도,경도를 통해 거리를 얻는 함수를 만들기!
                     String showingPerson = chatDetails[2];
                     String zemok = "";
 
-                    if (receivingPerson.equals(nickname)) {
-                        for (Post post : posts) {
-                            if (receivingNum.equals(post.getPostID())) {
-                                zemok += post.getContents();
+                    double LAa = 0;
+                    double LOo = 0;
+                    double distance = 0;
+
+                    if (postLocationList != null) {
+
+                        for (PostLocation postLocation : postLocationList) {
+                            String postIdStr = String.valueOf(postLocation.getPostID());
+                            if(postIdStr.equals(receivingNum))
+                            {
+                                LAa = postLocation.getLatitude();
+                                LOo = postLocation.getLongitude();
+                                distance = getDistance(LAa, LOo, currentLatitude, currentLongitude);
+                                break;
                             }
                         }
-                        String mergechatList = showingPerson + ": " + zemok + "_" + receivingNum;
-                        chatRoomList.add(mergechatList);
+
+
+                        if (receivingPerson.equals(nickname)) {
+                            for (Post post : posts) {
+                                if (receivingNum.equals(post.getPostID())) {
+                                    zemok += post.getContents();
+                                }
+                            }
+                            String mergechatList = showingPerson + ": " + zemok + "_" + receivingNum + "_" + distance;
+                            chatRoomList.add(mergechatList);
+                        }
+
+
                     }
+
                 }
-                //--------------------------------------------------------------
+                //--------------------------------------------------------------만약
             }
             else
             {
@@ -262,15 +425,33 @@ public class UserFindActivity extends AppCompatActivity {
                     String showingPerson = chatDetails[2];
                     String zemok = "";
 
-                    if (showingPerson.equals(nickname)) {
-                        for (Post post : posts) {
-                            if (receivingNum.equals(post.getPostID())) {
-                                zemok += post.getContents();
+                    double LAa = 0;
+                    double LOo = 0;
+                    double distance = 0;
+                    if (postLocationList != null) {
+
+                        for (PostLocation postLocation : postLocationList) {
+                            String postIdStr = String.valueOf(postLocation.getPostID());
+                            if(postIdStr.equals(receivingNum))
+                            {
+                                LAa = postLocation.getLatitude();
+                                LOo = postLocation.getLongitude();
+                                distance = getDistance(LAa, LOo, currentLatitude, currentLongitude);
+                                break;
                             }
                         }
-                        String mergechatList = receivingPerson + ": " + zemok + "_" + receivingNum;
-                        chatRoomList.add(mergechatList);
+
+                        if (showingPerson.equals(nickname)) {
+                            for (Post post : posts) {
+                                if (receivingNum.equals(post.getPostID())) {
+                                    zemok += post.getContents();
+                                }
+                            }
+                            String mergechatList = receivingPerson + ": " + zemok + "_" + receivingNum + "_" + distance;
+                            chatRoomList.add(mergechatList);
+                        }
                     }
+
                 }
                 //--------------------------------------------------------------
             }
@@ -285,10 +466,6 @@ public class UserFindActivity extends AppCompatActivity {
     interface OnPostsLoadedListener {
         void onPostsLoaded(List<Post> posts);
     }
-
-
-
-
 
 
     void defaultButton()
@@ -363,7 +540,7 @@ public class UserFindActivity extends AppCompatActivity {
         leftButton.setZ(10f); // 왼쪽 버튼이 위로 올라옴
 
 
-    }
+    }//버튼 기본값
 
     private void selectLeftButton() {
         if(ischanged == 1)
@@ -424,7 +601,7 @@ public class UserFindActivity extends AppCompatActivity {
                 });
             }
         });
-    }
+    }//업데이트 리사이클러뷰 0으로
 
     private void selectRightButton() {
         if(ischanged == 0)
@@ -475,16 +652,6 @@ public class UserFindActivity extends AppCompatActivity {
         }
 
 
-
-
-
-
-
-
-
-
-
-
         loadChatList(new OnChatListLoadedListener() {
             @Override
             public void onChatListLoaded(List<String> chatList) {
@@ -496,7 +663,7 @@ public class UserFindActivity extends AppCompatActivity {
                 });
             }
         });
-    }
+    }//업데이트 리사이클러뷰 1로
 
 
     // 채팅방 정보를 처리하는 메서드
@@ -535,6 +702,37 @@ public class UserFindActivity extends AppCompatActivity {
         finish();
     }
 
+
+
+
+    public static double getDistance(double lat1, double lon1, double lat2, double lon2) {
+        // 위도, 경도를 라디안으로 변환
+        double latRad1 = Math.toRadians(lat1);
+        double lonRad1 = Math.toRadians(lon1);
+        double latRad2 = Math.toRadians(lat2);
+        double lonRad2 = Math.toRadians(lon2);
+
+        // 위도, 경도의 차이
+        double dLat = latRad2 - latRad1;
+        double dLon = lonRad2 - lonRad1;
+
+        // Haversine 공식 적용
+        double a = Math.pow(Math.sin(dLat / 2), 2) +
+                Math.cos(latRad1) * Math.cos(latRad2) * Math.pow(Math.sin(dLon / 2), 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        // 최종 거리 (km 단위)
+        double distance = EARTH_RADIUS * c;
+        // 소수점 첫 번째 자리까지 반올림
+        distance = Math.round(distance * 10) / 10.0;
+
+        // 디버그 로그: 현재 위치와 상대방 위치 출력
+        Log.d("DISTANCE_DEBUG", "---------------현재 위치 - 위도: " + lat1 + ", 경도: " + lon1);
+        Log.d("DISTANCE_DEBUG", "상대방 위치 - 위도: " + lat2 + ", 경도: " + lon2);
+        Log.d("DISTANCE_DEBUG", "계산된 거리: " + distance + " km");
+
+        return distance;
+    }
 
 
 }
