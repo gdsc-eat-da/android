@@ -15,6 +15,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -93,9 +94,14 @@ public class UserFindActivity extends AppCompatActivity {
 
     int ischanged = 1;//좌우가 바뀌었는지?
 
+    int aa = 0;
+    private boolean isLoading = true; // 데이터 로드 상태를 나타내는 플래그
 
 
 
+
+    private Handler handler = new Handler(); // Handler 객체 생성
+    private Runnable runnable; // Runnable 객체 생성
 
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -132,6 +138,13 @@ public class UserFindActivity extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+
+
+
+
+
+
+
 
 
 
@@ -195,7 +208,10 @@ public class UserFindActivity extends AppCompatActivity {
                 loadPosts(new OnPostsLoadedListener() {
                     @Override
                     public void onPostsLoaded(List<Post> posts) {
-                        updateRecyclerView(chatList, nickname, posts,0);//기본값으로 0번으로 로드 ㄱㄱ
+                        initializeLocation();
+                        getUserLocation();
+                        aa = 0;
+                        updateRecyclerView(chatList, nickname, posts,aa);//기본값으로 0번으로 로드 ㄱㄱ
                     }
                 });
             }
@@ -210,14 +226,43 @@ public class UserFindActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
         //leftButton.bringToFront(); // 버튼 1을 가장 앞으로 가져옴
         defaultButton();
+
+
+
+
+
+
+// Runnable 초기화
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                // 데이터 로드 중이 아닌 경우에만 실행
+                if (!isLoading) {
+                    isLoading = true; // 로드 상태를 true로 설정
+                    loadChatList(new OnChatListLoadedListener() {
+                        @Override
+                        public void onChatListLoaded(List<String> chatList) {
+                            loadPosts(new OnPostsLoadedListener() {
+                                @Override
+                                public void onPostsLoaded(List<Post> posts) {
+                                    if (chatList != null) {
+                                        updateRecyclerView(chatList, nickname, posts, aa);
+                                    }
+                                    isLoading = false; // 로드 상태를 false로 설정
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // 1초 후에 다시 실행
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+
 
 
     }
@@ -318,6 +363,13 @@ public class UserFindActivity extends AppCompatActivity {
         // 액티비티가 일시정지되면 위치 업데이트 중지
         stopLocationUpdates();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 액티비티가 종료될 때 Handler 정리
+        handler.removeCallbacks(runnable);
+    }
 //-------------------------------------------------------------위치-----------------------------------------------------------------
 //-------------------------------------------------------------위치-----------------------------------------------------------------
 //-------------------------------------------------------------위치-----------------------------------------------------------------
@@ -369,6 +421,7 @@ public class UserFindActivity extends AppCompatActivity {
 
     private void updateRecyclerView(List<String> chatList, String nickname, List<Post> posts,int a) {
         chatRoomList.clear();
+        getUserLocation();
 
         for (String chat : chatList) {
             String[] chatDetails = chat.split("_");
@@ -457,6 +510,7 @@ public class UserFindActivity extends AppCompatActivity {
             }
         }
         adapter.notifyDataSetChanged();
+        isLoading = false;
     }
 
     interface OnChatListLoadedListener {
@@ -596,7 +650,8 @@ public class UserFindActivity extends AppCompatActivity {
                 loadPosts(new OnPostsLoadedListener() {
                     @Override
                     public void onPostsLoaded(List<Post> posts) {
-                        updateRecyclerView(chatList, nickname, posts,0);
+                        aa = 0;
+                        updateRecyclerView(chatList, nickname, posts,aa);
                     }
                 });
             }
@@ -658,7 +713,8 @@ public class UserFindActivity extends AppCompatActivity {
                 loadPosts(new OnPostsLoadedListener() {
                     @Override
                     public void onPostsLoaded(List<Post> posts) {
-                        updateRecyclerView(chatList, nickname, posts,1);
+                        aa = 1;
+                        updateRecyclerView(chatList, nickname, posts,aa);
                     }
                 });
             }
