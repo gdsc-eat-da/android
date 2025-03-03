@@ -26,7 +26,7 @@ public class Onboarding4 extends AppCompatActivity {
         goNext.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Onboarding4.this, MainActivity.class);
+                Intent intent = new Intent(Onboarding4.this, UserSurvey1.class);
                 startActivity(intent);
                 finish();
 

@@ -28,6 +28,7 @@ public class Onboarding2 extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Onboarding2.this, Onboarding3.class);
                 startActivity(intent);
+                finish();
 
             }});
 
