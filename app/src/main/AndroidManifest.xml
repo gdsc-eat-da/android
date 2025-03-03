@@ -26,6 +26,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".UserSurvey1"
+            android:exported="false" />
+        <activity
             android:name=".Onboarding4"
             android:exported="false" />
         <activity
@@ -70,8 +73,8 @@
             android:exported="false" />
         <activity
             android:name=".TestChatActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".UserFindActivity"
             android:exported="false" />
@@ -106,7 +109,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Eat_da" />
-
     </application>
 
 </manifest>
