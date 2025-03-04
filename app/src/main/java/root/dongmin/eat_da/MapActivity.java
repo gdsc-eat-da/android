@@ -186,6 +186,8 @@ public class MapActivity extends AppCompatActivity {
             }
         };
 
+        bottomNavigationView.setSelectedItemId(R.id.work_load);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.work_load; // 초기 선택된 아이콘 (homeclicked 상태)
             @Override
@@ -195,13 +197,13 @@ public class MapActivity extends AppCompatActivity {
                 }
 
                 // 1️⃣ 이전 아이콘을 default로 변경
-                updateIcon(previousItemId, false);
+//                updateIcon(previousItemId, false);
+//
+//                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
+//                updateIcon(item.getItemId(), true);
 
-                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
-                updateIcon(item.getItemId(), true);
-
-                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
-                previousItemId = item.getItemId();
+//                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
+//                previousItemId = item.getItemId();
 
 
                 if (item.getItemId() == R.id.work_load) {

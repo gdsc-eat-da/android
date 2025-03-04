@@ -123,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
 
         loadChatList();
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.nav_home; // 초기 선택된 아이콘 (homeclicked 상태)
             @Override
@@ -132,13 +135,13 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // 1️⃣ 이전 아이콘을 default로 변경
-                updateIcon(previousItemId, false);
+//                updateIcon(previousItemId, false);
+//
+//                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
+//                updateIcon(item.getItemId(), true);
 
-                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
-                updateIcon(item.getItemId(), true);
-
-                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
-                previousItemId = item.getItemId();
+//                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
+//                previousItemId = item.getItemId();
 
 
                 if (item.getItemId() == R.id.nav_home) {
@@ -207,29 +210,29 @@ public class MainActivity extends AppCompatActivity {
 
 
     // 아이콘 업데이트 함수
-    private void updateIcon(int itemId, boolean isClicked) {
-        if (bottomNavigationView == null) return;
-
-        int iconRes;
-        if (itemId == R.id.nav_home) {
-            Log.d("하단바 동작","하단바 클릭됨");
-            iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
-        } else if (itemId == R.id.chat) {
-            Log.d("하단바 동작","하단바 클릭됨");
-            iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
-        } else if (itemId == R.id.nav_profile) {
-            Log.d("하단바 동작","하단바 클릭됨");
-            iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
-        } else if (itemId == R.id.work_load) {
-            Log.d("하단바 동작","하단바 클릭됨");
-            iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
-        } else {
-            return;
-        }
-        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
-
-        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
-    }
+//    private void updateIcon(int itemId, boolean isClicked) {
+//        if (bottomNavigationView == null) return;
+//
+//        int iconRes;
+//        if (itemId == R.id.nav_home) {
+//            Log.d("하단바 동작","하단바 클릭됨");
+//            iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
+//        } else if (itemId == R.id.chat) {
+//            Log.d("하단바 동작","하단바 클릭됨");
+//            iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
+//        } else if (itemId == R.id.nav_profile) {
+//            Log.d("하단바 동작","하단바 클릭됨");
+//            iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
+//        } else if (itemId == R.id.work_load) {
+//            Log.d("하단바 동작","하단바 클릭됨");
+//            iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
+//        } else {
+//            return;
+//        }
+//        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
+//
+//        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
+//    }
 
 
 
