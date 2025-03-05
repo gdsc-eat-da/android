@@ -1,6 +1,7 @@
 package root.dongmin.eat_da.adapter;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
 
     private List<String> chatRoomList;
     private int isnotMine; // isnotMine 변수 추가
+    public String lastMessage = null; //마지막에 한 채팅내용 가져오는것
+
+    public int isnotread = 0;
 
     // 생성자
     public ChatRoomAdapter(List<String> chatRoomList) {
@@ -64,10 +68,55 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
     public void onBindViewHolder(ChatRoomViewHolder holder, int position) {
         // 각 채팅방의 이름을 해당 항목에 바인딩
         String chatRoom = chatRoomList.get(position);
+        Log.d("LAST_DEBUG", "챗룸은::::::" +chatRoom);
         // "_" 기준으로 문자열 분리
         String[] parts1 = chatRoom.split("_");
         String chatRoomName = parts1[0]; // "_" 앞부분만 가져옴
         String chatRoomdis = parts1[2];
+        String chatRoomdisA[] = chatRoomdis.split("\\|");
+        chatRoomdis = chatRoomdisA[0];
+        String []partsForLast = chatRoom.split("\\|");
+        String conornot = partsForLast[2];
+        Log.d("LAST_DEBUG", "마지막 쓴 댓글--------:" + partsForLast[1]);
+
+
+        //만약 conornot(안읽은 메세지만 표시)가 1일 경우
+        if(conornot.equals("1"))
+        {
+
+            checkIsNotRead(partsForLast[1], new IsNotReadCallBack() {
+                @Override
+                public void onIsNotReadChecked(int isnotreadOne) {
+                    if (isnotreadOne == 1) {
+                        Log.d("IsNotRead", "isnotread에 'O'가 포함되어 있습니다.");
+                        holder.itemView.setVisibility(View.GONE); // 뷰 숨기기
+                    } else {
+                        Log.d("IsNotRead", "isnotread에 'O'가 포함되어 있지 않습니다.");
+                        holder.itemView.setVisibility(View.VISIBLE); // 뷰 보이기
+                    }
+                }
+            });
+        }
+        else {
+            holder.itemView.setVisibility(View.VISIBLE); // 기본적으로 뷰 보이기
+        }
+
+
+
+
+
+        // 콜백을 전달하여 getLastMessage 호출
+        getLastMessage(partsForLast[1], new LastMessageCallback() {
+            @Override
+            public void onLastMessageReceived(String message) {
+                if (message != null) {
+                    // 마지막 메시지를 UI에 반영
+                    holder.chatRoomSubtitleTextView.setText(message);
+                } else {
+                    holder.chatRoomSubtitleTextView.setText("메시지 없음");
+                }
+            }
+        });
 
         // 채팅방 이름을 TextView에 설정
         holder.chatRoomNameTextView.setText(chatRoomName);
@@ -132,6 +181,93 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
             chatRoomNameTextView = itemView.findViewById(R.id.chatRoomNameTextView);
             distanceView = itemView.findViewById(R.id.distanceView);
             profileImageView = itemView.findViewById(R.id.profile); // 프로필 이미지
+            chatRoomSubtitleTextView = itemView.findViewById(R.id.chatRoomSubtitleTextView); // 초기화 추가
         }
     }
+
+
+
+    public void getLastMessage(String chatRoomId, final LastMessageCallback callback) {
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chat").child(chatRoomId);
+
+        chatRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lastMessage = null;
+
+                for (DataSnapshot messageSnapshot : snapshot.getChildren()) {
+                    lastMessage = messageSnapshot.child("msg").getValue(String.class);
+                }
+
+                if (callback != null) {
+                    callback.onLastMessageReceived(lastMessage);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", "채팅방 " + chatRoomId + "의 마지막 메시지 가져오기 실패", error.toException());
+                if (callback != null) {
+                    callback.onLastMessageReceived(null);
+                }
+            }
+        });
+    }
+
+    public interface LastMessageCallback {
+        void onLastMessageReceived(String message);
+    }
+
+
+
+
+    public void checkIsNotRead(String chatRoomInfo, final IsNotReadCallBack callBack)//한번이라도 읽었나 안읽었나 판단하는 비동기 함수
+    {
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chat").child(chatRoomInfo);
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                isnotread = 0;
+
+                for(DataSnapshot messageSnapshot : snapshot.getChildren())
+                {
+                    String isnotreada = messageSnapshot.child("isnotread").getValue(String.class);
+
+                    if(isnotreada != null && isnotreada.endsWith("_O"))
+                    {
+                        isnotread = 1;
+                        break;
+                    }
+                }
+
+                if(callBack != null)
+                {
+                    callBack.onIsNotReadChecked(isnotread);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+                Log.e("FirebaseError", "isnotread 조회 실패: " + error.getMessage());
+                if (callBack != null)
+                {
+                    callBack.onIsNotReadChecked(0); // 오류 시 기본값 0 반환
+                }
+            }
+        });
+    }
+
+
+    public interface IsNotReadCallBack
+    {
+        void onIsNotReadChecked(int isnotreadOne);
+    }
+
+
+
+
+
+
 }

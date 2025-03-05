@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -40,8 +39,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,7 +50,6 @@ import java.util.List;
 
 import root.dongmin.eat_da.adapter.ChatRoomAdapter;
 import root.dongmin.eat_da.data.PostLocation;
-import root.dongmin.eat_da.data.User;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Post;
@@ -72,6 +68,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import root.dongmin.eat_da.data.User;
+import android.view.MenuItem;
 
 public class UserFindActivity extends AppCompatActivity {
 
@@ -94,7 +94,12 @@ public class UserFindActivity extends AppCompatActivity {
 
     private Button leftButton;
     private Button rightButton;
+    private TextView readD;
+    private TextView notReadD;
     private int isnotMine = 3; // 기본값 0
+    private int ifnotRead = 0;
+
+    public String lastMessage = null; //마지막에 한 채팅내용 가져오는것
 
     int ischanged = 1;//좌우가 바뀌었는지?
 
@@ -116,7 +121,6 @@ public class UserFindActivity extends AppCompatActivity {
     private static final double EARTH_RADIUS = 6371.0; // 지구 반지름 (단위: km)
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한 요청 코드
-
     private BottomNavigationView bottomNavigationView;
 
     @Override
@@ -124,31 +128,18 @@ public class UserFindActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_find);
 
+        // BottomNavigationView 초기화 및 설정
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
         bottomNavigationView.setSelectedItemId(R.id.chat);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.chat; // 초기 선택된 아이콘
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (previousItemId == item.getItemId()) {
                     return false; // 동일한 아이템 클릭 방지
                 }
-
-//                // 1️⃣ 이전 아이콘을 default로 변경
-//                updateIcon(previousItemId, false);
-//
-//                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
-//                updateIcon(item.getItemId(), true);
-//
-//                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
-//                previousItemId = item.getItemId();
-//
-//                // 아이템 선택 해제 (중요)
-//                item.setCheckable(false);
-//                item.setChecked(false);
-
 
                 if (item.getItemId() == R.id.chat) {
                     Toast.makeText(UserFindActivity.this, "Chat", Toast.LENGTH_SHORT).show();
@@ -158,12 +149,12 @@ public class UserFindActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                     return true;
-                }else if (item.getItemId() == R.id.nav_home) {
+                } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                }else if (item.getItemId() == R.id.work_load){
-                    Intent intent = new Intent(UserFindActivity.this,MapActivity.class);
+                } else if (item.getItemId() == R.id.work_load) {
+                    Intent intent = new Intent(UserFindActivity.this, MapActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -171,6 +162,7 @@ public class UserFindActivity extends AppCompatActivity {
             }
         });
 
+        // 뒤로 가기 버튼 처리
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -180,10 +172,9 @@ public class UserFindActivity extends AppCompatActivity {
             }
         });
 
-
-
         // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         // 위치 권한 체크
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // 권한이 없으면 요청
@@ -193,20 +184,51 @@ public class UserFindActivity extends AppCompatActivity {
             initializeLocation();
         }
 
-
-
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
+
+        // 뷰 초기화
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+        readD = findViewById(R.id.readD);
+        notReadD = findViewById(R.id.notReadD);
 
+        // "전체" TextView 클릭 리스너 설정
+        readD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TextViewClick", "전체를 클릭했습니다.");
+                ifnotRead = 0;
 
+                if (isnotMine == 0) {
+                    adapter.setIsNotMine(isnotMine);
+                    selectLeftButton();
+                } else if (isnotMine == 1) {
+                    adapter.setIsNotMine(isnotMine);
+                    selectLeftButton();
+                }
+            }
+        });
 
+        // "읽지않음" TextView 클릭 리스너 설정
+        notReadD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TextViewClick", "읽지않음을 클릭했습니다.");
+                ifnotRead = 1;
 
+                if (isnotMine == 0) {
+                    adapter.setIsNotMine(isnotMine);
+                    selectLeftButton();
+                } else if (isnotMine == 1) {
+                    adapter.setIsNotMine(isnotMine);
+                    selectLeftButton();
+                }
+            }
+        });
 
-
-
+        // 왼쪽 버튼 클릭 리스너 설정
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,10 +239,11 @@ public class UserFindActivity extends AppCompatActivity {
             }
         });
 
+        // 오른쪽 버튼 클릭 리스너 설정
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isnotMine = 1; // 오른족
+                isnotMine = 1; // 오른쪽 버튼 클릭 시 1로 설정
                 Log.d("UserFind", "isnotMine value: " + isnotMine);
                 adapter.setIsNotMine(isnotMine);
                 selectRightButton();
@@ -229,16 +252,17 @@ public class UserFindActivity extends AppCompatActivity {
 
         // Intent로 받은 채팅 리스트 가져오기
         Intent intent = getIntent();
-        //chatList = getIntent().getStringArrayListExtra("chatList");
         nickname = getIntent().getStringExtra("nickname");
         String chatRoom = getIntent().getStringExtra("chatRoom");
         int isnotMinea = getIntent().getIntExtra("isnotMinea", 2);
+
         if (chatRoom != null) {
             // 전달된 채팅방 정보를 사용하여 명령어 처리
             handleChatRoomAction(chatRoom, isnotMinea);
         }
 
-        postLocationList = getIntent().getParcelableArrayListExtra("needPostList");//채팅방의 경도,위도를 가져온다
+        // 채팅방의 경도, 위도 정보 가져오기
+        postLocationList = getIntent().getParcelableArrayListExtra("needPostList");
         if (postLocationList != null) {
             for (PostLocation postLocation : postLocationList) {
                 Log.d("MAP_DEBUG", "Post ID_userfind: " + postLocation.getPostID());
@@ -249,8 +273,6 @@ public class UserFindActivity extends AppCompatActivity {
             Log.d("MAP_DEBUG", "PostLocation list is null");
         }
 
-
-
         // RecyclerView 초기화
         chatRoomRecyclerView = findViewById(R.id.chatRoomRecyclerView);
         chatRoomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -260,6 +282,7 @@ public class UserFindActivity extends AppCompatActivity {
         adapter = new ChatRoomAdapter(chatRoomList);
         chatRoomRecyclerView.setAdapter(adapter);
 
+        // 채팅 리스트 및 게시글 로드
         loadChatList(new OnChatListLoadedListener() {
             @Override
             public void onChatListLoaded(List<String> chatList) {
@@ -269,34 +292,19 @@ public class UserFindActivity extends AppCompatActivity {
                         initializeLocation();
                         getUserLocation();
                         aa = 0;
-                        updateRecyclerView(chatList, nickname, posts,aa);//기본값으로 0번으로 로드 ㄱㄱ
+                        updateRecyclerView(chatList, nickname, posts, aa); // 기본값으로 0번으로 로드
                     }
                 });
             }
         });
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        //leftButton.bringToFront(); // 버튼 1을 가장 앞으로 가져옴
+        // 버튼 초기 상태 설정
         defaultButton();
 
-
-
-
-
-
-// Runnable 초기화
+        // Runnable 초기화 (주기적으로 데이터 로드)
         runnable = new Runnable() {
             @Override
             public void run() {
-                // 데이터 로드 중이 아닌 경우에만 실행
                 if (!isLoading) {
                     isLoading = true; // 로드 상태를 true로 설정
                     loadChatList(new OnChatListLoadedListener() {
@@ -307,6 +315,7 @@ public class UserFindActivity extends AppCompatActivity {
                                 public void onPostsLoaded(List<Post> posts) {
                                     if (chatList != null) {
                                         updateRecyclerView(chatList, nickname, posts, aa);
+                                        Log.d("MAP_DEBUG", "1초마다 데이터 로드 및 업데이트");
                                     }
                                     isLoading = false; // 로드 상태를 false로 설정
                                 }
@@ -320,11 +329,9 @@ public class UserFindActivity extends AppCompatActivity {
             }
         };
 
-
-
-
+        // Runnable 시작
+        handler.post(runnable);
     }
-
 
 //-------------------------------------------------------------위치-----------------------------------------------------------------
 //-------------------------------------------------------------위치-----------------------------------------------------------------
@@ -483,7 +490,7 @@ public class UserFindActivity extends AppCompatActivity {
 
         for (String chat : chatList) {
             String[] chatDetails = chat.split("_");
-            //------------------------------------------------------------만약
+            //------------------------------------------------------------만약 왼쪽버튼 누르면
             if(a == 0)
             {
 
@@ -517,7 +524,7 @@ public class UserFindActivity extends AppCompatActivity {
                                     zemok += post.getContents();
                                 }
                             }
-                            String mergechatList = showingPerson + ": " + zemok + "_" + receivingNum + "_" + distance;
+                            String mergechatList = showingPerson + ": " + zemok + "_" + receivingNum + "_" + distance + "|" + chat + "|" + ifnotRead;
                             chatRoomList.add(mergechatList);
                         }
 
@@ -525,7 +532,7 @@ public class UserFindActivity extends AppCompatActivity {
                     }
 
                 }
-                //--------------------------------------------------------------만약
+                //--------------------------------------------------------------만약 오른쪽버튼 누르면
             }
             else
             {
@@ -558,7 +565,7 @@ public class UserFindActivity extends AppCompatActivity {
                                     zemok += post.getContents();
                                 }
                             }
-                            String mergechatList = receivingPerson + ": " + zemok + "_" + receivingNum + "_" + distance;
+                            String mergechatList = receivingPerson + ": " + zemok + "_" + receivingNum + "_" + distance+ "|" + chat+ "|" + ifnotRead;
                             chatRoomList.add(mergechatList);
                         }
                     }
@@ -846,8 +853,16 @@ public class UserFindActivity extends AppCompatActivity {
         Log.d("DISTANCE_DEBUG", "계산된 거리: " + distance + " km");
 
         return distance;
+
+
     }
+
+
+
 
 
 }
 
+
+
+// 지금 해야할거는 바로
