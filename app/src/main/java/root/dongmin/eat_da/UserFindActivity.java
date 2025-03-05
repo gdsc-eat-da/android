@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -39,6 +40,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +53,7 @@ import java.util.List;
 
 import root.dongmin.eat_da.adapter.ChatRoomAdapter;
 import root.dongmin.eat_da.data.PostLocation;
+import root.dongmin.eat_da.data.User;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Post;
@@ -113,10 +117,68 @@ public class UserFindActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한 요청 코드
 
+    private BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_find);
+
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        bottomNavigationView.setSelectedItemId(R.id.chat);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.chat; // 초기 선택된 아이콘
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) {
+                    return false; // 동일한 아이템 클릭 방지
+                }
+
+//                // 1️⃣ 이전 아이콘을 default로 변경
+//                updateIcon(previousItemId, false);
+//
+//                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
+//                updateIcon(item.getItemId(), true);
+//
+//                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
+//                previousItemId = item.getItemId();
+//
+//                // 아이템 선택 해제 (중요)
+//                item.setCheckable(false);
+//                item.setChecked(false);
+
+
+                if (item.getItemId() == R.id.chat) {
+                    Toast.makeText(UserFindActivity.this, "Chat", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_profile) {
+                    Intent intent = new Intent(UserFindActivity.this, MyPageActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.nav_home) {
+                    Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else if (item.getItemId() == R.id.work_load){
+                    Intent intent = new Intent(UserFindActivity.this,MapActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                return false;
+            }
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
 
@@ -138,10 +200,6 @@ public class UserFindActivity extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
-
-
-
-
 
 
 

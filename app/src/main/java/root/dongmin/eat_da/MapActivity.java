@@ -212,14 +212,16 @@ public class MapActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MapActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
-                    Intent intent = new Intent(MapActivity.this, IdListActivity.class );
+                    Intent intent = new Intent(MapActivity.this, UserFindActivity.class);
                     startActivity(intent);
                     return true;
                 }else if (item.getItemId() == R.id.nav_profile){
                     Intent intent = new Intent(MapActivity.this, MyPageActivity.class);
                     startActivity(intent);
+                    finish();
                     return true;
                 }
                 return false;

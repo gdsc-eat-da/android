@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_profile) {
                     Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
                     startActivity(intent);
+                    finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
@@ -157,12 +158,14 @@ public class MainActivity extends AppCompatActivity {
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(postLocations));
                     intent.putExtra("nickname", Nickname);
                     startActivity(intent);
+                    finish();
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(MainActivity.this,MapActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     setIntent(intent);
                     startActivity(intent);
+                    finish();
                     return true;
 
                 }

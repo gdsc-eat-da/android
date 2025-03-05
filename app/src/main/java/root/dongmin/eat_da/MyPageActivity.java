@@ -95,15 +95,17 @@ public class MyPageActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
+                    finish();
                     startActivity(intent);
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
-                    Intent intent = new Intent(MyPageActivity.this, IdListActivity.class );
+                    Intent intent = new Intent(MyPageActivity.this, UserFindActivity.class);
                     startActivity(intent);
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(MyPageActivity.this,MapActivity.class);
                     startActivity(intent);
+                    finish();
                     return true;
                 }
                 return false;
