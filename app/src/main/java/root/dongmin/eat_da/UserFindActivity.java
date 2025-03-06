@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.Priority;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import root.dongmin.eat_da.data.User;
 import android.view.MenuItem;
 
@@ -256,8 +261,26 @@ public class UserFindActivity extends AppCompatActivity {
         String chatRoom = getIntent().getStringExtra("chatRoom");
         int isnotMinea = getIntent().getIntExtra("isnotMinea", 2);
 
+
+        if(nickname == null)
+        {
+            Log.e("MAP_DEBUG", "아니 닉네임 못받음 뭐임??????????");
+            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+            nickname = sharedPreferences.getString("Nickname", null);
+            if (nickname != null) {
+                Log.e("UserFindActivity", "Nickname 다시 불러오기 성공: " + nickname);
+                // 불러온 Nickname 사용
+            } else {
+                Log.e("UserFindActivity", "Nickname이 여전히 NULL이얌");
+            }
+        }
         if (chatRoom != null) {
             // 전달된 채팅방 정보를 사용하여 명령어 처리
+            handleChatRoomAction(chatRoom, isnotMinea);
+        }
+        else {
+            Log.e("MAP_DEBUG", "아니 chatRoom 못받음 뭐임??????????");
+            mainloadChatList();
             handleChatRoomAction(chatRoom, isnotMinea);
         }
 
@@ -270,7 +293,33 @@ public class UserFindActivity extends AppCompatActivity {
                 Log.d("MAP_DEBUG", "Longitude_userfind: " + postLocation.getLongitude());
             }
         } else {
-            Log.d("MAP_DEBUG", "PostLocation list is null");
+            Log.e("MAP_DEBUG", "PostLocation 리스트 노노....");
+            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String postLocationsJson = sharedPreferences.getString("post_locations", null);
+            if (postLocationsJson != null) {
+                // JSON 문자열을 List<PostLocation>으로 변환
+                Type postLocationsType = new TypeToken<List<PostLocation>>() {}.getType();
+                postLocationList = gson.fromJson(postLocationsJson, postLocationsType);
+
+                if (postLocationList != null) {
+                    Log.d("loadData", "postLocations 불러오기 성공: " + postLocationList.size() + "개의 항목");
+                }
+                else
+                {
+                    Log.e("loadData", "postLocations이 NULL즉 안가져와짐 ㅅㄱ");
+                }
+            }
+            else
+            {
+                Log.e("loadData", "post_locations 제이슨이 안가져와짐 ㅅㄱ");
+            }
+
+
+
+
+
+
         }
 
         // RecyclerView 초기화
@@ -325,7 +374,7 @@ public class UserFindActivity extends AppCompatActivity {
                 }
 
                 // 1초 후에 다시 실행
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 500);
             }
         };
 
@@ -789,7 +838,9 @@ public class UserFindActivity extends AppCompatActivity {
 
     // 채팅방 정보를 처리하는 메서드
     private void handleChatRoomAction(String chatRoom, int isnotMinea) {
-        if (chatRoom == null) return; // 방 정보가 없으면 실행 안 함
+        if (chatRoom == null) {
+            Log.e("UserFind", "응 챗룸 없어서 안뜰꺼 ㅅㄱ");
+            return;} // 방 정보가 없으면 실행 안 함
 
         int a = 2; // 기본값
 
@@ -856,6 +907,60 @@ public class UserFindActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+
+
+
+
+
+    // ✅ 일단 전체 채팅 리스트 로드시켜 놓기.
+    private void mainloadChatList() {
+        //chatList = new ArrayList<>();
+        // chatList가 null이 아니면 비워주기
+        if (chatList != null) {
+            chatList.clear(); // 기존 항목 모두 제거
+        } else {
+            chatList = new ArrayList<>(); // 만약 null이라면 새로 초기화
+        }
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("chat");
+
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String chatId = snapshot.getKey(); // 최상위 키(채팅 ID) 가져오기
+                    if (chatId != null) {
+                        chatList.add(chatId);
+                    }
+                }
+
+                handleChatList(chatList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(UserFindActivity.this, "채팅 데이터를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleChatList(List<String> chatList) {
+        for (String chat : chatList) {
+            //Log.d("ChatData", chat);
+        }
+        //그리고 이걸 보내야 한다...!!!!
+    }
+
+
+
+
+
+
+
 
 
 

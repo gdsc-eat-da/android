@@ -5,6 +5,7 @@ import android.Manifest;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -56,6 +57,9 @@ import root.dongmin.eat_da.network.RetrofitClient;
 
 import android.os.Build;
 import android.os.Handler;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -145,14 +149,17 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (item.getItemId() == R.id.nav_home) {
+                    shareData();
                     Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                     return true;
                 } else if (item.getItemId() == R.id.nav_profile) {
+                    shareData();
                     Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
                     startActivity(intent);
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
+                    shareData();
                     Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
                     intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(postLocations));
@@ -161,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
+                    shareData();
                     Intent intent = new Intent(MainActivity.this,MapActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     setIntent(intent);
@@ -207,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
 
         // 버튼 이벤트 처리
         setupButtons();
+        //데이터 공유하기
+        shareData();
     }
 
 
@@ -593,4 +603,66 @@ public class MainActivity extends AppCompatActivity {
     private void showErrorMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
     }
+
+
+
+
+
+
+    public void shareData() {
+        // SharedPreferences에 데이터 저장
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+
+        // chatList가 null이 아닌지 확인
+        if (chatList != null) {
+            String json = gson.toJson(chatList);
+            editor.putString("chatListJson", json);
+        } else {
+            Log.e("shareData", "잠깐 chatListJson이 NULL이얌");
+        }
+
+        // Nickname이 null이 아닌지 확인
+        if (Nickname != null) {
+            editor.putString("Nickname", Nickname);
+        } else {
+            Log.e("shareData", "잠깐 Nickname이 NULL이얌");
+        }
+
+        // postLocations가 null이 아닌지 확인
+        if (postLocations != null) {
+            String jsonL = gson.toJson(postLocations);
+            editor.putString("post_locations", jsonL);
+        } else {
+            Log.e("shareData", "잠깐 post_locations이 NULL이얌");
+        }
+
+        // 변경사항 저장
+        editor.apply();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
