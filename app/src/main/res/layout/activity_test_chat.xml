@@ -29,6 +29,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 프로필 영역 -->
@@ -63,6 +65,23 @@
             app:layout_constraintStart_toEndOf="@id/profileImage"
             app:layout_constraintTop_toTopOf="@id/profileImage"
             app:layout_constraintVertical_bias="0.0" />
+
+
+        <TextView
+            android:id="@+id/tradeIsDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/minisel"
+            android:maxWidth="250dp"
+            android:padding="6dp"
+            android:text=" 거래완료 "
+            android:textColor="#121111"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.873"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View

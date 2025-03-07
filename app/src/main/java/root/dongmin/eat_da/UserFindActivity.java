@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -103,6 +104,7 @@ public class UserFindActivity extends AppCompatActivity {
     private TextView notReadD;
     private int isnotMine = 3; // 기본값 0
     private int ifnotRead = 0;
+    private boolean isRunning = true; // Runnable 실행 여부를 제어하는 플래그
 
     public String lastMessage = null; //마지막에 한 채팅내용 가져오는것
 
@@ -155,27 +157,26 @@ public class UserFindActivity extends AppCompatActivity {
                     finish();
                     return true;
                 } else if (item.getItemId() == R.id.nav_home) {
+                    // MainActivity로 이동
+                    isRunning = false; // 실행 중지 플래그 설정
+                    if (handler != null) {
+                        handler.removeCallbacks(runnable); // Runnable 제거
+                    }
                     Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
+                    return true;
                 } else if (item.getItemId() == R.id.work_load) {
                     Intent intent = new Intent(UserFindActivity.this, MapActivity.class);
                     startActivity(intent);
                     finish();
+                    return true;
                 }
                 return false;
             }
         });
 
-        // 뒤로 가기 버튼 처리
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
 
         // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -354,6 +355,10 @@ public class UserFindActivity extends AppCompatActivity {
         runnable = new Runnable() {
             @Override
             public void run() {
+                if (!isRunning || isDestroyed() || isFinishing()) {
+                    return; // 액티비티가 종료됐거나 실행 중이 아니면 중단
+                }
+
                 if (!isLoading) {
                     isLoading = true; // 로드 상태를 true로 설정
                     loadChatList(new OnChatListLoadedListener() {
@@ -364,7 +369,7 @@ public class UserFindActivity extends AppCompatActivity {
                                 public void onPostsLoaded(List<Post> posts) {
                                     if (chatList != null) {
                                         updateRecyclerView(chatList, nickname, posts, aa);
-                                        Log.d("MAP_DEBUG", "1초마다 데이터 로드 및 업데이트");
+                                        Log.d("MAP_DEBUG", "0.5초마다 데이터 로드 및 업데이트");
                                     }
                                     isLoading = false; // 로드 상태를 false로 설정
                                 }
@@ -373,13 +378,16 @@ public class UserFindActivity extends AppCompatActivity {
                     });
                 }
 
-                // 1초 후에 다시 실행
-                handler.postDelayed(this, 500);
+                // 0.5초 후에 다시 실행 (isRunning 체크 추가)
+                if (isRunning) {
+                    handler.postDelayed(this, 500);
+                }
             }
         };
 
-        // Runnable 시작
+// Runnable 시작
         handler.post(runnable);
+
     }
 
 //-------------------------------------------------------------위치-----------------------------------------------------------------
@@ -469,6 +477,10 @@ public class UserFindActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates();
         }
+        isRunning = true; // 실행 상태를 true로 설정
+        if (handler != null && runnable != null) {
+            handler.post(runnable); // Runnable 다시 실행
+        }
     }
 
     @Override
@@ -476,13 +488,27 @@ public class UserFindActivity extends AppCompatActivity {
         super.onPause();
         // 액티비티가 일시정지되면 위치 업데이트 중지
         stopLocationUpdates();
+        isRunning = false; // 실행 중지 플래그 설정
+        if (handler != null) {
+            handler.removeCallbacks(runnable); // Runnable 제거
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 액티비티가 종료될 때 Handler 정리
-        handler.removeCallbacks(runnable);
+        isRunning = false; // 실행 중지 플래그 설정
+        if (handler != null) {
+            handler.removeCallbacks(runnable); // Runnable 제거
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isRunning = false;
+        if (handler != null) {
+            handler.removeCallbacks(runnable); // Runnable 제거
+        }
     }
 //-------------------------------------------------------------위치-----------------------------------------------------------------
 //-------------------------------------------------------------위치-----------------------------------------------------------------
@@ -536,6 +562,7 @@ public class UserFindActivity extends AppCompatActivity {
     private void updateRecyclerView(List<String> chatList, String nickname, List<Post> posts,int a) {
         chatRoomList.clear();
         getUserLocation();
+        isLoading = true;//혹시나 해서 함 넣어봄
 
         for (String chat : chatList) {
             String[] chatDetails = chat.split("_");
@@ -954,9 +981,6 @@ public class UserFindActivity extends AppCompatActivity {
         }
         //그리고 이걸 보내야 한다...!!!!
     }
-
-
-
 
 
 

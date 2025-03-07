@@ -14,11 +14,14 @@ import android.content.Intent;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -48,7 +51,7 @@ public class TestChatActivity extends AppCompatActivity {
 
     // Firebase 인증 관련 변수
     private FirebaseAuth mAuth;
-    private String userEmail, receivedId, postID; // 현재 로그인한 사용자의 이메일 저장
+    private String userEmail, receivedId, postID; // 현재 로그인한 사용자의 이메일 저장            receivedId    postID        yourNick
 
     // 채팅 입력 필드 및 전송 버튼
     private EditText EditText_chat;
@@ -56,7 +59,7 @@ public class TestChatActivity extends AppCompatActivity {
 
 
     private ImageView profile;
-    private TextView yourNickView;
+    private TextView yourNickView,Button_tradeIsDone;
 
     // Firebase Realtime Database 참조
     private DatabaseReference myRef;
@@ -218,6 +221,7 @@ public class TestChatActivity extends AppCompatActivity {
         EditText_chat = findViewById(R.id.EditText_chat);
         profile = findViewById(R.id.profileImage);
         yourNickView = findViewById(R.id.profileName);
+        Button_tradeIsDone = findViewById(R.id.tradeIsDone);
 
         if (receivedId != null && !receivedId.isEmpty()) {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UserAccount");
@@ -310,6 +314,112 @@ public class TestChatActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        //거래 완료 시
+        Button_tradeIsDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference chatRef;
+
+                if(isnotMine == 0)
+                {
+                    chatRef = FirebaseDatabase.getInstance().getReference("chatIsDone").child(postID + "_" + yourNick + "_" + receivedId);
+                }
+                else
+                {
+                    chatRef = FirebaseDatabase.getInstance().getReference("chatIsDone").child(postID + "_" + receivedId + "_" + yourNick);
+                }
+                // Firebase Database 참조
+                String newYourData = yourNick + "_OK";
+
+                // 고유한 키 생성 및 데이터 추가
+                chatRef.push().setValue(newYourData)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // 데이터 추가 성공
+                                Toast.makeText(TestChatActivity.this, "Data added successfully!", Toast.LENGTH_SHORT).show();
+
+                                // receivedId_OK 데이터가 있는지 확인
+                                chatRef.orderByValue().equalTo(receivedId + "_OK").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            // receivedId_OK 데이터가 있는 경우
+                                            // chat 테이블의 해당 노드 삭제
+                                            DatabaseReference chatTableRef;
+
+                                            if(isnotMine == 0)
+                                            {
+                                                chatTableRef = FirebaseDatabase.getInstance().getReference("chat").child(postID + "_" + yourNick + "_" + receivedId);
+                                            }
+                                            else
+                                            {
+                                                chatTableRef = FirebaseDatabase.getInstance().getReference("chat").child(postID + "_" + receivedId + "_" + yourNick);
+                                            }
+                                            chatTableRef.removeValue()
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(TestChatActivity.this, "채팅 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                                            finish();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(Exception e) {
+                                                            Toast.makeText(TestChatActivity.this, "채팅 데이터 삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            finish();
+                                                        }
+                                                    });
+                                        } else {
+                                            // receivedId_OK 데이터가 없는 경우
+                                            // 팝업창으로 메시지 표시
+                                            new AlertDialog.Builder(TestChatActivity.this)
+                                                    .setTitle("거래 완료 요청")
+                                                    .setMessage("거래 완료 요청을 완료했습니다! 상대방도 거래 완료 버튼을 누를 시 채팅은 종료됩니다!")
+                                                    .setPositiveButton("확인", null)
+                                                    .show();
+                                            Button_tradeIsDone.setBackgroundResource(R.drawable.miniunsel); // 배경 변경
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Toast.makeText(TestChatActivity.this, "데이터 확인 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(Exception e) {
+                                // 데이터 추가 실패
+                                Toast.makeText(TestChatActivity.this, "거래 완료 요청 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // 비동기 함수 호출
+        checkFirebaseDataAsync(postID, receivedId, yourNick, new FirebaseCheckCallback() {
+            @Override
+            public void onResult(boolean isYourNickOK, boolean isReceivedIdOK) {
+                // 결과에 따라 TextView 배경 변경(한명이라도 버튼 누르면 파란색으로 바뀌노 ㅏㅣㄴㅇ리ㅏ머니ㅏㅇ러마인러ㅣㅇㄴㄹ밍ㄹ니ㅓ)
+                if (isYourNickOK || isReceivedIdOK) {
+                    Button_tradeIsDone.setBackgroundResource(R.drawable.miniunsel); // 배경 변경
+                } else {
+                    Button_tradeIsDone.setBackgroundResource(R.drawable.minisel); // 기본 배경
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // 에러 처리
+                Toast.makeText(TestChatActivity.this, "데이터 확인 실패: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         // 리사이클러뷰 초기화 및 레이아웃 설정
         mRecycleView = findViewById(R.id.my_recycler_view);
@@ -370,6 +480,58 @@ public class TestChatActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+    public void checkFirebaseDataAsync(String postID, String receivedId, String yourNick, FirebaseCheckCallback callback) {
+        // Firebase Database 참조
+        DatabaseReference chatRef;
+
+        if(isnotMine == 0)
+        {
+            chatRef = FirebaseDatabase.getInstance().getReference("chatIsDone").child(postID + "_" + yourNick + "_" + receivedId);
+        }
+        else
+        {
+            chatRef = FirebaseDatabase.getInstance().getReference("chatIsDone").child(postID + "_" + receivedId + "_" + yourNick);
+        }
+
+        // 데이터 확인
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isYourNickOK = false;
+                boolean isReceivedIdOK = false;
+
+                // 데이터 스냅샷 순회
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String value = snapshot.getValue(String.class);
+                    if (value != null) {
+                        if (value.equals(yourNick + "_OK")) {
+                            isYourNickOK = true;
+                        }
+                        if (value.equals(receivedId + "_OK")) {
+                            isReceivedIdOK = true;
+                        }
+                    }
+                }
+
+                // 결과를 콜백으로 전달
+                callback.onResult(isYourNickOK, isReceivedIdOK);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 에러 발생 시 콜백으로 전달
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+    public interface FirebaseCheckCallback {
+        void onResult(boolean isYourNickOK, boolean isReceivedIdOK); // 결과를 전달하는 콜백
+        void onError(String errorMessage); // 에러 발생 시 호출되는 콜백
+    }
+
 
 
 
