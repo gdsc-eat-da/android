@@ -27,6 +27,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -48,6 +50,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -57,6 +61,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.AllergyAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.RetrofitClient;
 
@@ -97,6 +102,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     // face 값 저장할 변수 (0: face 선택, 1: noface 선택)
     private int isFaceSelected = 0; // 기본값은 face(0)
 
+
+    List<String> alergicList = new ArrayList<>(Arrays.asList("유제품", "땅콩", "복숭아" ,"밀", "쇠고기", "새우"));
+    List<String> finalAlergicList = new ArrayList<>();
+    private RecyclerView allergyRecyclerView;
+    private AllergyAdapter allergyAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +123,8 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         cameraView = findViewById(R.id.carmeraView);
         eText = findViewById(R.id.context);
         inText = findViewById(R.id.ingredient);
+        allergyRecyclerView = findViewById(R.id.allergyRecyclerView);
+        allergyRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         back = findViewById(R.id.btnback5);
         back.setOnClickListener(v -> finish());
@@ -119,6 +132,10 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         // 버튼 클릭 리스너 등록
         cameraView.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
+
+        //어댑터 설정
+        allergyAdapter = new AllergyAdapter(alergicList, finalAlergicList);
+        allergyRecyclerView.setAdapter(allergyAdapter);
 
 
         // 라디오 버튼 클릭 리스너 설정
@@ -258,8 +275,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         galleryIntent.setType("image/*");
         galleryLauncher.launch(galleryIntent);
     }
-
-
     // 위치 권한이 있는지 확인
     private boolean isLocationPermissionGranted() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -345,14 +360,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             });
         });
     }
-
-
-
-
-
-
-
-
 
     // 📍 위치 업로드
     private void uploadLocation(int postID) {
