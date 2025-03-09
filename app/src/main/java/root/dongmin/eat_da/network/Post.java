@@ -1,6 +1,6 @@
 package root.dongmin.eat_da.network;
 
-import com.google.gson.annotations.Expose;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Post {

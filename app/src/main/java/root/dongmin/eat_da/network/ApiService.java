@@ -41,6 +41,18 @@ public interface ApiService {
             @Part("face") RequestBody face
     );
 
+    // 레시피 업로드 (이미지 + 글 + 재료)
+    @Multipart
+    @POST("recipe.php")
+    Call<ResponseBody> uploadRecipe(
+            @Part MultipartBody.Part photo, //사진
+            @Part("contents") RequestBody contents, // 내용
+            @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
+            @Part("nickname") RequestBody nickname //  닉네임 추가
+            // + 추천수 suggestion 컬럼 존재함
+    );
+
+
 
     // 게시글 목록 가져오기
     @GET("get_post.php")
@@ -51,6 +63,10 @@ public interface ApiService {
 
     @GET("get_needpost.php")
     Call<NeedPostResponseWrapper> getNeedPosts();
+
+    // 레시피 목록 가져오기
+    @GET("get_recipe.php")
+    Call<List<Recipe>> getRecipes();
 
 
     // 위치 저장
