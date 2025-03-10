@@ -138,16 +138,6 @@ public class MainActivity extends AppCompatActivity {
                     return false; // 동일한 아이템 클릭 방지
                 }
 
-                // 1️⃣ 이전 아이콘을 default로 변경
-//                updateIcon(previousItemId, false);
-//
-//                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
-//                updateIcon(item.getItemId(), true);
-
-//                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
-//                previousItemId = item.getItemId();
-
-
                 if (item.getItemId() == R.id.nav_home) {
                     shareData();
                     Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
@@ -175,7 +165,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                     return true;
-
+                }else if (item.getItemId() == R.id.recipe){
+                    Intent intent = new Intent(MainActivity.this,RecipeActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
                 }
                 return false;
             }
@@ -218,36 +212,6 @@ public class MainActivity extends AppCompatActivity {
         //데이터 공유하기
         shareData();
     }
-
-
-
-
-    // 아이콘 업데이트 함수
-//    private void updateIcon(int itemId, boolean isClicked) {
-//        if (bottomNavigationView == null) return;
-//
-//        int iconRes;
-//        if (itemId == R.id.nav_home) {
-//            Log.d("하단바 동작","하단바 클릭됨");
-//            iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
-//        } else if (itemId == R.id.chat) {
-//            Log.d("하단바 동작","하단바 클릭됨");
-//            iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
-//        } else if (itemId == R.id.nav_profile) {
-//            Log.d("하단바 동작","하단바 클릭됨");
-//            iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
-//        } else if (itemId == R.id.work_load) {
-//            Log.d("하단바 동작","하단바 클릭됨");
-//            iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
-//        } else {
-//            return;
-//        }
-//        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
-//
-//        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
-//    }
-
-
 
     // ✅ 저장소 권한 확인 및 요청
     private void checkBoxPermission()
@@ -579,8 +543,7 @@ public class MainActivity extends AppCompatActivity {
             customDialog.show();
         });
 
-//        Button chatbutton = findViewById(R.id.btnchat);
-//        chatbutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, IdListActivity.class)));
+
 
         Button findUserButton = findViewById(R.id.btnFindUser);
         findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
@@ -588,8 +551,7 @@ public class MainActivity extends AppCompatActivity {
         Button nearbutton = findViewById(R.id.btnNearby);
         nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
 
-//        Button mypagebutton = findViewById(R.id.btnMyPage);
-//        mypagebutton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MyPageActivity.class)));
+
         findUserButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
             intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달

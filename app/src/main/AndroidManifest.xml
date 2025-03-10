@@ -26,6 +26,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".WarmingupActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".WarmingupActivity1"
+            android:exported="false" />
+        <activity
+            android:name=".PostRecipeActivity"
+            android:exported="false" />
+        <activity
             android:name=".UserSurvey1"
             android:exported="false" />
         <activity
@@ -70,6 +79,9 @@
             android:exported="false" />
         <activity
             android:name=".IdListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RecipeActivity"
             android:exported="false" />
         <activity
             android:name=".TestChatActivity"

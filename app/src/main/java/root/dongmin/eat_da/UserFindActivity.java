@@ -171,6 +171,11 @@ public class UserFindActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                     return true;
+                }else if (item.getItemId() == R.id.recipe){
+                    Intent intent = new Intent(UserFindActivity.this,RecipeActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
                 }
                 return false;
             }

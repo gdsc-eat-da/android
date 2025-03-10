@@ -196,16 +196,6 @@ public class MapActivity extends AppCompatActivity {
                     return false; // 동일한 아이템 클릭 방지
                 }
 
-                // 1️⃣ 이전 아이콘을 default로 변경
-//                updateIcon(previousItemId, false);
-//
-//                // 2️⃣ 현재 클릭된 아이콘을 clicked 상태로 변경
-//                updateIcon(item.getItemId(), true);
-
-//                // 3️⃣ 현재 클릭된 아이콘을 이전 아이콘으로 설정
-//                previousItemId = item.getItemId();
-
-
                 if (item.getItemId() == R.id.work_load) {
                     Toast.makeText(MapActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
                     return true;
@@ -217,9 +207,15 @@ public class MapActivity extends AppCompatActivity {
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MapActivity.this, UserFindActivity.class);
                     startActivity(intent);
+                    finish();
                     return true;
                 }else if (item.getItemId() == R.id.nav_profile){
                     Intent intent = new Intent(MapActivity.this, MyPageActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.recipe){
+                    Intent intent = new Intent(MapActivity.this,RecipeActivity.class);
                     startActivity(intent);
                     finish();
                     return true;

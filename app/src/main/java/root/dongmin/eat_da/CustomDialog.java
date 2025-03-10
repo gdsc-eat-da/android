@@ -18,7 +18,7 @@ public class CustomDialog extends Dialog {
 
         // 첫 번째 선택지를 눌렀을 때 Activity1으로 이동
         btnOption1.setOnClickListener(v -> {
-            context.startActivity(new Intent(context, PhotoActivity.class));
+            context.startActivity(new Intent(context, PostRecipeActivity.class));
             dismiss();
         });
 
