@@ -41,7 +41,7 @@ public class UserSurvey1 extends AppCompatActivity {
         toSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserSurvey1.this, MainActivity.class);
+                Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
                 startActivity(intent);
                 finish();
             }
@@ -51,10 +51,10 @@ public class UserSurvey1 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isIndividual == 1) {
-                    Intent intent = new Intent(UserSurvey1.this, alergicActivity.class);
-                    startActivityForResult(intent, 1001); // 알레르기 정보 입력 후 결과 받기
+                    Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
+                    startActivityForResult(intent, 1001); // 알레르기 정보 입력 후 결과 받기(수정필요)
                 } else {
-                    Intent intent = new Intent(UserSurvey1.this, MainActivity.class);
+                    Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
                     startActivity(intent);
                     finish();
                 }
