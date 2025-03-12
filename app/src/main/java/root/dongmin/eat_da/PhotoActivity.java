@@ -169,20 +169,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         //클릭했을때 이미지 변하도록 하고 , 서버랑 API 부분 수정해야함
 
 
-        // 알레르기 버튼 클릭 리스너 설정                                                 <알레르기!>
-        Button alergicButton = findViewById(R.id.alergicButton);
-        alergicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 알레르기 액티비티로 이동하면서 데이터 전달
-                Intent intent = new Intent(PhotoActivity.this, alergicActivity.class);
 
-                // 예시: "selectedItems"라는 값을 전달
-                intent.putExtra("selectedItems", (Serializable) selectedItems);
-
-                startActivityForResult(intent, 100); // 100은 요청 코드, 뒤에서 결과 받기 위해 사용
-            }
-        });
 
 
         // 기본 선택값을 foodDistribute로
@@ -454,3 +441,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
 
 }
+
+
+
+//추천 해시테그(위에거) 기본값은 #글자.
+//리사이클러뷰 누르면 팝업띄우기 그리고 그 팝업 작성하면 위에 리사이클에 뜸
+//터치 상관없이 리사이클러뷰 누르기만 하면 팝업 띄우고 그 결과물을 리사이클에 띄우게 하기
+//아래 리사이클에는 리스트로 예시 5개 추가시키고 추가로 위에 리사이클 추가할때마다 아래 리스트에도 추가하게 하기( 해시리스트, 파이널해시리스트 만들기 그리고
+//업 해시리스트 만들기. 결론적으로 업 해시리스트는 위에서 추가해주는 리스트. 밑에 추가될때마다 그 요소를 해시리스트(오리지널)에 넣음과 동시에 어댑터 1번더 실
+//행시켜주는 코드 ㄱㄱ 그리고 동시에 선택되었으니까 파이널해시리스트에도 넣어줘야함

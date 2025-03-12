@@ -29,18 +29,29 @@
             app:srcCompat="@drawable/takephoto" />
 
         <!-- 알레르기 유무 텍스트 -->
+        <!-- carmeraView 아래에 배치 -->
+
+        <!-- 기존 뷰들 생략 (변경되지 않은 부분) -->
+
+        <!-- RecyclerView 추가 -->
+
+
+        <!-- 알레르기 유무 텍스트 -->
+        <!-- carmeraView 아래에 배치 -->
+
+        <!-- RecyclerView 추가 -->
+
+
         <TextView
             android:id="@+id/allergyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="180dp"
             android:text="알레르기 유무"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/ingredient"
-            app:layout_constraintTop_toBottomOf="@id/carmeraView" /> <!-- carmeraView 아래에 배치 -->
-
-        <!-- 기존 뷰들 생략 (변경되지 않은 부분) -->
+            app:layout_constraintStart_toStartOf="@+id/hashtagRecyclerView"
+            app:layout_constraintTop_toBottomOf="@id/carmeraView" />
 
         <TextView
             android:id="@+id/allergyDescription"
@@ -52,19 +63,29 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/allergyText"
             app:layout_constraintTop_toBottomOf="@id/allergyText" />
-        <!-- RecyclerView 추가 -->
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/allergyRecyclerView"
             android:layout_width="362dp"
             android:layout_height="61dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:background="#F5F5F5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/allergyText"
             app:layout_constraintTop_toBottomOf="@id/allergyDescription" />
 
+        <TextView
+            android:id="@+id/allergyText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="추천 해시태그"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/radioFace"
+            app:layout_constraintStart_toStartOf="@+id/carmeraView"
+            app:layout_constraintTop_toBottomOf="@+id/carmeraView"
+            app:layout_constraintVertical_bias="0.216" />
 
         <EditText
             android:id="@+id/context"
@@ -98,11 +119,12 @@
             android:id="@+id/photoupload"
             android:layout_width="363dp"
             android:layout_height="60dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="52dp"
             android:backgroundTint="@color/black"
             android:text="작성완료"
             app:cornerRadius="6dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioFace" />
 
@@ -147,20 +169,6 @@
                 android:text="음식을 나눠줄래요" />
         </RadioGroup>
 
-        <Button
-            android:id="@+id/alergicButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="275dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="46dp"
-            android:layout_marginBottom="1dp"
-            android:text="알레르기 설정(임시)"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/photoupload" />
-
         <ImageView
             android:id="@+id/btnback5"
             android:layout_width="wrap_content"
@@ -179,6 +187,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.487"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView">
 
@@ -188,19 +197,56 @@
                 android:layout_height="130dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/checkedface"
-                android:checked="true"
                 android:button="@null"
-                />
+                android:checked="true" />
 
             <RadioButton
                 android:id="@+id/noface"
                 android:layout_width="363dp"
                 android:layout_height="130dp"
                 android:background="@drawable/noface"
-                android:button="@null"
-                />
+                android:button="@null" />
         </RadioGroup>
 
+
+        <TextView
+            android:id="@+id/allergyDescription2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(최대 5개)"
+            android:textColor="#808080"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/hashtagRecyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.029"
+            app:layout_constraintStart_toEndOf="@+id/allergyText2"
+            app:layout_constraintTop_toBottomOf="@+id/carmeraView"
+            app:layout_constraintVertical_bias="0.853" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hashtagRecyclerView"
+            android:layout_width="362dp"
+            android:layout_height="61dp"
+            android:layout_marginTop="12dp"
+            android:background="#F5F5F5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/allergyText2" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/plusHashtagRecyclerView"
+            android:layout_width="362dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="#F5F5F5"
+            app:layout_constraintBottom_toTopOf="@+id/allergyText2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/carmeraView"
+            app:layout_constraintVertical_bias="0.166" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

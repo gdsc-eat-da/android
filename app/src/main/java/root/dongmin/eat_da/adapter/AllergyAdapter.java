@@ -128,3 +128,4 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 }
+//리스트들 가져오는게 아니라 퍼블릭으로 만들어서 그냥 들고와서 쓰기
