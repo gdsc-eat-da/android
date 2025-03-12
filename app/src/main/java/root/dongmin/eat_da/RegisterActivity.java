@@ -142,6 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     // 닉네임 입력 화면으로 이동
                                     Intent intent = new Intent(RegisterActivity.this, NicknameActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 } else {
                                     Toast.makeText(RegisterActivity.this, "아이디나 비밀번호를 확인하세요", Toast.LENGTH_SHORT).show();
                                 }

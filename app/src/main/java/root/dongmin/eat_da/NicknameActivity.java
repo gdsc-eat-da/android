@@ -102,6 +102,7 @@ public class NicknameActivity extends AppCompatActivity {
                     Intent intent = new Intent(NicknameActivity.this, Onboarding1.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
 
                 } else {
                     Toast.makeText(NicknameActivity.this, "닉네임 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();

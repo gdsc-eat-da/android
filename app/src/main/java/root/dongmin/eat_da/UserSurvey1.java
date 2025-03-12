@@ -53,6 +53,7 @@ public class UserSurvey1 extends AppCompatActivity {
                 if (isIndividual == 1) {
                     Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
                     startActivityForResult(intent, 1001); // 알레르기 정보 입력 후 결과 받기(수정필요)
+                    finish();
                 } else {
                     Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
                     startActivity(intent);
