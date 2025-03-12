@@ -28,6 +28,10 @@ public class Onboarding1 extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Onboarding1.this, Onboarding2.class);
                 startActivity(intent);
+
+                // 화면 전환 애니메이션 적용
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 finish();
 
             }});

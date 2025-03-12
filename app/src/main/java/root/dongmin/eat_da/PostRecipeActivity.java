@@ -44,8 +44,6 @@ import root.dongmin.eat_da.network.RetrofitClient;
 
 public class PostRecipeActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private ImageView btnback;
-
     // UI 요소
     private Button btnUpload;
     private ImageView cameraView,back;
@@ -149,8 +147,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
             RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname);
 
 
-
-            // ✅ API 호출 (닉네임 + selectedJoinedItems 포함)
+            // ✅ API 호출
             Call<ResponseBody> call = apiService.uploadRecipe(filePart, contentsBody, ingredientsBody, nicknameBody);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
