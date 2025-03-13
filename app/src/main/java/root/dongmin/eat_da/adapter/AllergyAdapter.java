@@ -1,5 +1,8 @@
 package root.dongmin.eat_da.adapter;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,28 +13,77 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import root.dongmin.eat_da.R;
+import root.dongmin.eat_da.alergicActivity;
 
 public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_ALLERGY = 0; // 알레르기 아이템 타입
     private static final int TYPE_PLUS = 1; // plus 이미지 아이템 타입
 
-    private List<String> allergyList;
-    private List<String> finalAlergicList; // finalAlergicList 추가
-    private List<Boolean> isSelectedList; // 아이템의 선택 상태를 저장하는 리스트
+    private List<String> allergyList; // 알레르기 아이템 목록 (액티비티의 리스트를 참조)
+    private List<String> finalAlergicList; // 선택된 알레르기 아이템 목록 (액티비티의 리스트를 참조)
+    private List<Boolean> isSelectedList; // 아이템의 선택 상태 리스트
 
+    // 생성자에서 액티비티의 리스트를 전달받음
     public AllergyAdapter(List<String> allergyList, List<String> finalAlergicList) {
-        this.allergyList = allergyList;
-        this.finalAlergicList = finalAlergicList; // finalAlergicList 초기화
-        this.isSelectedList = new ArrayList<>(); // 선택 상태 리스트 초기화
+        this.allergyList = allergyList; // 액티비티의 리스트를 직접 참조
+        this.finalAlergicList = finalAlergicList; // 액티비티의 리스트를 직접 참조
+        this.isSelectedList = new ArrayList<>();
+        syncIsSelectedList(); // isSelectedList 초기화
+    }
 
-        // 모든 아이템의 선택 상태를 false로 초기화
-        for (int i = 0; i < allergyList.size(); i++) {
-            isSelectedList.add(false);
+    // isSelectedList를 allergyList와 동기화
+    private void syncIsSelectedList() {
+        while (isSelectedList.size() < allergyList.size()) {
+            isSelectedList.add(false); // 기본값은 true 왜냐면 알레르기 거기에서 이미 선택한 거니까
         }
+    }
+    private void syncIsSelectedList(int a) {
+        int aa = a;
+        if(aa == 1)
+        {
+            while (isSelectedList.size() < allergyList.size()) {
+                isSelectedList.add(true); // 기본값은 true 왜냐면 알레르기 거기에서 이미 선택한 거니까
+            }
+        }
+    }
+
+    // allergyList 업데이트 메서드
+    public void updateAllergyList(List<String> newAllergyList) {
+
+
+        // modifiedItems의 값을 alergicList와 finalAlergicList에 추가 (중복 제외)
+        for (String item : newAllergyList) {
+            if (!this.allergyList.contains(item)) { // alergicList에 중복되지 않으면 추가
+                this.allergyList.add(item);
+
+                if (!this.finalAlergicList.contains(item)) { // finalAlergicList에 중복되지 않으면 추가
+                    this.finalAlergicList.add(item);
+                }
+            }
+            else if(this.allergyList.contains(item))//만약 중복이 된다면
+            {
+
+                int index = this.allergyList.indexOf(item); // 중복된 아이템의 인덱스 찾기
+                this.isSelectedList.set(index, true); // isSelectedList의 해당 인덱스를 true로 설정
+
+
+                if (!this.finalAlergicList.contains(item)) { // finalAlergicList에 중복되지 않으면 추가
+                    this.finalAlergicList.add(item);
+                }
+            }
+
+        }
+
+        // 로그로 확인
+        Log.d("PhotoActivity", "Updated alergicList!: " + this.allergyList);
+        Log.d("PhotoActivity", "Updated finalAlergicList!: " + this.finalAlergicList);
+        syncIsSelectedList(1); // isSelectedList 동기화
+        notifyDataSetChanged(); // 어댑터에 데이터 변경 알림
     }
 
     @NonNull
@@ -71,20 +123,27 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     // 활성화 상태로 변경
                     isSelectedList.set(position, true);
                     ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.miniunsel);
-                    finalAlergicList.add(allergyItem); // 리스트에 추가
+                    finalAlergicList.add(allergyItem); // 리스트에 추가 (액티비티의 리스트를 직접 수정)
                     Toast.makeText(v.getContext(), "추가됨: " + allergyItem, Toast.LENGTH_SHORT).show();
                 } else {
                     // 비활성화 상태로 변경
                     isSelectedList.set(position, false);
                     ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.minisel);
-                    finalAlergicList.remove(allergyItem); // 리스트에서 제거
+                    finalAlergicList.remove(allergyItem); // 리스트에서 제거 (액티비티의 리스트를 직접 수정)
                     Toast.makeText(v.getContext(), "제거됨: " + allergyItem, Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (holder instanceof PlusViewHolder) {
             // plus 이미지 아이템 처리
             ((PlusViewHolder) holder).itemView.setOnClickListener(v -> {
-                Toast.makeText(v.getContext(), "plus클릭!", Toast.LENGTH_SHORT).show();
+                // 새로운 액티비티를 띄우고 결과를 받아오기
+                Intent intent = new Intent(v.getContext(), alergicActivity.class);
+
+                // 현재 선택된 아이템을 전달 (예: selectedItems)
+                intent.putExtra("selectedItems", (Serializable) finalAlergicList);
+
+                // 액티비티를 띄우고 결과를 받기 위해 요청 코드 사용
+                ((Activity) v.getContext()).startActivityForResult(intent, 101);
             });
         }
     }
@@ -128,4 +187,3 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 }
-//리스트들 가져오는게 아니라 퍼블릭으로 만들어서 그냥 들고와서 쓰기

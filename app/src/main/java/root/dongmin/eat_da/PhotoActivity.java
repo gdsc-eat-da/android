@@ -103,8 +103,8 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     private int isFaceSelected = 0; // 기본값은 face(0)
 
 
-    List<String> alergicList = new ArrayList<>(Arrays.asList("유제품", "땅콩", "복숭아" ,"밀", "쇠고기", "새우"));
-    List<String> finalAlergicList = new ArrayList<>();
+    public List<String> alergicList = new ArrayList<>(Arrays.asList("유제품", "땅콩", "복숭아" ,"밀", "쇠고기", "새우"));
+    public List<String> finalAlergicList = new ArrayList<>();
     private RecyclerView allergyRecyclerView;
     private AllergyAdapter allergyAdapter;
 
@@ -223,16 +223,37 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 100 && resultCode == RESULT_OK) {
+        if (requestCode == 101 && resultCode == RESULT_OK) {
             // AlergicActivity에서 보낸 데이터를 받기
             if (data != null) {
                 List<String> modifiedItems = (List<String>) data.getSerializableExtra("modifiedItems");
                 if (modifiedItems != null) {
                     // 변경된 리스트를 처리
-                    selectedItems = modifiedItems;
-                    // 예: 새로운 리스트를 처리하는 코드 작성
-                    Log.d("PhotoActivity", "Modified items: " + selectedItems);
-                    selectedJoinedItems = TextUtils.join("_", selectedItems);
+                    selectedItems = modifiedItems; // selectedItems 업데이트
+                    Log.d("PhotoActivity", "Modified items: " + selectedItems); // 로그 출력
+                    selectedJoinedItems = TextUtils.join("_", selectedItems); // 리스트를 String으로 변환
+
+                    allergyAdapter.updateAllergyList(modifiedItems);
+
+
+//                    // modifiedItems의 값을 alergicList와 finalAlergicList에 추가 (중복 제외)
+//                    for (String item : modifiedItems) {
+//                        if (!alergicList.contains(item)) { // alergicList에 중복되지 않으면 추가
+//                            alergicList.add(item);
+//                        }
+//                        if (!finalAlergicList.contains(item)) { // finalAlergicList에 중복되지 않으면 추가
+//                            finalAlergicList.add(item);
+//                        }
+//                    }
+
+//                    // 어댑터에 데이터 변경 알리기
+//                    if (allergyAdapter != null) {
+//                        allergyAdapter.notifyDataSetChanged(); // alergicAdapter 업데이트
+//                    }
+
+//                    // 로그로 확인
+//                    Log.d("PhotoActivity", "Updated alergicList!: " + alergicList);
+//                    Log.d("PhotoActivity", "Updated finalAlergicList!: " + finalAlergicList);
                 }
             }
         }
