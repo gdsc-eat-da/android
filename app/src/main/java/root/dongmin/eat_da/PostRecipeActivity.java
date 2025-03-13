@@ -161,6 +161,10 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
                             if (success) {
                                 int recipeID = jsonResponse.getInt("recipeID");
                                 Log.d("Upload", "recipeID: " + recipeID);
+                                Toast.makeText(PostRecipeActivity.this,"레시피가 업로드되었습니다!" , Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(PostRecipeActivity.this, RecipeActivity.class)
+                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                finish();
 
                             } else {
                                 Log.e("Upload", "레시피 업로드 실패: " + jsonResponse.getString("message"));

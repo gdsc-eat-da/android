@@ -3,6 +3,7 @@ package root.dongmin.eat_da;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -24,6 +25,7 @@ import root.dongmin.eat_da.adapter.RecipeAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.Recipe;
 import root.dongmin.eat_da.network.RetrofitClient;
+import root.dongmin.eat_da.utils.SpaceItemDecoration;
 
 public class RecipeActivity extends AppCompatActivity {
 
@@ -32,6 +34,8 @@ public class RecipeActivity extends AppCompatActivity {
     private ApiService apiService;
     private RecipeAdapter recipeAdapter;
     private List<Recipe> allRecipes = new ArrayList<>();
+    private int space;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +94,25 @@ public class RecipeActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recipeRecyclerView);
 
+        space =30;
+
+        // SpaceItemDecoration 인스턴스 생성
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration(space);
+
+        // RecyclerView에 itemDecoration 적용
+        recyclerView.addItemDecoration(itemDecoration);
+
+
         // RecyclerView 설정
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
+
+        // 버튼 이벤트 처리
+        setupButtons();
+        loadRecipe();
     }
 
     // 레시피 목록 불러오기
@@ -116,6 +134,15 @@ public class RecipeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
                 Toast.makeText(RecipeActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    // ✅ 버튼 클릭 이벤트 처리
+    private void setupButtons() {
+        ImageButton recipeButton = findViewById(R.id.btngotophoto2);
+        recipeButton.setOnClickListener(v -> {
+            CustomDialog customDialog = new CustomDialog(RecipeActivity.this);
+            customDialog.show();
         });
     }
 }

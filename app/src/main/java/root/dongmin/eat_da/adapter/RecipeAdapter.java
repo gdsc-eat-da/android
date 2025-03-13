@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 import root.dongmin.eat_da.R;
 
@@ -44,6 +46,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         Recipe recipe = recipeList.get(position);
         holder.contentsTextView.setText(recipe.getContents());
         holder.ingredientsTextView.setText(recipe.getIngredients());
+
+        // 🔥 이미지 로드
+        Glide.with(context)
+                .load(recipe.getPhoto())
+                .into(holder.imageView);
 
     }
 

@@ -54,6 +54,7 @@ import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.NeedPostResponseWrapper;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
+import root.dongmin.eat_da.utils.SpaceItemDecoration;
 
 import android.os.Build;
 import android.os.Handler;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
     private List<String> chatList = new ArrayList<>();
     private List<NeedPost> needPosts;
+
+    private int space;
 
     private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
@@ -188,14 +191,31 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
         greed = findViewById(R.id.greeding);
+
+        // RecyclerView 설정
         recyclerView = findViewById(R.id.recyclerView);
 
+        space = 25;
+
+        // SpaceItemDecoration 인스턴스 생성
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration(space);
+
+        // RecyclerView에 itemDecoration 적용
+        recyclerView.addItemDecoration(itemDecoration);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+
         needrecyclerView = findViewById(R.id.recyclerNeedView);
+
+        // RecyclerView에 itemDecoration 적용
+        needrecyclerView.addItemDecoration(itemDecoration);
+
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
-        // RecyclerView 설정
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
