@@ -28,11 +28,14 @@ public class Post {
     @SerializedName("face") // 추가된 face 컬럼
     private int face; // 추가된 face 필드
 
+    @SerializedName("hashtag") // 해시태그 추가함( 알레르기는 selectedJoinedItems )
+    private String hashtag;
+
     // ✅ 기본 생성자
     public Post() {}
 
     // ✅ 모든 필드를 포함한 생성자
-    public Post(String postID, String contents, String ingredients, String photo, double distance, String nickname, String selectedJoinedItems, int face) {
+    public Post(String postID, String contents, String ingredients, String photo, double distance, String nickname, String selectedJoinedItems, int face, String hashtag) {
         this.postID = postID;
         this.contents = contents;
         this.ingredients = ingredients;
@@ -41,6 +44,7 @@ public class Post {
         this.nickname = nickname;
         this.selectedJoinedItems = selectedJoinedItems;
         this.face = face;
+        this.hashtag = hashtag;
 
     }
 
@@ -63,6 +67,9 @@ public class Post {
 
     public String getselectedJoinedItems(){return selectedJoinedItems;}
     public void setselectedJoinedItems(String selectedJoinedItems){this.selectedJoinedItems = selectedJoinedItems;}
+
+    public String getHashtag(){return hashtag;}
+    public void setHashtag(String hashtag){this.hashtag = hashtag;}
 
     public double getDistance() { return distance; }
     public void setDistance(double distance) { this.distance = distance; }

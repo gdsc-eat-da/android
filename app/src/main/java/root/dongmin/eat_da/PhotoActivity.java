@@ -1,6 +1,7 @@
 package root.dongmin.eat_da;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -62,6 +63,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import root.dongmin.eat_da.adapter.AllergyAdapter;
+import root.dongmin.eat_da.adapter.HashtagAdapter;
+import root.dongmin.eat_da.adapter.PlusHashtagAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.RetrofitClient;
 
@@ -105,8 +108,14 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
     public List<String> alergicList = new ArrayList<>(Arrays.asList("유제품", "땅콩", "복숭아" ,"밀", "쇠고기", "새우"));
     public List<String> finalAlergicList = new ArrayList<>();
-    private RecyclerView allergyRecyclerView;
+
+    public List<String> hashList = new ArrayList<>(Arrays.asList("조리", "비조리", "인스턴트" ,"밀키트", "넉넉한유통기한"));
+    public List<String> finalHashList = new ArrayList<>();
+    public List<String> UpHashList = new ArrayList<>();
+    private RecyclerView allergyRecyclerView, plusHashtagRecyclerView, hashtagRecyclerView;
     private AllergyAdapter allergyAdapter;
+    private PlusHashtagAdapter plusHashtagAdapter;
+    private HashtagAdapter HashtagAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +132,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         cameraView = findViewById(R.id.carmeraView);
         eText = findViewById(R.id.context);
         inText = findViewById(R.id.ingredient);
-        allergyRecyclerView = findViewById(R.id.allergyRecyclerView);
-        allergyRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        allergyRecyclerView = findViewById(R.id.allergyRecyclerView);//알레르기 리사이클러뷰
+        plusHashtagRecyclerView = findViewById(R.id.plusHashtagRecyclerView);//해시태그 위에 있는 리사이클러뷰
+        hashtagRecyclerView = findViewById(R.id.hashtagRecyclerView);//해시태그 밑에 있는 리사이클러뷰
+        allergyRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));//수직 드래그?
+        plusHashtagRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        hashtagRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         back = findViewById(R.id.btnback5);
         back.setOnClickListener(v -> finish());
@@ -136,6 +149,15 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         //어댑터 설정
         allergyAdapter = new AllergyAdapter(alergicList, finalAlergicList);
         allergyRecyclerView.setAdapter(allergyAdapter);
+        HashtagAdapter = new HashtagAdapter(hashList, finalHashList);
+        hashtagRecyclerView.setAdapter(HashtagAdapter);
+        plusHashtagAdapter = new PlusHashtagAdapter(UpHashList, this, HashtagAdapter);
+        plusHashtagRecyclerView.setAdapter(plusHashtagAdapter);
+
+
+
+        plusHashtagRecyclerView.setOnClickListener(v -> showCustomDialog());
+
 
 
         // 라디오 버튼 클릭 리스너 설정
@@ -309,10 +331,20 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
+
+
+        // finalAlergicList와 finalHashList를 문자열로 변환
+        String finalAlergicListString = TextUtils.join("_", finalAlergicList);
+        String finalHashListString = TextUtils.join("_", finalHashList);
+        selectedJoinedItems = finalAlergicListString;
+
         // ✅ selectedJoinedItems가 null이면 빈 문자열로 설정
         if (selectedJoinedItems == null) {
             selectedJoinedItems = "";
         }
+        Log.d("Gallery", "알레르기는 두둥두둥: " + finalAlergicListString);
+        Log.d("Gallery", "해시태그는 두둥두둥: " + finalHashListString);
+
 
         getNickname(nickname -> {
             if (nickname == null) {
@@ -330,11 +362,21 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
             RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname);
             RequestBody selectedJoinedItemsBody = RequestBody.create(MediaType.parse("text/plain"), selectedJoinedItems);
+            //RequestBody finalAlergicListBody = RequestBody.create(MediaType.parse("text/plain"), finalAlergicListString); // finalAlergicList 추가
+            RequestBody finalHashListBody = RequestBody.create(MediaType.parse("text/plain"), finalHashListString); // finalHashList 추가
+            RequestBody faceBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(isFaceSelected)); // ✅ 추가된 부분
 
-            RequestBody faceBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(isFaceSelected));// ✅ 추가된 부분
+            // ✅ API 호출 (닉네임 + selectedJoinedItems + finalAlergicList + finalHashList 포함)
+            Call<ResponseBody> call = apiService.uploadPost(
+                    filePart,
+                    contentsBody,
+                    ingredientsBody,
+                    nicknameBody,
+                    selectedJoinedItemsBody, // finalHashList 추가
+                    faceBody,
+                    finalHashListBody
+            );
 
-            // ✅ API 호출 (닉네임 + selectedJoinedItems 포함)
-            Call<ResponseBody> call = apiService.uploadPost(filePart, contentsBody, ingredientsBody, nicknameBody, selectedJoinedItemsBody, faceBody);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -457,6 +499,38 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     // 🔥 닉네임을 받아서 처리할 인터페이스 (비동기 처리용)
     interface OnNicknameReceivedListener {
         void onReceived(String nickname);
+    }
+
+
+
+
+    private void showCustomDialog() {
+        Toast.makeText(getApplicationContext(), "다이얼로그 시작.", Toast.LENGTH_SHORT).show();
+        // 1. 다이얼로그 생성
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_item);
+
+        // 2. 다이얼로그 내부 UI 요소 가져오기
+        EditText editTextInput = dialog.findViewById(R.id.editTextInput);
+        ImageView btnAdd = dialog.findViewById(R.id.btnAdd);
+
+        // 3. 추가 버튼 클릭 시 아이템 리스트에 추가
+        btnAdd.setOnClickListener(v -> {
+            String newItem = editTextInput.getText().toString().trim();
+            if (!newItem.isEmpty() && !UpHashList.contains(newItem)) {
+                // UpHashList에 새로운 아이템 추가
+                UpHashList.add(newItem);
+                // 어댑터에 데이터 변경 알림
+                plusHashtagAdapter.notifyDataSetChanged();
+                // 다이얼로그 닫기
+                dialog.dismiss();
+            } else {
+                Toast.makeText(getApplicationContext(), "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 4. 다이얼로그 표시
+        dialog.show();
     }
 
 

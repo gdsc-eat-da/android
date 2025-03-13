@@ -52,7 +52,7 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    // allergyList 업데이트 메서드
+    // allergyList 업데이트 메서드(나중에 추가시키기)
     public void updateAllergyList(List<String> newAllergyList) {
 
 
