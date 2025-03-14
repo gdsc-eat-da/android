@@ -43,4 +43,28 @@
         android:textSize="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textRecipeContents" />
+
+    <ImageView
+        android:id="@+id/heart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageRecipe"
+        app:srcCompat="@drawable/heartdefault" />
+
+    <TextView
+        android:id="@+id/heartCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="00"
+        android:textSize="16sp"
+        android:textColor="#9A99A3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.235"
+        app:layout_constraintStart_toEndOf="@+id/heart"
+        app:layout_constraintTop_toBottomOf="@+id/imageRecipe" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

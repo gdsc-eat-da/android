@@ -72,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="사용자 찾기"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.054"

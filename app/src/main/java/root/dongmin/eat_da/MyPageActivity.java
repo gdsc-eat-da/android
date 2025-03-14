@@ -243,28 +243,6 @@ public class MyPageActivity extends AppCompatActivity {
 
 
 
-
-//    // 아이콘 업데이트 함수
-//    private void updateIcon(int itemId, boolean isClicked) {
-//        if (bottomNavigationView == null) return;
-//
-//        int iconRes;
-//        if (itemId == R.id.nav_home) {
-//            iconRes = isClicked ? R.drawable.homeclicked : R.drawable.homedefault;
-//        } else if (itemId == R.id.chat) {
-//            iconRes = isClicked ? R.drawable.chatclicked : R.drawable.chatdefault;
-//        } else if (itemId == R.id.nav_profile) {
-//            iconRes = isClicked ? R.drawable.mypageclicked : R.drawable.mypagedefault;
-//        } else if (itemId == R.id.work_load) {
-//            iconRes = isClicked ? R.drawable.workloadclicked : R.drawable.workloaddefault;
-//        } else {
-//            return;
-//        }
-//        bottomNavigationView.getMenu().findItem(itemId).setIcon(iconRes);
-//
-//        bottomNavigationView.getMenu().findItem(itemId).setChecked(true);
-//    }
-
     // 갤러리에서 이미지 선택 후 처리. 또한 알레르기 데이터 가져오기
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

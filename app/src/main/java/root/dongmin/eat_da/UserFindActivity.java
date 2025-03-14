@@ -137,6 +137,7 @@ public class UserFindActivity extends AppCompatActivity {
 
         // BottomNavigationView 초기화 및 설정
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
         bottomNavigationView.setSelectedItemId(R.id.chat);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -392,6 +393,17 @@ public class UserFindActivity extends AppCompatActivity {
 
 // Runnable 시작
         handler.post(runnable);
+
+
+        // 뒤로가기 이벤트 처리
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
 

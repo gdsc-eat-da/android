@@ -117,5 +117,12 @@ public interface ApiService {
     @POST("delete_needpost.php")
     Call<ResponseBody> deleteNeedPost(@Field("postID") String postID);
 
+    @FormUrlEncoded
+    @POST("update_like.php") // 좋아요 API 경로
+    Call<LikeResponse> updateLike(
+            @Field("recipeID") String recipeID,
+            @Field("isLiked") String isLiked
+    );
+
 
 }
