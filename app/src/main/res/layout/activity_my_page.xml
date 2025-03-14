@@ -12,15 +12,14 @@
         android:id="@+id/nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="000"
+        android:layout_marginTop="110dp"
+        android:text="내이름"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.387"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.128" />
+        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintStart_toEndOf="@+id/profileImage"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/donationCount"
@@ -39,31 +38,28 @@
         android:id="@+id/back"
         android:layout_width="363dp"
         android:layout_height="70dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/total"
         android:gravity="center_vertical"
         android:padding="15sp"
         android:textSize="17sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.243" />
+        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
         android:layout_width="90dp"
         android:layout_height="90dp"
+        android:layout_marginTop="80dp"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/RoundedImageView"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintHorizontal_bias="0.074"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -90,31 +86,45 @@
         android:text="내가 올린글"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.095"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.603" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/logout"
         android:text="로그아웃"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.92"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/alergicButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="271dp"
-        android:text="나의 알레르기 설정"
+        android:background="@drawable/alergic"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.111"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnMyPost" />
+        app:layout_constraintTop_toBottomOf="@+id/textView29" />
+
+    <TextView
+        android:id="@+id/textView29"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="44dp"
+        android:text="내정보"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

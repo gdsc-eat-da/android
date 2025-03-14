@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -47,6 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import root.dongmin.eat_da.network.ApiService;
+import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.RetrofitClient;
 
 public class MyPageActivity extends AppCompatActivity {
@@ -58,7 +61,8 @@ public class MyPageActivity extends AppCompatActivity {
     private ImageView profile;
     private Uri imageUri; // 갤러리에서 선택된 이미지 URI
     private BottomNavigationView bottomNavigationView;
-    private Button myPost,logout;
+    private Button myPost;
+    private ImageButton logout;
     public List<String> selectedItems;
     public String selectedJoinedItems;
 
@@ -86,8 +90,8 @@ public class MyPageActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
-                    finish();
                     startActivity(intent);
+                    finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MyPageActivity.this, UserFindActivity.class);
@@ -120,7 +124,7 @@ public class MyPageActivity extends AppCompatActivity {
         });
 
         // 알레르기 버튼 클릭 리스너 설정                                                 <알레르기!>
-        Button alergicButton = findViewById(R.id.alergicButton);
+        ImageButton alergicButton = findViewById(R.id.alergicButton);
         alergicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -37,7 +37,7 @@
         android:id="@+id/textView27"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:maxLines="2"
         android:text="무슨 요리를 해야할 지 도와드릴게요."
         android:textSize="22sp"
@@ -50,18 +50,20 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeRecyclerView"
         android:layout_width="0dp"
-        android:layout_height="550dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="450dp"
+        android:layout_marginTop="24dp"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView27" />
+        app:layout_constraintTop_toBottomOf="@+id/searchRecipe" />
 
     <ImageButton
         android:id="@+id/btngotophoto2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/posting"
+        android:contentDescription="글쓰기 버튼"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.945"
@@ -69,4 +71,33 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.928" />
 
+    <EditText
+        android:id="@+id/searchRecipe"
+        android:layout_width="363dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="36dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="원하는 음식을 검색해보세요!"
+        android:paddingLeft="16dp"
+        android:textColor="#B0B0B0"
+        android:textSize="16sp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView27" />
+
+    <ImageView
+        android:id="@+id/searching"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/searchRecipe"
+        app:srcCompat="@drawable/search" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

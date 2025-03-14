@@ -58,6 +58,7 @@ import root.dongmin.eat_da.adapter.MapDistanceAdapter;
 import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.utils.DistanceCalculator;
+import root.dongmin.eat_da.utils.SpaceItemDecoration;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -83,6 +84,8 @@ public class MapActivity extends AppCompatActivity {
     private List<NeedPost> needPosts;
     private RecyclerView mapRecyclerView;
     private MapDistanceAdapter mapDistanceAdapter;
+
+    private int space;
 
 
      // 음식 필요 게시물 리스트
@@ -149,6 +152,14 @@ public class MapActivity extends AppCompatActivity {
         Log.d("MAP_DEBUG", "onCreate 실행됨");
 
         mapRecyclerView = findViewById(R.id.needMapPosts);
+
+        space =20;
+
+        // SpaceItemDecoration 인스턴스 생성
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration(space);
+
+        mapRecyclerView.addItemDecoration(itemDecoration);
+
         mapRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
