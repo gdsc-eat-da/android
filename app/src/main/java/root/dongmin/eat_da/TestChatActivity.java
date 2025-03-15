@@ -321,14 +321,12 @@ public class TestChatActivity extends AppCompatActivity {
 
                 DatabaseReference chatRef;
 
-                if(isnotMine == 0)
-                {
+                if (isnotMine == 0) {
                     chatRef = FirebaseDatabase.getInstance().getReference("chatIsDone").child(postID + "_" + yourNick + "_" + receivedId);
-                }
-                else
-                {
+                } else {
                     chatRef = FirebaseDatabase.getInstance().getReference("chatIsDone").child(postID + "_" + receivedId + "_" + yourNick);
                 }
+
                 // Firebase Database 참조
                 String newYourData = yourNick + "_OK";
 
@@ -349,19 +347,38 @@ public class TestChatActivity extends AppCompatActivity {
                                             // chat 테이블의 해당 노드 삭제
                                             DatabaseReference chatTableRef;
 
-                                            if(isnotMine == 0)
-                                            {
+                                            if (isnotMine == 0) {
                                                 chatTableRef = FirebaseDatabase.getInstance().getReference("chat").child(postID + "_" + yourNick + "_" + receivedId);
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 chatTableRef = FirebaseDatabase.getInstance().getReference("chat").child(postID + "_" + receivedId + "_" + yourNick);
                                             }
+
+                                            // chat 테이블 데이터 삭제
                                             chatTableRef.removeValue()
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
                                                             Toast.makeText(TestChatActivity.this, "채팅 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                                            // chatRef의 모든 요소들도 삭제
+                                                            chatRef.removeValue()
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            Toast.makeText(TestChatActivity.this, "chatRef 데이터 또한 삭제되었습니다...", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    })
+                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(Exception e) {
+                                                                            Toast.makeText(TestChatActivity.this, "chatRef 데이터 삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    });
+
+                                                            // UserAccount 노드에서 yourNick과 receivedId에 해당하는 사용자의 transactionCount 업데이트
+                                                            updateTransactionCount(yourNick);
+                                                            updateTransactionCount(receivedId);
+
                                                             finish();
                                                         }
                                                     })
@@ -400,6 +417,10 @@ public class TestChatActivity extends AppCompatActivity {
                         });
             }
         });
+
+
+
+
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // 비동기 함수 호출
         checkFirebaseDataAsync(postID, receivedId, yourNick, new FirebaseCheckCallback() {
@@ -530,6 +551,49 @@ public class TestChatActivity extends AppCompatActivity {
     public interface FirebaseCheckCallback {
         void onResult(boolean isYourNickOK, boolean isReceivedIdOK); // 결과를 전달하는 콜백
         void onError(String errorMessage); // 에러 발생 시 호출되는 콜백
+    }
+
+
+
+
+    // transactionCount 업데이트 메서드
+    private void updateTransactionCount(String nickname) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UserAccount");
+        userRef.orderByChild("nickname").equalTo(nickname).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String uid = userSnapshot.getKey();
+                        DatabaseReference userAccountRef = FirebaseDatabase.getInstance().getReference("UserAccount").child(uid);
+
+                        // transactionCount 업데이트
+                        userAccountRef.child("transactionCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    int currentCount = snapshot.getValue(Integer.class);
+                                    userAccountRef.child("transactionCount").setValue(currentCount + 1);
+                                } else {
+                                    // transactionCount가 없는 경우 기본값 1로 설정
+                                    userAccountRef.child("transactionCount").setValue(1);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Toast.makeText(TestChatActivity.this, "transactionCount 업데이트 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(TestChatActivity.this, "사용자 검색 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한
     private static final int REQUEST_STORAGE_PERMISSION = 1;
-
     public String Nickname;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
-    private TextView greed; // 사용자 환영 메시지
+    private TextView greed, greed2, levelBig, levelSmall, tradeNum; // 사용자 환영 메시지
+    private ProgressBar progressBar;
     private RecyclerView recyclerView, needrecyclerView;
     private PostAdapter postAdapter;
     private NeedPostAdapter needPostAdapter;
@@ -192,6 +193,12 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
         greed = findViewById(R.id.greeding);
+        greed2 = findViewById(R.id.whatisname);
+        levelBig = findViewById(R.id.levelhowmuch);
+        levelSmall = findViewById(R.id.levelhowmuch2);
+        tradeNum = findViewById(R.id.gureCount);
+        progressBar = findViewById(R.id.progressBar);
+
 
         // RecyclerView 설정
         recyclerView = findViewById(R.id.recyclerView);
@@ -223,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 사용자 정보 및 게시글 불러오기
         loadUserInfo();
+        loadUserLevel();
         handler.post(runnable);
         loadPosts();
         loadNeedPosts();
@@ -332,9 +340,11 @@ public class MainActivity extends AppCompatActivity {
                     String nickname = dataSnapshot.getValue(String.class);
                     if (nickname != null) {
                         greed.setText("반갑습니다, " + nickname + "님!");
+                        greed2.setText(nickname);
                         Nickname = nickname;
                     } else {
                         greed.setText("닉네임을 설정해주세요.");
+                        greed2.setText("_");
                         greed.setOnClickListener(v -> {
                             Intent intent = new Intent(MainActivity.this, NicknameActivity.class);
                             startActivity(intent);
@@ -345,6 +355,73 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Toast.makeText(MainActivity.this, "닉네임을 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // 로그인되지 않은 경우 로그인 화면으로 이동
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+    // ✅ 사용자 레벨 가져오기
+    // ✅ 사용자 레벨 가져오기
+    private void loadUserLevel() {
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+
+            // transactionCount 값을 가져오기
+            mDatabaseRef.child(userId).child("transactionCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Integer transactionCount = dataSnapshot.getValue(Integer.class);
+
+                    if (transactionCount != null) {
+                        // 레벨 계산
+                        int level = transactionCount / 5; // 레벨 (5로 나눈 몫)
+                        int remainder = transactionCount % 5; // 남은 거래 횟수 (5로 나눈 나머지)
+                        Log.d("API_DEBUG", "레벨 트랜직션카운트(오리지널): " + transactionCount);
+                        Log.d("API_DEBUG", "레벨: " + level);
+                        Log.d("API_DEBUG", "남은 거래 횟수: " + remainder);
+
+
+
+
+                        // levelBig에 텍스트 설정
+                        //levelBig = findViewById(R.id.levelhowmuch);
+                        levelBig.setText("거래 " + remainder + "번 더 하면 레벨 업이에요!");
+
+                        // levelSmall에 텍스트 설정
+                        //levelSmall = findViewById(R.id.levelhowmuch2);
+                        levelSmall.setText(level + "Lv");
+
+                        // tradeNum에 거래 횟수 설정
+                        tradeNum.setText(String.valueOf(transactionCount));
+
+                        // ProgressBar에 진행 상태 설정
+                        //progressBar = findViewById(R.id.progressBar);
+                        progressBar.setProgress(remainder); // 나머지 값을 progress로 설정
+                    } else {
+                        // transactionCount가 null인 경우 기본값 설정
+                        //levelBig = findViewById(R.id.levelhowmuch);
+                        levelBig.setText("거래 0번 더 하면 레벨 업이에요..");
+
+                        //levelSmall = findViewById(R.id.levelhowmuch2);
+                        levelSmall.setText("0Lv..");
+
+                        tradeNum.setText("0..");
+
+                        // ProgressBar 초기화
+                        //progressBar = findViewById(R.id.progressBar);
+                        progressBar.setProgress(0); // 기본값 0으로 설정
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this, "거래 횟수를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -592,10 +669,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
+    // ✅ 데이터 공유하는 함수니까 이건 잠시 보류해도 될듯
     public void shareData() {
         // SharedPreferences에 데이터 저장
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
