@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -144,6 +145,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             heart = itemView.findViewById(R.id.heart);
             countHeart = itemView.findViewById(R.id.heartCount);
         }
+    }
+
+    public void setItems(List<Recipe> recipeList){
+        this.recipeList= recipeList;
+        notifyDataSetChanged();
     }
 
 }

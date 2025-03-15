@@ -2,7 +2,10 @@ package root.dongmin.eat_da;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ public class RecipeActivity extends AppCompatActivity {
     private RecipeAdapter recipeAdapter;
     private List<Recipe> allRecipes = new ArrayList<>();
     private int space;
+    private EditText search;
 
 
     @Override
@@ -110,9 +114,28 @@ public class RecipeActivity extends AppCompatActivity {
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
 
+        search = findViewById(R.id.searchRecipe);
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchText = s.toString().toLowerCase(); // 입력된 검색어 가져오기
+                filterRecipes(searchText); // 검색 함수 호출
+            }
+        });
+
+
         // 버튼 이벤트 처리
         setupButtons();
         loadRecipe();
+
+
     }
 
     // 레시피 목록 불러오기
@@ -145,4 +168,24 @@ public class RecipeActivity extends AppCompatActivity {
             customDialog.show();
         });
     }
+
+
+    // 레시피 검색기능
+    private void filterRecipes(String searchText) {
+        List<Recipe> filteredList = new ArrayList<>();
+
+        if (allRecipes == null || allRecipes.isEmpty()) return; // null 체크
+
+        for (Recipe recipe : allRecipes) {
+            if (recipe.getContents().toLowerCase().contains(searchText) ||
+                    recipe.getIngredients().toLowerCase().contains(searchText)) {
+                filteredList.add(recipe);
+            }
+        }
+
+        if (recipeAdapter != null) {
+            recipeAdapter.setItems(filteredList); // 검색된 리스트 적용
+        }
+    }
+
 }
