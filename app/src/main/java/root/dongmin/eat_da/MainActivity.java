@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -521,11 +522,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     // ✅ 근처 게시글 보기 토글 기능
-    private void toggleNearbyPosts(Button nearbyButton) {
+    private void toggleNearbyPosts(SwitchCompat nearbySwitch) {
         if (isNearbyActive) {
             // 📌 토글 OFF: 원래 게시글 목록 복원
             isNearbyActive = false;
-            nearbyButton.setText("근처 게시글 보기");
+            nearbySwitch.setText("근처 게시글 보기");
 
             postAdapter = new PostAdapter(MainActivity.this, allPosts);
             recyclerView.setAdapter(postAdapter);
@@ -539,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
                                 double longitude = location.getLongitude();
 
                                 isNearbyActive = true;
-                                nearbyButton.setText("근처 게시글 취소");
+                                nearbySwitch.setText("근처 게시글 취소");
 
                                 loadNearbyPosts(latitude, longitude);
                             } else {
@@ -552,6 +553,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
 
 
@@ -568,8 +570,11 @@ public class MainActivity extends AppCompatActivity {
         Button findUserButton = findViewById(R.id.btnFindUser);
         findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
 
-        Button nearbutton = findViewById(R.id.btnNearby);
-        nearbutton.setOnClickListener(view -> toggleNearbyPosts(nearbutton));
+        SwitchCompat nearButton = findViewById(R.id.btnNearby);
+        nearButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            toggleNearbyPosts(nearButton);
+        });
+
 
 
         findUserButton.setOnClickListener(view -> {
