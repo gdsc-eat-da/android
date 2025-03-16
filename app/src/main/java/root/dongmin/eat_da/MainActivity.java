@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,6 +47,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     public String Nickname;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
-    private TextView greed, greed2, levelBig, levelSmall, tradeNum; // 사용자 환영 메시지
+    private TextView greed, greed2, levelBig, levelSmall, tradeNum, zacksungGesigul, zori, bezori, instant; // 사용자 환영 메시지
     private ProgressBar progressBar;
     private RecyclerView recyclerView, needrecyclerView;
     private PostAdapter postAdapter;
@@ -86,8 +89,12 @@ public class MainActivity extends AppCompatActivity {
     private List<String> chatList = new ArrayList<>();
     private List<NeedPost> needPosts;
     private EditText search;
+    private ImageView profileImage;
+    private boolean zorifilter, bezorifilter, instantfilter = false;
 
+    private List<Post> postList;
     private int space;
+    public int myTradeCount = 0;
 
     private FusedLocationProviderClient fusedLocationClient; // 위치 서비스 객체 추가
 
@@ -203,6 +210,12 @@ public class MainActivity extends AppCompatActivity {
         levelSmall = findViewById(R.id.levelhowmuch2);
         tradeNum = findViewById(R.id.gureCount);
         progressBar = findViewById(R.id.progressBar);
+        profileImage = findViewById(R.id.profileImage);
+        zacksungGesigul = findViewById(R.id.bookCount);
+        zori = findViewById(R.id.TextView_msgegg);
+        bezori = findViewById(R.id.textView_msgfruitvega);
+        instant = findViewById(R.id.textView_msgseed);
+        search = findViewById(R.id.searchPost);
 
 
         // RecyclerView 설정
@@ -228,11 +241,56 @@ public class MainActivity extends AppCompatActivity {
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
-        search = findViewById(R.id.searchPost);
+        zori.setOnClickListener(v -> {
+
+            if(zorifilter)
+            {
+                zori.setBackgroundResource(R.drawable.minisel);
+                zorifilter = false;
+                filterPosts2(zorifilter,bezorifilter,instantfilter);
+            }
+            else {
+                zori.setBackgroundResource(R.drawable.miniunsel);
+                zorifilter = true;
+                filterPosts2(zorifilter,bezorifilter,instantfilter);
+            }
+        });
+        bezori.setOnClickListener(v -> {
+
+            if(bezorifilter)
+            {
+                bezori.setBackgroundResource(R.drawable.minisel);
+                bezorifilter = false;
+                filterPosts2(zorifilter,bezorifilter,instantfilter);
+            }
+            else {
+                bezori.setBackgroundResource(R.drawable.miniunsel);
+                bezorifilter = true;
+                filterPosts2(zorifilter,bezorifilter,instantfilter);
+            }
+        });
+        instant.setOnClickListener(v -> {
+
+            if(instantfilter)
+            {
+                instant.setBackgroundResource(R.drawable.minisel);
+                instantfilter = false;
+                filterPosts2(zorifilter,bezorifilter,instantfilter);
+            }
+            else {
+                instant.setBackgroundResource(R.drawable.miniunsel);
+                instantfilter = true;
+                filterPosts2(zorifilter,bezorifilter,instantfilter);
+            }
+        });
 
         search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                //String searchText = s.toString().toLowerCase(); // 입력된 검색어 가져오기
+                //filterPosts(searchText, zorifilter, bezorifilter, instantfilter); // 검색 함수 호출
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -240,9 +298,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String searchText = s.toString().toLowerCase(); // 입력된 검색어 가져오기
-                filterPosts(searchText); // 검색 함수 호출
+                filterPosts(searchText, zorifilter, bezorifilter, instantfilter); // 검색 함수 호출
             }
         });
+
+
+
 
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
@@ -253,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
         handler.post(runnable);
         loadPosts();
         loadNeedPosts();
+        loadImageProfile();
         loadPostLocations();
 
         // 버튼 이벤트 처리
@@ -410,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // levelBig에 텍스트 설정
                         //levelBig = findViewById(R.id.levelhowmuch);
-                        levelBig.setText("거래 " + remainder + "번 더 하면 레벨 업이에요!");
+                        levelBig.setText("거래 " + (5-remainder) + "번 더 하면 레벨 업이에요!");
 
                         // levelSmall에 텍스트 설정
                         //levelSmall = findViewById(R.id.levelhowmuch2);
@@ -459,8 +521,12 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     allPosts = response.body(); // 기존 게시물 저장
+                    //postList = allPosts;
                     postAdapter = new PostAdapter(MainActivity.this, allPosts);
                     recyclerView.setAdapter(postAdapter);
+                    //✅ 추가로 거래횟수 로드 여기서 할게요
+                    loadtradeCount(allPosts);
+
                 } else {
                     showErrorMessage("게시글을 불러올 수 없습니다.");
                 }
@@ -663,8 +729,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Button findUserButton = findViewById(R.id.btnFindUser);
-        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
+//        Button findUserButton = findViewById(R.id.btnFindUser);
+//        findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
 
         SwitchCompat nearButton = findViewById(R.id.btnNearby);
         Drawable trackDrawable = ContextCompat.getDrawable(this, R.drawable.track);
@@ -682,12 +748,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        findUserButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
-            intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
-            intent.putExtra("nickname", Nickname);
-            startActivity(intent);
-        });
+//        findUserButton.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
+//            intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
+//            intent.putExtra("nickname", Nickname);
+//            startActivity(intent);
+//        });
 
     }
 
@@ -731,22 +797,137 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    // ✅ 프로필 들고오는 코드
+    public void loadImageProfile()
+    {
+
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            String uid = firebaseUser.getUid();
+
+            // 사용자 정보 가져오기 (프로필 이미지)
+            mDatabaseRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
+
+                        // 프로필 이미지 설정
+                        if (profileImageUrl != null) {
+                            //ImageView profileImage = findViewById(R.id.profileImage);  // XML에서 정의한 ImageView
+                            Glide.with(MainActivity.this)
+                                    .load(profileImageUrl)  // Firebase에서 가져온 URL
+                                    .into(profileImage);  // ImageView에 로드
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this, "데이터 로딩 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ✅ 거래횟수 로드(계시글 목록 불러오는 함수랑 연동됨)
+    public void loadtradeCount(List<Post> posta)
+    {
+        for(Post pp:posta)
+        {
+            if(pp.getNickname().equals(Nickname) )
+            {
+                myTradeCount+=1;
+            }
+
+        }
+        zacksungGesigul.setText(String.valueOf(myTradeCount));
+    }
     // 게시물 검색기능
-    private void filterPosts(String searchText) {
+    private void filterPosts(String searchText, boolean zorifilter, boolean bezorifilter, boolean instantfilter) {
         List<Post> filteredList = new ArrayList<>();
 
         if(allPosts == null || allPosts.isEmpty()) return; // null 체크
 
         for (Post post : allPosts) {
-            if (post.getContents().toLowerCase().contains(searchText) ||
-                    post.getIngredients().toLowerCase().contains(searchText)){
-                filteredList.add(post);
+            if (!(post.getContents().toLowerCase().contains(searchText) ||
+                    post.getIngredients().toLowerCase().contains(searchText)))
+            {
+                continue;
             }
+
+            List<String> hashtags = Arrays.asList(post.getHashtag().split("_"));
+
+            if(zorifilter == true)
+            {
+                if (!(zorifilter && hashtags.contains("조리"))) {
+                    continue;
+                }
+            }
+            if(bezorifilter == true)
+            {
+                if (!(bezorifilter && hashtags.contains("비조리"))) {
+                    continue;
+                }
+            }
+            if(instantfilter == true)
+            {
+                if (!(instantfilter && hashtags.contains("인스턴트"))) {
+                    continue;
+                }
+            }
+
+
+            filteredList.add(post);
         }
 
         if (postAdapter != null) {
             postAdapter.setItems(filteredList); // 검색된 리스트 적용
         }
     }
+    private void filterPosts2(boolean zorifilter, boolean bezorifilter, boolean instantfilter) {
+        List<Post> filteredList = new ArrayList<>();
+
+        if (allPosts == null || allPosts.isEmpty()) return; // null 체크
+
+        for (Post post : allPosts) {
+
+            List<String> hashtags = Arrays.asList(post.getHashtag().split("_"));
+
+            if(zorifilter == true)
+            {
+                if (!(zorifilter && hashtags.contains("조리"))) {
+                    continue;
+                }
+            }
+            if(bezorifilter == true)
+            {
+                if (!(bezorifilter && hashtags.contains("비조리"))) {
+                    continue;
+                }
+            }
+            if(instantfilter == true)
+            {
+                if (!(instantfilter && hashtags.contains("인스턴트"))) {
+                    continue;
+                }
+            }
+            filteredList.add(post);
+        }
+
+        if (postAdapter != null) {
+            postAdapter.setItems(filteredList); // 검색된 리스트 적용
+        }
+    }
+
+    // 게시물 검색기능이랑 양대산맥을 이루는 조리,비조리,인스턴트 검색기능(태그)
+
+
+
+
+
+
 
 }
