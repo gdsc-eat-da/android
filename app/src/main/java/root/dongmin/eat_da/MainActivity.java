@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -666,6 +667,15 @@ public class MainActivity extends AppCompatActivity {
         findUserButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, UserFindActivity.class)));
 
         SwitchCompat nearButton = findViewById(R.id.btnNearby);
+        Drawable trackDrawable = ContextCompat.getDrawable(this, R.drawable.track);
+        // nearButton에 적용
+        nearButton.setTrackDrawable(trackDrawable);
+
+        Drawable thumbDrawable = ContextCompat.getDrawable(this,R.drawable.thumb);
+        // nearButton에 적용
+        nearButton.setThumbDrawable(thumbDrawable);
+
+
         nearButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             toggleNearbyPosts(nearButton);
         });

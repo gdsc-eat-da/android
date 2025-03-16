@@ -25,14 +25,15 @@
         android:id="@+id/donationCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_marginTop="55dp"
         android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="20sp"
+        android:text="0"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.725"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.258" />
+        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
     <ImageView
         android:id="@+id/back"
@@ -86,10 +87,10 @@
         android:text="내가 올린글"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintHorizontal_bias="0.068"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.603" />
+        app:layout_constraintVertical_bias="0.909" />
 
     <ImageButton
         android:id="@+id/btnLogout"
@@ -122,9 +123,50 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="44dp"
         android:text="내정보"
-        android:textSize="18sp"
+        android:textSize="19sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back" />
+
+    <TextView
+        android:id="@+id/textView32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="56dp"
+        android:text="알림"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alergicButton" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="20dp"
+        android:text="알림 허용"
+        android:textStyle="bold"
+        android:textColor="#828282"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView32" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/btnAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="7dp"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:textColor="#CCCCCC"
+        android:textStyle="bold"
+        android:thumb="@drawable/thumb"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView32"
+        app:switchMinWidth="0dp"
+        app:thumbTextPadding="20dp"
+        app:track="@drawable/track" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

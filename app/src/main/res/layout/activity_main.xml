@@ -232,6 +232,8 @@
             app:layout_constraintTop_toBottomOf="@+id/searchPost"
             />
 
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNeedView"
             android:layout_width="0dp"
@@ -271,9 +273,11 @@
         <!-- 근처 게시물 필터링 스위치 -->
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/btnNearby"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="근처 게시물 필터링  "
+            android:textStyle="bold"
+            android:textColor="#CCCCCC"
             android:thumb="@drawable/thumb"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
             app:layout_constraintEnd_toEndOf="parent"
@@ -281,7 +285,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnFindUser"
             app:switchMinWidth="0dp"
-            app:thumbTextPadding="24dp"
+            app:thumbTextPadding="20dp"
             app:track="@drawable/track" />
 
         <!-- 하단 네비게이션 뷰 -->
