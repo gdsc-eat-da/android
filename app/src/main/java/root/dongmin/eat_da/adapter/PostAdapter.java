@@ -209,6 +209,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
     }
 
+    public void setItems(List<Post> postList){
+        this.postList = postList;
+        notifyDataSetChanged();
+    }
+
     interface OnNicknameReceivedListener {
         void onReceived(String nickname);
     }

@@ -10,9 +10,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Post> allPosts = new ArrayList<>(); // 원래 전체 게시글 저장용
     private List<String> chatList = new ArrayList<>();
     private List<NeedPost> needPosts;
+    private EditText search;
 
     private int space;
 
@@ -223,7 +227,21 @@ public class MainActivity extends AppCompatActivity {
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
+        search = findViewById(R.id.searchPost);
 
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchText = s.toString().toLowerCase(); // 입력된 검색어 가져오기
+                filterPosts(searchText); // 검색 함수 호출
+            }
+        });
 
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);
@@ -703,27 +721,22 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    // 게시물 검색기능
+    private void filterPosts(String searchText) {
+        List<Post> filteredList = new ArrayList<>();
 
+        if(allPosts == null || allPosts.isEmpty()) return; // null 체크
 
+        for (Post post : allPosts) {
+            if (post.getContents().toLowerCase().contains(searchText) ||
+                    post.getIngredients().toLowerCase().contains(searchText)){
+                filteredList.add(post);
+            }
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        if (postAdapter != null) {
+            postAdapter.setItems(filteredList); // 검색된 리스트 적용
+        }
+    }
 
 }
