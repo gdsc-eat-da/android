@@ -2,7 +2,9 @@ package root.dongmin.eat_da;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,6 +22,8 @@ import android.graphics.Color;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -65,6 +69,8 @@ public class MyPageActivity extends AppCompatActivity {
     private ImageButton logout;
     public List<String> selectedItems;
     public String selectedJoinedItems;
+    private boolean alarmSetting = true;
+    private SwitchCompat alarmSwitch;
 
 
     @Override
@@ -124,7 +130,7 @@ public class MyPageActivity extends AppCompatActivity {
         });
 
         // 알레르기 버튼 클릭 리스너 설정                                                 <알레르기!>
-        ImageButton alergicButton = findViewById(R.id.alergicButton);
+        Button alergicButton = findViewById(R.id.alergicButton);
         alergicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,6 +248,22 @@ public class MyPageActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+        });
+
+
+        Drawable trackDrawable = ContextCompat.getDrawable(this, R.drawable.track);
+        Drawable thumbDrawable = ContextCompat.getDrawable(this, R.drawable.thumb);
+
+        alarmSwitch = findViewById(R.id.btnAlarm); // 찾고
+
+        alarmSwitch.setChecked(alarmSetting);
+
+        alarmSwitch.setTrackDrawable(trackDrawable); // 적용
+        alarmSwitch.setThumbDrawable(thumbDrawable);
+
+
+        alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            toggleSetAlarm(alarmSwitch);
         });
     }
 
@@ -400,6 +422,39 @@ public class MyPageActivity extends AppCompatActivity {
             Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    // 알람 설정 기능
+    private void toggleSetAlarm(SwitchCompat alarmSwitch) {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE); //이걸로 앱이 재시작 되어도 상태 유지
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        alarmSetting = !alarmSetting; // 상태 변경
+        editor.putBoolean("alarmSetting", alarmSetting); // 변경된 상태 저장
+        editor.apply();
+
+        if (alarmSetting) {
+            setAlarm(); // 알람 활성화
+            Toast.makeText(this, "알람이 활성화되었습니다.", Toast.LENGTH_SHORT).show();
+        } else {
+            cancelAlarm(); // 알람 비활성화
+            Toast.makeText(this, "알람이 비활성화되었습니다.", Toast.LENGTH_SHORT).show();
+        }
+
+        alarmSwitch.setChecked(alarmSetting); // UI 업데이트
+    }
+
+    // 알람을 설정하는 메서드
+    private void setAlarm() {
+        // 여기에 알람을 설정하는 로직 추가 (예: AlarmManager 활용)
+        Log.d("Alarm", "알람이 활성화되었습니다.");
+    }
+
+    // 알람을 취소하는 메서드
+    private void cancelAlarm() {
+        // 여기에 알람을 해제하는 로직 추가
+        Log.d("Alarm", "알람이 비활성화되었습니다.");
+    }
+
 
 
 }
