@@ -71,6 +71,7 @@ public class MyPageActivity extends AppCompatActivity {
     public String selectedJoinedItems;
     private boolean alarmSetting = true;
     private SwitchCompat alarmSwitch;
+    private ImageView goSetting;
 
 
     @Override
@@ -265,6 +266,13 @@ public class MyPageActivity extends AppCompatActivity {
         alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             toggleSetAlarm(alarmSwitch);
         });
+
+        goSetting = findViewById(R.id.btnGoMySetting);
+        goSetting.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), MySetting.class);
+            v.getContext().startActivity(intent);
+        });
+
     }
 
 

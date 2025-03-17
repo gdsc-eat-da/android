@@ -27,6 +27,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".MySetting"
+            android:exported="false" />
+        <activity
             android:name=".WarmingupActivity1"
             android:exported="false" />
         <activity

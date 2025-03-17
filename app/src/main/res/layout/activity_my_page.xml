@@ -100,7 +100,7 @@
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="800dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/logout"
         android:text="로그아웃"
@@ -196,6 +196,16 @@
         app:layout_constraintHorizontal_bias="0.997"
         app:layout_constraintStart_toStartOf="@+id/alergicButton"
         app:layout_constraintTop_toTopOf="@+id/alergicButton"
+        app:srcCompat="@drawable/go" />
+
+    <ImageView
+        android:id="@+id/btnGoMySetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="115dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/go" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

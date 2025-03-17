@@ -35,6 +35,7 @@ import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Post;
 import root.dongmin.eat_da.network.RetrofitClient;
+import root.dongmin.eat_da.utils.SpaceItemDecoration;
 
 public class MyPostActivity extends AppCompatActivity {
 
@@ -45,6 +46,7 @@ public class MyPostActivity extends AppCompatActivity {
     private List<NeedPost> needPosts;
     private ApiService apiService;
     private ImageView back;
+    private int space;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +54,24 @@ public class MyPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_post);
 
         recyclerView = findViewById(R.id.myrecyclerView);
+
+        space = 25;
+
+        // SpaceItemDecoration 인스턴스 생성
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration(space);
+
+        // RecyclerView에 itemDecoration 적용
+        recyclerView.addItemDecoration(itemDecoration);
+
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         needrecyclerView = findViewById(R.id.myneedrecyclerView);
+
+        // RecyclerView에 itemDecoration 적용
+        needrecyclerView.addItemDecoration(itemDecoration);
+
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         back = findViewById(R.id.btnback4);
