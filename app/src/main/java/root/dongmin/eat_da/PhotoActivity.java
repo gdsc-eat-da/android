@@ -257,25 +257,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
                     allergyAdapter.updateAllergyList(modifiedItems);
 
-
-//                    // modifiedItems의 값을 alergicList와 finalAlergicList에 추가 (중복 제외)
-//                    for (String item : modifiedItems) {
-//                        if (!alergicList.contains(item)) { // alergicList에 중복되지 않으면 추가
-//                            alergicList.add(item);
-//                        }
-//                        if (!finalAlergicList.contains(item)) { // finalAlergicList에 중복되지 않으면 추가
-//                            finalAlergicList.add(item);
-//                        }
-//                    }
-
-//                    // 어댑터에 데이터 변경 알리기
-//                    if (allergyAdapter != null) {
-//                        allergyAdapter.notifyDataSetChanged(); // alergicAdapter 업데이트
-//                    }
-
-//                    // 로그로 확인
-//                    Log.d("PhotoActivity", "Updated alergicList!: " + alergicList);
-//                    Log.d("PhotoActivity", "Updated finalAlergicList!: " + finalAlergicList);
                 }
             }
         }
