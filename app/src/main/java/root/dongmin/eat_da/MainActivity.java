@@ -446,7 +446,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     // ✅ 사용자 레벨 가져오기
-    // ✅ 사용자 레벨 가져오기
     private void loadUserLevel() {
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 

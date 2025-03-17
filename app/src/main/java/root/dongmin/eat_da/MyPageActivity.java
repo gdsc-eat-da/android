@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Color;
@@ -72,6 +73,7 @@ public class MyPageActivity extends AppCompatActivity {
     private boolean alarmSetting = true;
     private SwitchCompat alarmSwitch;
     private ImageView goSetting;
+
 
 
     @Override
@@ -273,6 +275,9 @@ public class MyPageActivity extends AppCompatActivity {
             v.getContext().startActivity(intent);
         });
 
+
+
+
     }
 
 
@@ -462,7 +467,6 @@ public class MyPageActivity extends AppCompatActivity {
         // 여기에 알람을 해제하는 로직 추가
         Log.d("Alarm", "알람이 비활성화되었습니다.");
     }
-
 
 
 }
