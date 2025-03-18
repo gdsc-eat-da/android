@@ -24,65 +24,44 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int TYPE_ALLERGY = 0; // 알레르기 아이템 타입
     private static final int TYPE_PLUS = 1; // plus 이미지 아이템 타입
 
-    private List<String> allergyList; // 알레르기 아이템 목록 (액티비티의 리스트를 참조)
-    private List<String> finalAlergicList; // 선택된 알레르기 아이템 목록 (액티비티의 리스트를 참조)
+    private List<String> allergyList; // 알레르기 아이템 목록
+    private List<String> finalAlergicList; // 선택된 알레르기 아이템 목록
     private List<Boolean> isSelectedList; // 아이템의 선택 상태 리스트
 
-    // 생성자에서 액티비티의 리스트를 전달받음
+    // 생성자
     public AllergyAdapter(List<String> allergyList, List<String> finalAlergicList) {
-        this.allergyList = allergyList; // 액티비티의 리스트를 직접 참조
-        this.finalAlergicList = finalAlergicList; // 액티비티의 리스트를 직접 참조
+        this.allergyList = allergyList;
+        this.finalAlergicList = finalAlergicList;
         this.isSelectedList = new ArrayList<>();
         syncIsSelectedList(); // isSelectedList 초기화
     }
 
     // isSelectedList를 allergyList와 동기화
     private void syncIsSelectedList() {
-        while (isSelectedList.size() < allergyList.size()) {
-            isSelectedList.add(false); // 기본값은 true 왜냐면 알레르기 거기에서 이미 선택한 거니까
-        }
-    }
-    private void syncIsSelectedList(int a) {
-        int aa = a;
-        if(aa == 1)
-        {
-            while (isSelectedList.size() < allergyList.size()) {
-                isSelectedList.add(true); // 기본값은 true 왜냐면 알레르기 거기에서 이미 선택한 거니까
-            }
+        isSelectedList.clear(); // 기존 데이터 초기화
+        for (String item : allergyList) {
+            // finalAlergicList에 포함된 아이템은 true로 설정
+            isSelectedList.add(finalAlergicList.contains(item));
         }
     }
 
-    // allergyList 업데이트 메서드(나중에 추가시키기)
+    // allergyList 업데이트 메서드
     public void updateAllergyList(List<String> newAllergyList) {
-
-
-        // modifiedItems의 값을 alergicList와 finalAlergicList에 추가 (중복 제외)
         for (String item : newAllergyList) {
-            if (!this.allergyList.contains(item)) { // alergicList에 중복되지 않으면 추가
-                this.allergyList.add(item);
-
-                if (!this.finalAlergicList.contains(item)) { // finalAlergicList에 중복되지 않으면 추가
-                    this.finalAlergicList.add(item);
+            if (!allergyList.contains(item)) {
+                allergyList.add(item);
+                if (!finalAlergicList.contains(item)) {
+                    finalAlergicList.add(item);
+                }
+            } else {
+                int index = allergyList.indexOf(item);
+                isSelectedList.set(index, true);
+                if (!finalAlergicList.contains(item)) {
+                    finalAlergicList.add(item);
                 }
             }
-            else if(this.allergyList.contains(item))//만약 중복이 된다면
-            {
-
-                int index = this.allergyList.indexOf(item); // 중복된 아이템의 인덱스 찾기
-                this.isSelectedList.set(index, true); // isSelectedList의 해당 인덱스를 true로 설정
-
-
-                if (!this.finalAlergicList.contains(item)) { // finalAlergicList에 중복되지 않으면 추가
-                    this.finalAlergicList.add(item);
-                }
-            }
-
         }
-
-        // 로그로 확인
-        Log.d("PhotoActivity", "Updated alergicList!: " + this.allergyList);
-        Log.d("PhotoActivity", "Updated finalAlergicList!: " + this.finalAlergicList);
-        syncIsSelectedList(1); // isSelectedList 동기화
+        syncIsSelectedList(); // isSelectedList 동기화
         notifyDataSetChanged(); // 어댑터에 데이터 변경 알림
     }
 
@@ -91,11 +70,9 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_ALLERGY) {
-            // 알레르기 아이템 뷰 홀더 생성
             View view = inflater.inflate(R.layout.item_minialergic, parent, false);
             return new AllergyViewHolder(view);
         } else {
-            // plus 이미지 아이템 뷰 홀더 생성
             View view = inflater.inflate(R.layout.item_plus, parent, false);
             return new PlusViewHolder(view);
         }
@@ -104,45 +81,36 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof AllergyViewHolder) {
-            // 알레르기 아이템 처리
             String allergyItem = allergyList.get(position);
             ((AllergyViewHolder) holder).bind(allergyItem);
 
-            // 아이템의 선택 상태에 따라 배경 설정
             if (isSelectedList.get(position)) {
-                ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.miniunsel); // 활성화 상태
+                ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.miniunsel);
             } else {
-                ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.minisel); // 비활성화 상태
+                ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.minisel);
             }
 
-            // 아이템 클릭 이벤트 처리
             holder.itemView.setOnClickListener(v -> {
                 boolean isSelected = isSelectedList.get(position);
 
                 if (!isSelected) {
-                    // 활성화 상태로 변경
                     isSelectedList.set(position, true);
                     ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.miniunsel);
-                    finalAlergicList.add(allergyItem); // 리스트에 추가 (액티비티의 리스트를 직접 수정)
-                    Toast.makeText(v.getContext(), "추가됨: " + allergyItem, Toast.LENGTH_SHORT).show();
+                    if (!finalAlergicList.contains(allergyItem)) {
+                        finalAlergicList.add(allergyItem);
+                        Toast.makeText(v.getContext(), "추가됨: " + allergyItem, Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    // 비활성화 상태로 변경
                     isSelectedList.set(position, false);
                     ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.minisel);
-                    finalAlergicList.remove(allergyItem); // 리스트에서 제거 (액티비티의 리스트를 직접 수정)
+                    finalAlergicList.remove(allergyItem);
                     Toast.makeText(v.getContext(), "제거됨: " + allergyItem, Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (holder instanceof PlusViewHolder) {
-            // plus 이미지 아이템 처리
             ((PlusViewHolder) holder).itemView.setOnClickListener(v -> {
-                // 새로운 액티비티를 띄우고 결과를 받아오기
                 Intent intent = new Intent(v.getContext(), alergicActivity.class);
-
-                // 현재 선택된 아이템을 전달 (예: selectedItems)
                 intent.putExtra("selectedItems", (Serializable) finalAlergicList);
-
-                // 액티비티를 띄우고 결과를 받기 위해 요청 코드 사용
                 ((Activity) v.getContext()).startActivityForResult(intent, 101);
             });
         }
@@ -150,13 +118,11 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        // 알레르기 아이템 수 + plus 이미지 1개
         return allergyList.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        // 마지막 아이템은 plus 이미지 타입으로 설정
         if (position == allergyList.size()) {
             return TYPE_PLUS;
         }

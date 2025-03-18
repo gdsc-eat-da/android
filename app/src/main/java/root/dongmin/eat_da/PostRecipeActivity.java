@@ -1,14 +1,18 @@
 package root.dongmin.eat_da;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,9 +20,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +34,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -39,6 +46,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.HashtagAdapter;
+import root.dongmin.eat_da.adapter.PlusHashtagAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.RetrofitClient;
 
@@ -48,6 +57,22 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
     private Button btnUpload;
     private ImageView cameraView,back;
     private EditText eText, inText;
+    private PlusHashtagAdapter plusHashtagAdapter;
+    private root.dongmin.eat_da.adapter.HashtagAdapter HashtagAdapter;
+    private RecyclerView hashtagRecyclerView, plusHashtagRecyclerView;
+    public List<String> hashList = new ArrayList<>(Arrays.asList("인기", "분리배출", "질문상담" ,"알뜰 지식"));
+    public List<String> finalHashList = new ArrayList<>();
+    public List<String> UpHashList = new ArrayList<>();
+    private TextView free, recipe;
+    private int isrecipe = 0; // 0 또는 1로 설정
+
+
+
+
+
+
+
+
 
     // 사진 저장 변수
     private Bitmap imageBitmap;
@@ -73,6 +98,38 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         cameraView = findViewById(R.id.recipecarmeraView);
         eText = findViewById(R.id.recipecontext);
         inText = findViewById(R.id.recipeingredient);
+        plusHashtagRecyclerView = findViewById(R.id.plusHashtagRecyclerView);//해시태그 위에 있는 리사이클러뷰
+        hashtagRecyclerView = findViewById(R.id.hashtagRecyclerView);//해시태그 밑에 있는 리사이클러뷰
+        plusHashtagRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        hashtagRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // 뷰 초기화
+
+
+        free = findViewById(R.id.textView30);
+        recipe = findViewById(R.id.textView31);
+        updateTextColor(isrecipe);
+        free.setOnClickListener(v -> {
+            isrecipe = 0; // freeorrecipe 값을 0으로 설정
+            //updateTextColor(isrecipe); // 텍스트 색상 업데이트
+            free.setTextColor(Color.parseColor("#000000")); // textView30: 검은색
+            recipe.setTextColor(Color.parseColor("#999AA3")); // textView31: 회색
+        });
+
+        recipe.setOnClickListener(v -> {
+            isrecipe = 1; // freeorrecipe 값을 1로 설정
+            //updateTextColor(isrecipe); // 텍스트 색상 업데이트
+            free.setTextColor(Color.parseColor("#999AA3")); // textView30: 회색
+            recipe.setTextColor(Color.parseColor("#000000")); // textView31: 검은색
+        });
+
+
+        //어댑터 설정
+        HashtagAdapter = new HashtagAdapter(hashList, finalHashList);
+        hashtagRecyclerView.setAdapter(HashtagAdapter);
+        plusHashtagAdapter = new PlusHashtagAdapter(UpHashList, this, HashtagAdapter);
+        plusHashtagRecyclerView.setAdapter(plusHashtagAdapter);
+        plusHashtagRecyclerView.setOnClickListener(v -> showCustomDialog());
+
 
         // 뒤로가기 이벤트 처리
         back = findViewById(R.id.btnback7);
@@ -138,6 +195,9 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
 
             Log.d("Upload", "닉네임 포함하여 업로드: " + nickname);
 
+            // ✅ finalHashList를 정렬하고 _로 구분된 문자열로 변환
+            String hashtags = getFormattedHashtags();
+
             // ✅ 이미지 Multipart 변환
             MultipartBody.Part filePart = createImagePart(imageBitmap);
 
@@ -145,10 +205,12 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
             RequestBody contentsBody = RequestBody.create(MediaType.parse("text/plain"), contents);
             RequestBody ingredientsBody = RequestBody.create(MediaType.parse("text/plain"), ingredients);
             RequestBody nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname);
+            RequestBody hashtagsBody = RequestBody.create(MediaType.parse("text/plain"), hashtags); // hashtag 추가
+            RequestBody isrecipeBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(isrecipe)); // isrecipe 추가
 
 
             // ✅ API 호출
-            Call<ResponseBody> call = apiService.uploadRecipe(filePart, contentsBody, ingredientsBody, nicknameBody);
+            Call<ResponseBody> call = apiService.uploadRecipe(filePart, contentsBody, ingredientsBody, nicknameBody, hashtagsBody, isrecipeBody);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -230,4 +292,104 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
     interface OnNicknameReceivedListener {
         void onReceived(String nickname);
     }
+
+
+
+
+
+
+
+
+
+
+
+    private void showCustomDialog() {
+        Toast.makeText(getApplicationContext(), "다이얼로그 시작.", Toast.LENGTH_SHORT).show();
+        // 1. 다이얼로그 생성
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_item);
+
+        // 2. 다이얼로그 내부 UI 요소 가져오기
+        EditText editTextInput = dialog.findViewById(R.id.editTextInput);
+        ImageView btnAdd = dialog.findViewById(R.id.btnAdd);
+
+        // 3. 추가 버튼 클릭 시 아이템 리스트에 추가
+        btnAdd.setOnClickListener(v -> {
+            String newItem = editTextInput.getText().toString().trim();
+            if (!newItem.isEmpty() && !UpHashList.contains(newItem)) {
+                // UpHashList에 새로운 아이템 추가
+                UpHashList.add(newItem);
+                // 어댑터에 데이터 변경 알림
+                plusHashtagAdapter.notifyDataSetChanged();
+                // 다이얼로그 닫기
+                dialog.dismiss();
+            } else {
+                Toast.makeText(getApplicationContext(), "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 4. 다이얼로그 표시
+        dialog.show();
+    }
+
+
+    // freeorrecipe 값에 따라 텍스트 색상 업데이트
+    private void updateTextColor(int freeorrecipe) {
+        if (freeorrecipe == 0) {
+            // freeorrecipe가 0인 경우
+            free.setTextColor(Color.parseColor("#000000")); // textView30: 검은색
+            recipe.setTextColor(Color.parseColor("#999AA3")); // textView31: 회색
+        } else {
+            // freeorrecipe가 1인 경우
+            free.setTextColor(Color.parseColor("#999AA3")); // textView30: 회색
+            recipe.setTextColor(Color.parseColor("#000000")); // textView31: 검은색
+        }
+    }
+
+
+
+    // finalHashList를 정렬하고 _로 구분된 문자열로 변환
+    private String getFormattedHashtags() {
+        Collections.sort(finalHashList); // 정렬
+        return TextUtils.join("_", finalHashList); // _로 구분된 문자열로 변환
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

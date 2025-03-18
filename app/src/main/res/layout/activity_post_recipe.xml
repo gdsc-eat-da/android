@@ -34,16 +34,33 @@
         app:layout_constraintTop_toBottomOf="@+id/btnback7" />
 
     <TextView
+        android:id="@+id/textView37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="#도움"
+        android:textColor="#999AA3"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView30"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.284"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnback7"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
         android:id="@+id/textView31"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="#도움   #레시피"
+        android:text="#레시피"
         android:textColor="#999AA3"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView37"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
+        app:layout_constraintHorizontal_bias="0.378"
         app:layout_constraintStart_toEndOf="@+id/textView30"
         app:layout_constraintTop_toBottomOf="@+id/btnback7" />
 
@@ -87,6 +104,52 @@
         app:shapeAppearanceOverlay="@style/RoundedImageView2"
         app:srcCompat="@drawable/takephoto" />
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/plusHashtagRecyclerView"
+        android:layout_width="362dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="44dp"
+        android:background="#F5F5F5"
+        app:layout_constraintEnd_toEndOf="@+id/recipecarmeraView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/recipecarmeraView"
+        app:layout_constraintTop_toBottomOf="@+id/recipecarmeraView" />
+
+    <TextView
+        android:id="@+id/allergyText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="추천 해시태그"
+        android:textSize="16sp"
+
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/plusHashtagRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/plusHashtagRecyclerView" />
+
+    <TextView
+        android:id="@+id/allergyDescription2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(최대 5개)"
+        android:textColor="#808080"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/allergyText2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.034"
+        app:layout_constraintStart_toEndOf="@+id/allergyText2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hashtagRecyclerView"
+        android:layout_width="362dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="12dp"
+        android:background="#ffffff"
+        app:layout_constraintEnd_toEndOf="@+id/plusHashtagRecyclerView"
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="@+id/plusHashtagRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/allergyText2" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/recipeupload"

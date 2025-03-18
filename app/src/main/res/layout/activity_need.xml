@@ -46,6 +46,50 @@
             app:layout_constraintTop_toBottomOf="@+id/needcontext" />
 
 
+        <TextView
+            android:id="@+id/allergyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:text="알레르기 유무"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/needingredient"
+            app:layout_constraintTop_toBottomOf="@+id/needingredient" />
+
+        <TextView
+            android:id="@+id/allergyText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:text="거래 방법"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/allergyRecyclerView"
+            app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView" />
+
+        <TextView
+            android:id="@+id/allergyDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="음식이 해당 알레르기에 포함되진 않나요?"
+            android:textColor="#808080"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/allergyText"
+            app:layout_constraintTop_toBottomOf="@id/allergyText" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/allergyRecyclerView"
+            android:layout_width="362dp"
+            android:layout_height="61dp"
+            android:layout_marginTop="12dp"
+            android:background="#ffffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/allergyText"
+            app:layout_constraintTop_toBottomOf="@id/allergyDescription" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/needphotoupload"
             android:layout_width="363dp"
@@ -117,10 +161,11 @@
             android:id="@+id/radioNeedFace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.482"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/needingredient">
+            app:layout_constraintTop_toBottomOf="@+id/allergyText3">
 
             <RadioButton
                 android:id="@+id/needface"
@@ -128,17 +173,15 @@
                 android:layout_height="130dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/checkedface"
-                android:checked="true"
                 android:button="@null"
-                />
+                android:checked="true" />
 
             <RadioButton
                 android:id="@+id/neednoface"
                 android:layout_width="363dp"
                 android:layout_height="130dp"
                 android:background="@drawable/noface"
-                android:button="@null"
-                />
+                android:button="@null" />
         </RadioGroup>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

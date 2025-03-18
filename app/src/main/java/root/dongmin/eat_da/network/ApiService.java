@@ -49,7 +49,10 @@ public interface ApiService {
             @Part MultipartBody.Part photo, //사진
             @Part("contents") RequestBody contents, // 내용
             @Part("ingredients") RequestBody ingredients, // 재료(영양 성분)
-            @Part("nickname") RequestBody nickname //  닉네임 추가
+            @Part("nickname") RequestBody nickname, //  닉네임 추가
+            @Part("hashtag") RequestBody hashtag,
+            @Part("isrecipe") RequestBody isrecipe
+
             // + 추천수 suggestion 컬럼 존재함
     );
 

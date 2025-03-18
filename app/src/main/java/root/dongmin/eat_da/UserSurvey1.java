@@ -74,13 +74,13 @@ public class UserSurvey1 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isIndividual == 1) {
-                    Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
+                    Intent intent = new Intent(UserSurvey1.this, alergicActivity.class);
                     startActivityForResult(intent, 101); // 알레르기 정보 입력 후 결과 받기(수정했음)
                     // 화면 전환 애니메이션 적용
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     //finish();
                 } else {
-                    Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
+                    Intent intent = new Intent(UserSurvey1.this, UserServey2.class);
                     startActivity(intent);
 
                     // 화면 전환 애니메이션 적용
@@ -140,9 +140,9 @@ public class UserSurvey1 extends AppCompatActivity {
                 if (modifiedItems != null) {
                     selectedItems = modifiedItems;
                     Log.d("UsersurvayActivity", "Modified items: " + selectedItems);
-                    Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
+                    Intent intent = new Intent(UserSurvey1.this, UserServey2.class);
                     // selectedItems와 userType을 Intent에 추가
-                    intent.putStringArrayListExtra("selectedItems", new ArrayList<>(selectedItems)); // List<String>을 전달
+                    intent.putStringArrayListExtra("selectedItems", new ArrayList<>(modifiedItems)); // List<String>을 전달
                     intent.putExtra("userType", userType); // String 변수 전달
                     // 액티비티 시작
                     startActivity(intent);
@@ -151,7 +151,7 @@ public class UserSurvey1 extends AppCompatActivity {
                 }
             }
             else {
-                Intent intent = new Intent(UserSurvey1.this, WarmingupActivity1.class);
+                Intent intent = new Intent(UserSurvey1.this, UserServey2.class);
                 // selectedItems와 userType을 Intent에 추가
                 intent.putStringArrayListExtra("selectedItems", new ArrayList<>(selectedItems)); // List<String>을 전달
                 intent.putExtra("userType", userType); // String 변수 전달

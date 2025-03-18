@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <!-- 고정된 BottomNavigationView -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -23,47 +24,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
-    <ImageView
-        android:id="@+id/imageView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/recipe1" />
-
-    <TextView
-        android:id="@+id/textView27"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:maxLines="2"
-        android:text="무슨 요리를 해야할 지 도와드릴게요."
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.075"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView18" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recipeRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="450dp"
-        android:layout_marginTop="24dp"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchRecipe" />
-
+    <!-- 고정된 글쓰기 버튼 -->
     <ImageButton
         android:id="@+id/btngotophoto2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/posting"
         android:contentDescription="글쓰기 버튼"
+        android:elevation="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.945"
@@ -71,33 +39,293 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.928" />
 
-    <EditText
-        android:id="@+id/searchRecipe"
-        android:layout_width="363dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="36dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="원하는 음식을 검색해보세요!"
-        android:paddingLeft="16dp"
-        android:textColor="#B0B0B0"
-        android:textSize="16sp"
-        android:background="@drawable/edit_text_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView27" />
+    <!-- 스크롤 가능한 영역 -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/searching"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.885"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchRecipe"
-        app:srcCompat="@drawable/search" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 프로필 이미지 -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profileImage"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_marginTop="52dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.062"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/RoundedImageView"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <!-- 인사말 -->
+            <TextView
+                android:id="@+id/greeding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="반갑습니다. 000님!"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/profileImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/profileImage"
+                app:layout_constraintTop_toTopOf="@id/profileImage"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <!-- 검색창 -->
+
+            <EditText
+                android:id="@+id/searchRecipe"
+                android:layout_width="363dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="36dp"
+                android:background="@drawable/edit_text_background"
+                android:ems="10"
+                android:hint="원하는 음식을 검색해보세요!"
+                android:inputType="text"
+                android:paddingLeft="16dp"
+                android:textColor="#B0B0B0"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+            <ImageView
+                android:id="@+id/searching"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="@+id/searchRecipe"
+                app:layout_constraintHorizontal_bias="0.972"
+                app:layout_constraintStart_toStartOf="@+id/searchRecipe"
+                app:layout_constraintTop_toTopOf="@+id/searchRecipe"
+                app:srcCompat="@drawable/search" />
+
+            <!-- 텍스트 및 RecyclerView -->
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:maxLines="2"
+                android:text="무슨 요리를 해야할 지 도와드릴게요."
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/searchRecipe"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/searchRecipe"
+                app:layout_constraintTop_toBottomOf="@+id/searchRecipe" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="388dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView27"
+                app:layout_constraintTop_toBottomOf="@+id/textView27">
+
+                <TextView
+                    android:id="@+id/TextView_msg1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 인기메뉴 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 자취생 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/TextView_msg1"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 건강식 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView_msg2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 아동 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView_msg3"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 간식 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView_msg4"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recipeRecyclerView"
+                android:layout_width="399dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="24dp"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:maxLines="2"
+                android:text="나의 냉장고를 부탁해!"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/searchRecipe"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView27"
+                app:layout_constraintTop_toBottomOf="@+id/imageView18" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="388dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView36"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView36"
+                app:layout_constraintTop_toBottomOf="@+id/textView36">
+
+                <TextView
+                    android:id="@+id/TextView_msg6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 인기 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 분리배출 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/TextView_msg6"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 질문상담 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView_msg7"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_msg9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/minisel"
+                    android:maxWidth="250dp"
+                    android:padding="6dp"
+                    android:text=" 알뜰 지식 "
+                    android:textColor="#121111"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView_msg8"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/helpRecyclerView"
+                android:layout_width="399dp"
+                android:layout_height="330dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+            <ImageView
+                android:id="@+id/imageView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recipeRecyclerView"
+                app:srcCompat="@drawable/recipe1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +22,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +39,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -42,6 +50,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.AllergyAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.RetrofitClient;
 
@@ -60,6 +69,10 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
 
     // 위치 서비스
     private FusedLocationProviderClient fusedLocationClient;
+//알레르기 이걸또 넣어?!
+    private RecyclerView allergyRecyclerView;
+    private AllergyAdapter allergyAdapter;
+    private ArrayList<String> selectedItems, finalselectedItems;
 
     // API 서비스
     private ApiService apiService;
@@ -86,6 +99,62 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
         radioNeedFaceGroup = findViewById(R.id.radioNeedFace);
         radioNeedFace = findViewById(R.id.needface);
         radioNeedNoFace = findViewById(R.id.neednoface);
+
+        allergyRecyclerView = findViewById(R.id.allergyRecyclerView); // 알레르기 리사이클러뷰
+        allergyRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        selectedItems = new ArrayList<>();
+        finalselectedItems = new ArrayList<>();
+
+
+
+
+        //파이어베이스에서 알레르기 가져와서 리사이클뷰어에 표시
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+
+            String uid = currentUser.getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UserAccount").child(uid);
+            userRef.child("myalergic").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists())
+                    {
+                        String myalergic = snapshot.getValue(String.class);
+                        Log.d("Firebase", "myalergic: " + myalergic);
+
+
+                        if (myalergic != null && !myalergic.isEmpty()) {
+                            String[] allergies = myalergic.split("_"); // _로 분리
+                            for (String allergy : allergies) {
+                                if (!selectedItems.contains(allergy)) {
+                                    selectedItems.add(allergy); // selectedItems에 추가
+                                }
+                                if (!finalselectedItems.contains(allergy)) {
+                                    finalselectedItems.add(allergy); // finalselectedItems에 추가
+                                }
+                            }
+                        }
+
+                        // RecyclerView에 selectedItems 표시
+                        allergyAdapter = new AllergyAdapter(selectedItems, finalselectedItems);
+                        allergyRecyclerView.setAdapter(allergyAdapter);
+
+
+
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                    Log.d("Wㅅㅂ", "아니 내가 뭘 잘못했다고");
+                }
+            });
+
+
+        }
 
         //라디오 이미지 토글
         radioNeedFaceGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -209,6 +278,32 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
                                 if (response.isSuccessful() && response.body() != null) {
+
+                                    String myalergic = TextUtils.join("_", finalselectedItems);
+
+                                    Map<String, Object> userUpdates = new HashMap<>();
+                                    userUpdates.put("myalergic", myalergic);
+
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    DatabaseReference userRef = database.getReference("UserAccount").child(uid);
+
+                                    userRef.updateChildren(userUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("Upload", "알레르기 성공!");
+
+                                            } else {
+                                                Log.d("Upload", "알레르기 실패 앙 기모띠");
+                                            }
+                                        }
+                                    });
+
+
+
+
+
                                     Log.d("Upload", "게시물 업로드 성공!");
                                     Toast.makeText(NeedActivity.this, "게시물이 업로드되었습니다!", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(NeedActivity.this, MainActivity.class)

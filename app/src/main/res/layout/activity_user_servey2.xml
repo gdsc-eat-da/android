@@ -21,16 +21,16 @@
     <!-- 닉네임 입력 -->
     <EditText
         android:id="@+id/nicknameEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@null"
+        android:layout_width="360dp"
+        android:layout_height="63dp"
+
         android:inputType="text"
         android:padding="16dp"
         android:text="닉네임"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView22"
+        app:layout_constraintStart_toStartOf="@+id/imageView22"
         app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
     <!-- 알레르기 유무 입력 -->
@@ -41,38 +41,39 @@
         android:id="@+id/allergyRecyclerView"
         android:layout_width="362dp"
         android:layout_height="61dp"
-        android:layout_marginEnd="32dp"
         android:background="#ffffff"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/nicknameEditText"
 
+        app:layout_constraintStart_toStartOf="@+id/nicknameEditText"
         app:layout_constraintTop_toBottomOf="@+id/textView33" />
 
     <EditText
         android:id="@+id/userTypeEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@null"
+
         android:inputType="text"
         android:padding="16dp"
         android:text="사용자 타입"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/allergyRecyclerView"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/allergyRecyclerView"
         app:layout_constraintTop_toBottomOf="@+id/textView35" />
 
     <TextView
         android:id="@+id/textView33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="56dp"
         android:text="알레르기 유무"
         android:textColor="#727272"
-    android:textSize="12sp"
-    android:textStyle="bold"
-    app:layout_constraintStart_toStartOf="@+id/textView34"
-    app:layout_constraintTop_toBottomOf="@+id/nicknameEditText" />
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/nicknameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/nicknameEditText" />
 
     <TextView
         android:id="@+id/textView34"
@@ -83,18 +84,30 @@
         android:text="닉네임"
         android:textColor="#727272"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageView22"
         app:layout_constraintTop_toBottomOf="@+id/imageView22" />
 
     <TextView
         android:id="@+id/textView35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="56dp"
         android:text="사용자 유형"
         android:textColor="#727272"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/textView33"
+        app:layout_constraintStart_toStartOf="@+id/allergyRecyclerView"
         app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView" />
+
+    <ImageView
+        android:id="@+id/getstart"
+        android:layout_width="311dp"
+        android:layout_height="103dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="@+id/userTypeEditText"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="@+id/userTypeEditText"
+        app:layout_constraintTop_toBottomOf="@+id/userTypeEditText"
+        app:srcCompat="@drawable/survey2start" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
