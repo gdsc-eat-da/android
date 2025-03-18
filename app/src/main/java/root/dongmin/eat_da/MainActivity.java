@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView profileImage;
     private boolean zorifilter, bezorifilter, instantfilter = false;
 
-    private List<Post> postList;
     private int space;
     public int myTradeCount = 0;
 

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -28,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -36,6 +38,13 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kakao.vectormap.KakaoMap;
 import com.kakao.vectormap.KakaoMapReadyCallback;
 import com.kakao.vectormap.KakaoMapSdk;
@@ -86,6 +95,10 @@ public class MapActivity extends AppCompatActivity {
     private MapDistanceAdapter mapDistanceAdapter;
 
     private int space;
+    private ImageView profile;
+    private TextView nickname;
+    private DatabaseReference mDatabaseRef;
+    private FirebaseAuth mFirebaseAuth;
 
 
      // 음식 필요 게시물 리스트
@@ -259,6 +272,52 @@ public class MapActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        profile = findViewById(R.id.profileImage);
+        nickname = findViewById(R.id.nickname);
+
+        // Firebase 초기화
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
+
+        // 현재 로그인된 사용자 정보 가져오기
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (firebaseUser != null) {
+            String uid = firebaseUser.getUid();
+
+            // 사용자 정보 가져오기 (닉네임과 프로필 이미지)
+            mDatabaseRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String nic = dataSnapshot.child("nickname").getValue(String.class);
+                        String profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
+
+                        // 텍스트뷰에 사용자 정보 설정
+                        if (nickname != null) {
+                            nickname.setText(nic+"님");
+                        } else {
+                            nickname.setText("닉네임이 없습니다.");
+                        }
+
+                        if (profileImageUrl != null) {
+                            Glide.with(MapActivity.this)
+                                    .load(profileImageUrl)  // Firebase에서 가져온 URL
+                                    .into(profile);  // ImageView에 로드
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(MapActivity.this, "데이터 로딩 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void needLabel() {
