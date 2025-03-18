@@ -59,6 +59,7 @@ public class MySetting extends AppCompatActivity {
     private ImageView back;
     private ProgressBar progressBar;
     private TextView levelshow;
+    private TextView tran , com;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +174,8 @@ public class MySetting extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         levelshow = findViewById(R.id.level);
+        tran = findViewById(R.id.transition);
+        com = findViewById(R.id.comment);
 
 
         loadUserLevel();
@@ -337,10 +340,14 @@ public class MySetting extends AppCompatActivity {
 
                         progressBar.setProgress(remainder); // 나머지 값을 progress로 설정
                         levelshow.setText(level + "Lv");
+                        tran.setText("거래 "+(5-remainder)+ " 회"); // 다음 레벨까지 남은 횟수 계산
+                        com.setText("댓글 • 하트 "+(5-remainder)+" 회");
                     } else {
 
                         progressBar.setProgress(0); // 기본값 0으로 설정
                         levelshow.setText("0Lv");
+                        tran.setText("거래 0 회");
+                        com.setText("댓글 • 하트 0 회");
                     }
                 }
 
