@@ -115,7 +115,7 @@
         android:progress="0"
         android:progressDrawable="@drawable/custom_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.687"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/level" />
 
@@ -138,12 +138,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="24dp"
         android:text="이런 활동은 어떠세요?"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@+id/level3" />
 
     <TextView
         android:id="@+id/textView39"
@@ -152,7 +152,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
         android:textColor="#A6A6A6"
-        android:text="해당 활동을 통해 레벨업 할 수 있어요"
+        android:text="해당 횟수를 채우면 레벨 업할 수 있어요"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView38" />
 
@@ -251,6 +251,61 @@
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/imageView26"
         app:layout_constraintTop_toBottomOf="@+id/textView42" />
+
+    <TextView
+        android:id="@+id/level1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="56dp"
+        android:text="1.Lv"
+        android:textColor="#A5A3A8"
+        app:layout_constraintEnd_toStartOf="@+id/level2"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/level2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="56dp"
+        android:text="2.Lv"
+        android:textColor="#A5A3A8"
+        app:layout_constraintEnd_toStartOf="@+id/level3"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/level3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="3.Lv"
+        android:textColor="#A5A3A8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/level4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="8dp"
+        android:text="4.Lv"
+        android:textColor="#A5A3A8"
+        app:layout_constraintStart_toEndOf="@+id/level3"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/level5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="8dp"
+        android:text="5.Lv"
+        android:textColor="#A5A3A8"
+        app:layout_constraintStart_toEndOf="@+id/level4"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

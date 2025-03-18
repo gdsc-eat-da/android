@@ -117,6 +117,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     private PlusHashtagAdapter plusHashtagAdapter;
     private HashtagAdapter HashtagAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -3,6 +3,7 @@ package root.dongmin.eat_da;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,6 +61,7 @@ public class MySetting extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView levelshow;
     private TextView tran , com;
+    private TextView lev1, lev2, lev3, lev4, lev5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +178,12 @@ public class MySetting extends AppCompatActivity {
         levelshow = findViewById(R.id.level);
         tran = findViewById(R.id.transition);
         com = findViewById(R.id.comment);
+
+        lev1 = findViewById(R.id.level1);
+        lev2 = findViewById(R.id.level2);
+        lev3 = findViewById(R.id.level3);
+        lev4 = findViewById(R.id.level4);
+        lev5 = findViewById(R.id.level5);
 
 
         loadUserLevel();
@@ -336,6 +344,18 @@ public class MySetting extends AppCompatActivity {
                         Log.d("API_DEBUG", "레벨 트랜직션카운트(오리지널): " + transactionCount);
                         Log.d("API_DEBUG", "레벨: " + level);
                         Log.d("API_DEBUG", "남은 거래 횟수: " + remainder);
+
+                        if (level == 1) {
+                            lev1.setTextColor(Color.BLACK);
+                        } else if (level == 2) {
+                            lev2.setTextColor(Color.BLACK);
+                        } else if (level == 3) {
+                            lev3.setTextColor(Color.BLACK);
+                        } else if (level == 4) {
+                            lev4.setTextColor(Color.BLACK);
+                        } else if (level == 5) {
+                            lev5.setTextColor(Color.BLACK);
+                        }
 
 
                         progressBar.setProgress(remainder); // 나머지 값을 progress로 설정
