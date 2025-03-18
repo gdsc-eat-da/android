@@ -82,7 +82,7 @@
                 android:layout_width="321dp"
                 android:layout_height="83dp"
                 android:layout_marginTop="16dp"
-                android:text="최근 도움을 요청한 유저들의    게시글을 확인해 보세요"
+                android:text="최근 도움을 요청한 유저들의                게시글을 확인해 보세요"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
