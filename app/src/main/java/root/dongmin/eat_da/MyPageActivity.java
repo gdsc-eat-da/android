@@ -156,10 +156,6 @@ public class MyPageActivity extends AppCompatActivity {
 
 
 
-
-
-
-
         if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
 
@@ -276,8 +272,6 @@ public class MyPageActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
 
@@ -358,6 +352,8 @@ public class MyPageActivity extends AppCompatActivity {
         return filePath;
     }
 
+
+
     // imageUri.getPath()로는 실제 경로를 얻지 못했음
     private void uploadProfileImage(File file) {
         if (file != null && file.exists()) {
@@ -435,6 +431,8 @@ public class MyPageActivity extends AppCompatActivity {
             Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     // 알람 설정 기능
     private void toggleSetAlarm(SwitchCompat alarmSwitch) {

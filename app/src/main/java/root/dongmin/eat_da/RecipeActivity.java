@@ -1,5 +1,6 @@
 package root.dongmin.eat_da;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -70,6 +71,53 @@ public class RecipeActivity extends AppCompatActivity {
         // 초기화 및 설정
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.recipe);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.recipe; // 초기 선택된 아이콘 (recipeclicked 상태)
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) {
+                    return false; // 동일한 아이템 클릭 방지
+                }
+
+
+                if (item.getItemId() == R.id.recipe) {
+                    Toast.makeText(RecipeActivity.this, "RecipePage", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.chat) {
+                    Intent intent = new Intent(RecipeActivity.this, UserFindActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if (item.getItemId() == R.id.work_load){
+                    Intent intent = new Intent(RecipeActivity.this,MapActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.nav_profile){
+                    Intent intent = new Intent(RecipeActivity.this,MyPageActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        }); // 이게 날아가 있었음 4/29 수정
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }); // 뒤로가기 처리
+
+
         profileImage = findViewById(R.id.profileImage);
         greed = findViewById(R.id.greeding);
 

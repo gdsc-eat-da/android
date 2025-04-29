@@ -166,11 +166,13 @@ public class RegisterActivity extends AppCompatActivity {
         if (isPasswordVisible) {
             // 비밀번호 숨기기
             mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            checkPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mBtnTogglePwd1.setImageResource(R.drawable.eye);
             mBtnTogglePwd2.setImageResource(R.drawable.eye);
         } else {
             // 비밀번호 보이기
             mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            checkPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             mBtnTogglePwd1.setImageResource(R.drawable.eyeoff);
             mBtnTogglePwd2.setImageResource(R.drawable.eyeoff);
         }
@@ -194,16 +196,31 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isValidLength = password.length() >= 6;
 
         if (isMatch && isValidLength) {
+            // 둘 다 만족
             ack1.setVisibility(View.VISIBLE);
             ack2.setVisibility(View.VISIBLE);
             ack3.setVisibility(View.GONE);
             ack4.setVisibility(View.GONE);
+        } else if (isMatch && !isValidLength) {
+            // 길이만 틀림
+            ack1.setVisibility(View.GONE);
+            ack2.setVisibility(View.GONE);
+            ack3.setVisibility(View.VISIBLE);
+            ack4.setVisibility(View.VISIBLE);
+        } else if (!isMatch && isValidLength) {
+            // 패턴만 틀림
+            ack1.setVisibility(View.VISIBLE);
+            ack2.setVisibility(View.GONE);
+            ack3.setVisibility(View.GONE);
+            ack4.setVisibility(View.VISIBLE);
         } else {
+            // 둘 다 틀림
             ack1.setVisibility(View.GONE);
             ack2.setVisibility(View.GONE);
             ack3.setVisibility(View.VISIBLE);
             ack4.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void setRegisterButtonState(boolean isEnabled) {

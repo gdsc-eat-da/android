@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this) // ✅ 다이얼로그 띄우기
                         .setTitle("앱 종료")
-                        .setMessage("정말로 종료하시겠습니까?")
+                        .setMessage("정말 종료하시겠습니까?")
                         .setPositiveButton("확인", (dialogInterface, which) -> finish()) // 🔴 앱 종료
                         .setNegativeButton("취소", null) // 취소 버튼 클릭 시 아무 동작 없음
                         .show();
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
         });
-        ;
+
 
 
 
