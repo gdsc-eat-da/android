@@ -155,6 +155,9 @@ public class UserFindActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_profile) {
                     Intent intent = new Intent(UserFindActivity.this, MyPageActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 } else if (item.getItemId() == R.id.nav_home) {
@@ -165,17 +168,26 @@ public class UserFindActivity extends AppCompatActivity {
                     }
                     Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 } else if (item.getItemId() == R.id.work_load) {
                     Intent intent = new Intent(UserFindActivity.this, MapActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(UserFindActivity.this,RecipeActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }

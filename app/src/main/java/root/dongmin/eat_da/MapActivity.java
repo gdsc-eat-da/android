@@ -226,21 +226,33 @@ public class MapActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MapActivity.this, MainActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MapActivity.this, UserFindActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.nav_profile){
                     Intent intent = new Intent(MapActivity.this, MyPageActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(MapActivity.this,RecipeActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }

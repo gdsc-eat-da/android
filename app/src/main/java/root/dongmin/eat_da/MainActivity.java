@@ -162,7 +162,11 @@ public class MainActivity extends AppCompatActivity {
                     shareData();
                     Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
@@ -172,7 +176,11 @@ public class MainActivity extends AppCompatActivity {
                     intent.putParcelableArrayListExtra("needPostList2", new ArrayList<>(postLocations)); // 이거 혹시
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     intent.putExtra("nickname", Nickname);
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
@@ -180,13 +188,21 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this,MapActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     setIntent(intent);
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(MainActivity.this,RecipeActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }
