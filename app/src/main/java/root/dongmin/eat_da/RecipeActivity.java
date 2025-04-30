@@ -37,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import root.dongmin.eat_da.adapter.RecipeAdapter;
 import root.dongmin.eat_da.network.ApiService;
+import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Recipe;
 import root.dongmin.eat_da.network.RetrofitClient;
 import root.dongmin.eat_da.utils.SpaceItemDecoration;
@@ -59,6 +60,7 @@ public class RecipeActivity extends AppCompatActivity {
     private ImageView profileImage;
     private TextView greed;
     private String Nickname;
+    private List<NeedPost> needPosts = new ArrayList<>(); // 거리 리스트!
 
     private boolean isAFiltered = false, isBFiltered = false, isCFiltered = false, isDFiltered = false, isEFiltered = false;
     private boolean isFFiltered = false, isGFiltered = false, isHFiltered = false, isIFiltered = false;
@@ -95,6 +97,7 @@ public class RecipeActivity extends AppCompatActivity {
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(RecipeActivity.this,MapActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     startActivity(intent);
                     finish();
                     return true;
@@ -107,6 +110,8 @@ public class RecipeActivity extends AppCompatActivity {
                 return false;
             }
         }); // 이게 날아가 있었음 4/29 수정
+
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

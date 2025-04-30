@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_profile) {
                     shareData();
                     Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     startActivity(intent);
                     finish();
                     return true;
@@ -168,7 +169,8 @@ public class MainActivity extends AppCompatActivity {
                     shareData();
                     Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
                     intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
-                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(postLocations));
+                    intent.putParcelableArrayListExtra("needPostList2", new ArrayList<>(postLocations)); // 이거 혹시
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     intent.putExtra("nickname", Nickname);
                     startActivity(intent);
                     finish();
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(MainActivity.this,RecipeActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     startActivity(intent);
                     finish();
                     return true;
@@ -921,11 +924,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 게시물 검색기능이랑 양대산맥을 이루는 조리,비조리,인스턴트 검색기능(태그)
-
-
-
-
-
-
 
 }

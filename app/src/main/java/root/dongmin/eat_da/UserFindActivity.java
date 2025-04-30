@@ -169,6 +169,7 @@ public class UserFindActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.work_load) {
                     Intent intent = new Intent(UserFindActivity.this, MapActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     startActivity(intent);
                     finish();
                     return true;
@@ -292,7 +293,7 @@ public class UserFindActivity extends AppCompatActivity {
         }
 
         // 채팅방의 경도, 위도 정보 가져오기
-        postLocationList = getIntent().getParcelableArrayListExtra("needPostList");
+        postLocationList = getIntent().getParcelableArrayListExtra("needPostList2");
         if (postLocationList != null) {
             for (PostLocation postLocation : postLocationList) {
                 Log.d("MAP_DEBUG", "Post ID_userfind: " + postLocation.getPostID());

@@ -73,6 +73,8 @@ public class MyPageActivity extends AppCompatActivity {
     private boolean alarmSetting = true;
     private SwitchCompat alarmSwitch;
     private ImageView goSetting;
+    private List<NeedPost> needPosts = new ArrayList<>(); // 거리 리스트!
+
 
 
 
@@ -84,6 +86,8 @@ public class MyPageActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+
+         // 전달받은 음식 필요 게시물 리스트 할당
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.nav_profile; // 초기 선택된 아이콘 (homeclicked 상태)
@@ -107,7 +111,8 @@ public class MyPageActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
-                    Intent intent = new Intent(MyPageActivity.this,MapActivity.class);
+                    Intent intent = new Intent(MyPageActivity.this,MapActivity.class);// 리스트 전달
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     startActivity(intent);
                     finish();
                     return true;
@@ -120,6 +125,8 @@ public class MyPageActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
 
         namePage = findViewById(R.id.nickname);
         transaction = findViewById(R.id.donationCount);
@@ -465,6 +472,8 @@ public class MyPageActivity extends AppCompatActivity {
         // 여기에 알람을 해제하는 로직 추가
         Log.d("Alarm", "알람이 비활성화되었습니다.");
     }
+
+
 
 
 }
