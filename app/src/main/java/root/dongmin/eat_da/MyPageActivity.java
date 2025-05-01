@@ -37,6 +37,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
+
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -227,6 +233,12 @@ public class MyPageActivity extends AppCompatActivity {
             Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
         }
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
 
         // 내 게시물들 보기
         myPost = findViewById(R.id.btnMyPost);
@@ -244,29 +256,30 @@ public class MyPageActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog dialog = new AlertDialog.Builder(v.getContext()) // context 대신 v.getContext() 사용 가능
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
                         .setTitle("로그아웃하시겠습니까?")
                         .setMessage("로그인 창으로 돌아가시겠습니까?")
                         .setPositiveButton("확인", (dialogInterface, which) -> {
-                            // Firebase 로그아웃 처리
+                            // Firebase 로그아웃
                             FirebaseAuth.getInstance().signOut();
 
-                            // 로그인 화면으로 이동
-                            Intent intent = new Intent(v.getContext(), LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish(); // 현재 액티비티 종료
+                            // Google 로그아웃
+                            googleSignInClient.signOut().addOnCompleteListener(MyPageActivity.this, task -> {
+                                // 로그인 화면으로 이동
+                                Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish(); // 현재 액티비티 종료
+                            });
                         })
                         .setNegativeButton("취소", null)
                         .show();
 
-                // "확인" 버튼의 텍스트 색을 검정으로 설정
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-
-                // "취소" 버튼의 텍스트 색을 검정으로 설정
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
         });
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -300,6 +313,10 @@ public class MyPageActivity extends AppCompatActivity {
         goSetting.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), MySetting.class);
             v.getContext().startActivity(intent);
+
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            finish();
         });
 
 

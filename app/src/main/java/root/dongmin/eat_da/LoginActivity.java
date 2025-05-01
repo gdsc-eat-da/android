@@ -101,6 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                                     // 로그인 성공
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
+
+                                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                                     finish();
                                 } else {
                                     // 로그인 실패

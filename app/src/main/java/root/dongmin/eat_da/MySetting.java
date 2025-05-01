@@ -1,5 +1,6 @@
 package root.dongmin.eat_da;
 
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -74,7 +75,12 @@ public class MySetting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MySetting.this, MyPageActivity.class);
-                startActivity(intent);
+
+                ActivityOptions options = ActivityOptions.makeCustomAnimation(MySetting.this,
+                        R.anim.slide_in_left, R.anim.slide_out_right);
+
+                startActivity(intent, options.toBundle());
+
                 finish();
             }
         });
@@ -85,7 +91,12 @@ public class MySetting extends AppCompatActivity {
             public void handleOnBackPressed() {
                 // 뒤로 가기 버튼을 눌렀을 때 MyPageActivity로 이동
                 Intent intent = new Intent(MySetting.this, MyPageActivity.class);
-                startActivity(intent);
+
+                ActivityOptions options = ActivityOptions.makeCustomAnimation(MySetting.this,
+                        R.anim.slide_in_left, R.anim.slide_out_right);
+
+                startActivity(intent, options.toBundle());
+
                 finish();  // 현재 Activity 종료
             }
         });

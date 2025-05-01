@@ -23,6 +23,9 @@ public class IntroActivity extends AppCompatActivity {
                 Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
                 startActivity(intent);
                 // 현재 IntroActivity 종료
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                 finish();
             }
         }, 3000); // 3000ms = 3초
