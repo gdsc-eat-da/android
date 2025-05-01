@@ -87,16 +87,18 @@ public class MyPageActivity extends AppCompatActivity {
 
         bottomNavigationView.setSelectedItemId(R.id.nav_profile);
 
+        needPosts = getIntent().getParcelableArrayListExtra("needPostList");
+
          // 전달받은 음식 필요 게시물 리스트 할당
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.nav_profile; // 초기 선택된 아이콘 (homeclicked 상태)
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (previousItemId == item.getItemId()) {
                     return false; // 동일한 아이템 클릭 방지
                 }
-
 
                 if (item.getItemId() == R.id.nav_profile) {
                     Toast.makeText(MyPageActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
@@ -109,24 +111,30 @@ public class MyPageActivity extends AppCompatActivity {
 
                     finish();
                     return true;
-                }else if (item.getItemId() == R.id.chat) {
+                } else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MyPageActivity.this, UserFindActivity.class);
                     startActivity(intent);
 
                     overridePendingTransition(0, 0); // 전환 애니메이션 제거
 
                     return true;
-                }else if (item.getItemId() == R.id.work_load){
-                    Intent intent = new Intent(MyPageActivity.this,MapActivity.class);// 리스트 전달
-                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
-                    startActivity(intent);
+                } else if (item.getItemId() == R.id.work_load) {
+                    // needPosts가 null이 아닐 때까지 기다림
+                    if (needPosts != null && !needPosts.isEmpty()) {
+                        Intent intent = new Intent(MyPageActivity.this, MapActivity.class);
+                        intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
+                        startActivity(intent);
 
-                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+                        overridePendingTransition(0, 0); // 전환 애니메이션 제거
 
-                    finish();
-                    return true;
-                }else if (item.getItemId() == R.id.recipe){
-                    Intent intent = new Intent(MyPageActivity.this,RecipeActivity.class);
+                        finish();
+                        return true;
+                    } else {
+                        // 필요 시 로딩 중 메시지나 대기 화면을 띄울 수도 있습니다
+                        Toast.makeText(MyPageActivity.this, "데이터를 로딩 중입니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (item.getItemId() == R.id.recipe) {
+                    Intent intent = new Intent(MyPageActivity.this, RecipeActivity.class);
                     startActivity(intent);
 
                     overridePendingTransition(0, 0); // 전환 애니메이션 제거
@@ -137,6 +145,7 @@ public class MyPageActivity extends AppCompatActivity {
                 return false;
             }
         });
+
 
 
 
@@ -264,6 +273,9 @@ public class MyPageActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                 finish();
             }
         });

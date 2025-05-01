@@ -35,6 +35,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.adapter.RecipeAdapter;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.NeedPost;
@@ -62,6 +63,8 @@ public class RecipeActivity extends AppCompatActivity {
     private String Nickname;
     private List<NeedPost> needPosts = new ArrayList<>(); // 거리 리스트!
 
+
+
     private boolean isAFiltered = false, isBFiltered = false, isCFiltered = false, isDFiltered = false, isEFiltered = false;
     private boolean isFFiltered = false, isGFiltered = false, isHFiltered = false, isIFiltered = false;
 
@@ -73,6 +76,9 @@ public class RecipeActivity extends AppCompatActivity {
         // 초기화 및 설정
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.recipe);
+
+        needPosts = getIntent().getParcelableArrayListExtra("needPostList");
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.recipe; // 초기 선택된 아이콘 (recipeclicked 상태)
@@ -130,6 +136,9 @@ public class RecipeActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                 finish();
             }
         }); // 뒤로가기 처리

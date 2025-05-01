@@ -140,6 +140,8 @@ public class UserFindActivity extends AppCompatActivity {
 
         bottomNavigationView.setSelectedItemId(R.id.chat);
 
+        needPosts = getIntent().getParcelableArrayListExtra("needPostList");
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.chat; // 초기 선택된 아이콘
 
@@ -414,6 +416,9 @@ public class UserFindActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 Intent intent = new Intent(UserFindActivity.this, MainActivity.class);
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                 finish();
             }
         });
