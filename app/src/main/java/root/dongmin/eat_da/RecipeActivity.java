@@ -108,14 +108,20 @@ public class RecipeActivity extends AppCompatActivity {
 
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
-                    Intent intent = new Intent(RecipeActivity.this,MapActivity.class);
-                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
-                    startActivity(intent);
+                    // needPosts가 null이 아닐 때까지 기다림
+                    if (needPosts != null && !needPosts.isEmpty()) {
+                        Intent intent = new Intent(RecipeActivity.this, MapActivity.class);
+                        intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
+                        startActivity(intent);
 
-                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+                        overridePendingTransition(0, 0); // 전환 애니메이션 제거
 
-                    finish();
-                    return true;
+                        finish();
+                        return true;
+                    } else {
+                        // 필요 시 로딩 중 메시지나 대기 화면을 띄울 수도 있습니다
+                        Toast.makeText(RecipeActivity.this, "데이터를 로딩 중입니다.", Toast.LENGTH_SHORT).show();
+                    }
                 }else if (item.getItemId() == R.id.nav_profile){
                     Intent intent = new Intent(RecipeActivity.this,MyPageActivity.class);
                     startActivity(intent);
