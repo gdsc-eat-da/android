@@ -2,6 +2,7 @@ package root.dongmin.eat_da.adapter;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,6 +165,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                             if (holder.tailView != null) {
                                 holder.tailView.setVisibility(View.GONE); // 꼬리표 비활성화
                             }
+                            // 아이템을 오른쪽으로 20dp 띄우기
+                            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.TextView_msg.getLayoutParams();
+                            if (layoutParams != null) {
+                                // 오른쪽 마진을 20dp로 설정 (px로 변환 필요)
+                                int marginRightInPx = (int) TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_DIP,
+                                        20,
+                                        holder.TextView_msg.getResources().getDisplayMetrics()
+                                );
+                                layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, marginRightInPx, layoutParams.bottomMargin);
+                                holder.TextView_msg.setLayoutParams(layoutParams);
+                            }
+
+
+
                         } else {
                             // 닉네임이 다르면 프로필 이미지와 꼬리표를 보이게 함
                             if (holder.profile != null) {

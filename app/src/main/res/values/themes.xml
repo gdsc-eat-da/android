@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.Eat_da" parent="Base.Theme.Eat_da" />
+    <style name="Theme.Eat_da.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.Eat_da.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Eat_da.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

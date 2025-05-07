@@ -87,8 +87,51 @@ public class RecipeActivity extends AppCompatActivity {
         helprecycleView.addItemDecoration(itemDecoration);
 
         // RecyclerView LayoutManager 설정
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         helprecycleView.setLayoutManager(new LinearLayoutManager(this));
+
+
+
+
+
+
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.recipe; // 초기 선택된 아이콘 (homeclicked 상태)
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) {
+                    return false; // 동일한 아이템 클릭 방지
+                }
+
+
+                if (item.getItemId() == R.id.recipe) {
+                    Toast.makeText(RecipeActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.chat) {
+                    Intent intent = new Intent(RecipeActivity.this, UserFindActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if (item.getItemId() == R.id.work_load){
+                    Intent intent = new Intent(RecipeActivity.this,MapActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.nav_profile){
+                    Intent intent = new Intent(RecipeActivity.this,RecipeActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Retrofit API 초기화
         apiService = RetrofitClient.getApiService(this);

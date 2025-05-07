@@ -1,6 +1,7 @@
 package root.dongmin.eat_da.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import root.dongmin.eat_da.R;
 
+import root.dongmin.eat_da.ReDeActivity;
 import root.dongmin.eat_da.network.ApiService;
 import root.dongmin.eat_da.network.LikeResponse;
 import root.dongmin.eat_da.network.Post;
@@ -94,6 +96,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
             // 전체 RecyclerView 새로고침 (특정 아이템만 새로 고치려면 notifyItemChanged(position) 사용)
             notifyItemChanged(position);
+        });
+
+
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ReDeActivity.class);
+            intent.putExtra("recipeID", recipe.getRecipeID());
+            intent.putExtra("contents", recipe.getContents());
+            intent.putExtra("ingredients", recipe.getIngredients());
+            intent.putExtra("photo", recipe.getPhoto());
+            intent.putExtra("nickname", recipe.getNickname());
+            intent.putExtra("suggestion", recipe.getSuggestion());
+            intent.putExtra("hashtag", recipe.getHashtag());
+            intent.putExtra("isrecipe", recipe.getIsrecipe());
+            context.startActivity(intent);
         });
     }
 

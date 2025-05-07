@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="root.dongmin.eat_da">
+    package="root.dongmin.eat_da" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -25,7 +25,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Eat_da"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".ReDeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RecipeDetailSActivity"
+            android:exported="false"
+            android:label="@string/title_activity_recipe_detail_sactivity"
+            android:theme="@style/Theme.Eat_da.NoActionBar" />
+        <activity
+            android:name=".utils.RecipeDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".UserServey2"
             android:exported="false" />
@@ -105,7 +116,7 @@
             android:exported="false" />
         <activity
             android:name=".IntroActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
