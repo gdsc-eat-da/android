@@ -225,22 +225,38 @@ public class MapActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MapActivity.this, MainActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MapActivity.this, UserFindActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.nav_profile){
                     Intent intent = new Intent(MapActivity.this, MyPageActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(MapActivity.this,RecipeActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }
@@ -269,6 +285,9 @@ public class MapActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 Intent intent = new Intent(MapActivity.this, MainActivity.class);
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                 finish();
             }
         });

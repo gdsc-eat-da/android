@@ -37,6 +37,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
+
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,6 +79,8 @@ public class MyPageActivity extends AppCompatActivity {
     private boolean alarmSetting = true;
     private SwitchCompat alarmSwitch;
     private ImageView goSetting;
+    private List<NeedPost> needPosts = new ArrayList<>(); // 거리 리스트!
+
 
 
 
@@ -85,14 +93,18 @@ public class MyPageActivity extends AppCompatActivity {
 
         bottomNavigationView.setSelectedItemId(R.id.nav_profile);
 
+        needPosts = getIntent().getParcelableArrayListExtra("needPostList");
+
+         // 전달받은 음식 필요 게시물 리스트 할당
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             private int previousItemId = R.id.nav_profile; // 초기 선택된 아이콘 (homeclicked 상태)
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (previousItemId == item.getItemId()) {
                     return false; // 동일한 아이템 클릭 방지
                 }
-
 
                 if (item.getItemId() == R.id.nav_profile) {
                     Toast.makeText(MyPageActivity.this, "Mypage", Toast.LENGTH_SHORT).show();
@@ -100,26 +112,48 @@ public class MyPageActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
-                }else if (item.getItemId() == R.id.chat) {
+                } else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(MyPageActivity.this, UserFindActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     return true;
-                }else if (item.getItemId() == R.id.work_load){
-                    Intent intent = new Intent(MyPageActivity.this,MapActivity.class);
+                } else if (item.getItemId() == R.id.work_load) {
+                    // needPosts가 null이 아닐 때까지 기다림
+                    if (needPosts != null && !needPosts.isEmpty()) {
+                        Intent intent = new Intent(MyPageActivity.this, MapActivity.class);
+                        intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
+                        startActivity(intent);
+
+                        overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                        finish();
+                        return true;
+                    } else {
+                        // 필요 시 로딩 중 메시지나 대기 화면을 띄울 수도 있습니다
+                        Toast.makeText(MyPageActivity.this, "데이터를 로딩 중입니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (item.getItemId() == R.id.recipe) {
+                    Intent intent = new Intent(MyPageActivity.this, RecipeActivity.class);
                     startActivity(intent);
-                    finish();
-                    return true;
-                }else if (item.getItemId() == R.id.recipe){
-                    Intent intent = new Intent(MyPageActivity.this,RecipeActivity.class);
-                    startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }
                 return false;
             }
         });
+
+
+
 
         namePage = findViewById(R.id.nickname);
         transaction = findViewById(R.id.donationCount);
@@ -153,10 +187,6 @@ public class MyPageActivity extends AppCompatActivity {
 
         // 현재 로그인된 사용자 정보 가져오기
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-
-
-
-
 
 
 
@@ -203,6 +233,12 @@ public class MyPageActivity extends AppCompatActivity {
             Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
         }
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
 
         // 내 게시물들 보기
         myPost = findViewById(R.id.btnMyPost);
@@ -220,35 +256,39 @@ public class MyPageActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog dialog = new AlertDialog.Builder(v.getContext()) // context 대신 v.getContext() 사용 가능
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
                         .setTitle("로그아웃하시겠습니까?")
                         .setMessage("로그인 창으로 돌아가시겠습니까?")
                         .setPositiveButton("확인", (dialogInterface, which) -> {
-                            // Firebase 로그아웃 처리
+                            // Firebase 로그아웃
                             FirebaseAuth.getInstance().signOut();
 
-                            // 로그인 화면으로 이동
-                            Intent intent = new Intent(v.getContext(), LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish(); // 현재 액티비티 종료
+                            // Google 로그아웃
+                            googleSignInClient.signOut().addOnCompleteListener(MyPageActivity.this, task -> {
+                                // 로그인 화면으로 이동
+                                Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish(); // 현재 액티비티 종료
+                            });
                         })
                         .setNegativeButton("취소", null)
                         .show();
 
-                // "확인" 버튼의 텍스트 색을 검정으로 설정
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-
-                // "취소" 버튼의 텍스트 색을 검정으로 설정
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
         });
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                 finish();
             }
         });
@@ -273,9 +313,11 @@ public class MyPageActivity extends AppCompatActivity {
         goSetting.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), MySetting.class);
             v.getContext().startActivity(intent);
+
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            finish();
         });
-
-
 
 
     }
@@ -358,6 +400,8 @@ public class MyPageActivity extends AppCompatActivity {
         return filePath;
     }
 
+
+
     // imageUri.getPath()로는 실제 경로를 얻지 못했음
     private void uploadProfileImage(File file) {
         if (file != null && file.exists()) {
@@ -436,6 +480,8 @@ public class MyPageActivity extends AppCompatActivity {
         }
     }
 
+
+
     // 알람 설정 기능
     private void toggleSetAlarm(SwitchCompat alarmSwitch) {
         SharedPreferences sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE); //이걸로 앱이 재시작 되어도 상태 유지
@@ -467,6 +513,8 @@ public class MyPageActivity extends AppCompatActivity {
         // 여기에 알람을 해제하는 로직 추가
         Log.d("Alarm", "알람이 비활성화되었습니다.");
     }
+
+
 
 
 }

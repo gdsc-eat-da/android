@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this) // ✅ 다이얼로그 띄우기
                         .setTitle("앱 종료")
-                        .setMessage("정말로 종료하시겠습니까?")
+                        .setMessage("정말 종료하시겠습니까?")
                         .setPositiveButton("확인", (dialogInterface, which) -> finish()) // 🔴 앱 종료
                         .setNegativeButton("취소", null) // 취소 버튼 클릭 시 아무 동작 없음
                         .show();
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
         });
-        ;
+
 
 
 
@@ -161,16 +161,26 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_profile) {
                     shareData();
                     Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
                     shareData();
                     Intent intent = new Intent(MainActivity.this, UserFindActivity.class);
                     intent.putStringArrayListExtra("chatList", new ArrayList<>(chatList)); // 리스트 전달
-                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(postLocations));
+                    intent.putParcelableArrayListExtra("needPostList2", new ArrayList<>(postLocations)); // 이거 혹시
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
                     intent.putExtra("nickname", Nickname);
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
@@ -178,12 +188,21 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this,MapActivity.class);
                     intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
                     setIntent(intent);
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(MainActivity.this,RecipeActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts));
+
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }
@@ -921,11 +940,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 게시물 검색기능이랑 양대산맥을 이루는 조리,비조리,인스턴트 검색기능(태그)
-
-
-
-
-
-
 
 }

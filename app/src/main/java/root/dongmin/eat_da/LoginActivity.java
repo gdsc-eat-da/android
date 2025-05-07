@@ -1,9 +1,12 @@
 package root.dongmin.eat_da;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -97,6 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                                     // 로그인 성공
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
+
+                                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                                     finish();
                                 } else {
                                     // 로그인 실패
@@ -147,6 +154,24 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this) // ✅ 다이얼로그 띄우기
+                        .setTitle("앱 종료")
+                        .setMessage("정말 종료하시겠습니까?")
+                        .setPositiveButton("확인", (dialogInterface, which) -> finish()) // 🔴 앱 종료
+                        .setNegativeButton("취소", null) // 취소 버튼 클릭 시 아무 동작 없음
+                        .show();
+
+                // "확인" 버튼의 텍스트 색을 검정으로 설정
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+
+                // "취소" 버튼의 텍스트 색을 검정으로 설정
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+            }
+        });
     }
 
 
@@ -169,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
                     firebaseAuthWithGoogle(account);
                 }
             } catch (ApiException e) {
-                Toast.makeText(this, "구글 로그인 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "구글 인증 실패", Toast.LENGTH_SHORT).show();
                 e.printStackTrace(); // 로그캣에 오류 출력
             }
         }

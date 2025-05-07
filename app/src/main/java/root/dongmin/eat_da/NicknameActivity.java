@@ -95,7 +95,7 @@ public class NicknameActivity extends AppCompatActivity {
             // `UserAccount/{uid}/nickname` 경로에 닉네임 저장
             mDatabaseRef.child(uid).child("nickname").setValue(nickname).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(NicknameActivity.this, "닉네임이 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NicknameActivity.this, "계정 설정 완료.", Toast.LENGTH_SHORT).show();
                     setTransactionCount(uid);
                     setDefaultProfileImage(uid);
                     // 온보딩 1로 이동
@@ -119,7 +119,7 @@ public class NicknameActivity extends AppCompatActivity {
         mDatabaseRef.child(uid).child("transactionCount").setValue(0).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 // 거래 횟수 초기화 성공
-                Toast.makeText(NicknameActivity.this, "거래 횟수가 초기화되었습니다.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(NicknameActivity.this, "거래 횟수가 초기화되었습니다.", Toast.LENGTH_SHORT).show();
             } else {
                 // 거래 횟수 초기화 실패
                 Toast.makeText(NicknameActivity.this, "거래 횟수 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
@@ -137,7 +137,7 @@ public class NicknameActivity extends AppCompatActivity {
         mDatabaseRef.child(uid).child("profileImage").setValue(defaultProfileImageUrl)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(NicknameActivity.this, "기본 프로필 이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(NicknameActivity.this, "기본 프로필 이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(NicknameActivity.this, "프로필 이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
                     }

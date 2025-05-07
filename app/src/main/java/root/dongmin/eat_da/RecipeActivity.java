@@ -1,5 +1,6 @@
 package root.dongmin.eat_da;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -34,8 +35,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import root.dongmin.eat_da.adapter.NeedPostAdapter;
 import root.dongmin.eat_da.adapter.RecipeAdapter;
 import root.dongmin.eat_da.network.ApiService;
+import root.dongmin.eat_da.network.NeedPost;
 import root.dongmin.eat_da.network.Recipe;
 import root.dongmin.eat_da.network.RetrofitClient;
 import root.dongmin.eat_da.utils.SpaceItemDecoration;
@@ -58,6 +61,9 @@ public class RecipeActivity extends AppCompatActivity {
     private ImageView profileImage;
     private TextView greed;
     private String Nickname;
+    private List<NeedPost> needPosts = new ArrayList<>(); // 거리 리스트!
+
+
 
     private boolean isAFiltered = false, isBFiltered = false, isCFiltered = false, isDFiltered = false, isEFiltered = false;
     private boolean isFFiltered = false, isGFiltered = false, isHFiltered = false, isIFiltered = false;
@@ -70,6 +76,80 @@ public class RecipeActivity extends AppCompatActivity {
         // 초기화 및 설정
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.recipe);
+
+        needPosts = getIntent().getParcelableArrayListExtra("needPostList");
+
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            private int previousItemId = R.id.recipe; // 초기 선택된 아이콘 (recipeclicked 상태)
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (previousItemId == item.getItemId()) {
+                    return false; // 동일한 아이템 클릭 방지
+                }
+
+
+                if (item.getItemId() == R.id.recipe) {
+                    Toast.makeText(RecipeActivity.this, "RecipePage", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                    finish();
+                    return true;
+                }else if (item.getItemId() == R.id.chat) {
+                    Intent intent = new Intent(RecipeActivity.this, UserFindActivity.class);
+                    startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                    return true;
+                }else if (item.getItemId() == R.id.work_load){
+                    // needPosts가 null이 아닐 때까지 기다림
+                    if (needPosts != null && !needPosts.isEmpty()) {
+                        Intent intent = new Intent(RecipeActivity.this, MapActivity.class);
+                        intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 리스트 전달
+                        startActivity(intent);
+
+                        overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                        finish();
+                        return true;
+                    } else {
+                        // 필요 시 로딩 중 메시지나 대기 화면을 띄울 수도 있습니다
+                        Toast.makeText(RecipeActivity.this, "데이터를 로딩 중입니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }else if (item.getItemId() == R.id.nav_profile){
+                    Intent intent = new Intent(RecipeActivity.this,MyPageActivity.class);
+                    startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        }); // 이게 날아가 있었음 4/29 수정
+
+
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                finish();
+            }
+        }); // 뒤로가기 처리
+
+
         profileImage = findViewById(R.id.profileImage);
         greed = findViewById(R.id.greeding);
 
