@@ -60,7 +60,7 @@ public class ForgotpwActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = mEtEmail.getText().toString().trim();
                 if (email.isEmpty()) {
-                    Toast.makeText(ForgotpwActivity.this, "이메일을 입력하세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotpwActivity.this, "Please enter your email address..", Toast.LENGTH_SHORT).show();
 
                     return;
                 }
@@ -70,14 +70,14 @@ public class ForgotpwActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ForgotpwActivity.this, "비밀번호 재설정 이메일을 보냈습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForgotpwActivity.this, "We sent you a password reset link.", Toast.LENGTH_SHORT).show();
                             ack5.setVisibility(View.VISIBLE);
                             // ForgotdoneActivity로 이동
                             Intent intent = new Intent(ForgotpwActivity.this, ForgotdoneActivity.class);
                             startActivity(intent);
                             //finish(); // 액티비티 종료
                         } else {
-                            Toast.makeText(ForgotpwActivity.this, "이메일 전송 실패! 다시 시도하세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForgotpwActivity.this, "\n" + "Email delivery failed! Please try again.", Toast.LENGTH_SHORT).show();
                             ack6.setVisibility(View.VISIBLE);
                         }
                     }

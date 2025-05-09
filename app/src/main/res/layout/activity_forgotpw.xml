@@ -12,108 +12,93 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="비밀번호 찾기"
+        android:layout_marginTop="50dp"
+        android:text="Find password"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_reset_password"
         android:layout_width="363dp"
         android:layout_height="60dp"
-        android:text="계속하기"
         android:backgroundTint="@color/black"
+        android:text="Continue"
+        android:layout_marginTop="466dp"
         app:cornerRadius="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.88"/>
+        app:layout_constraintTop_toBottomOf="@+id/acktext6" />
 
     <EditText
         android:id="@+id/et_email"
         android:layout_width="363dp"
         android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="Please enter your email address."
         android:padding="12dp"
-        android:hint="이메일 주소를 입력해주세요."
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.255"
-        android:background="@drawable/edit_text_background"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="가입하신 이메일 주소를"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="52dp"
+        android:text="Please enter the email address"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.16" />
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <TextView
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="입력해 주세요"
+        android:text="you signed up with."
+        android:layout_marginStart="24sp"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19" />
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <TextView
         android:id="@+id/acktext5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="비밀번호 재설정 링크를 보내드렸어요 :)"
+        android:text="We sent you a password reset link :)"
         android:textColor="#01DF01"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="28dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
     <TextView
         android:id="@+id/acktext6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="이메일이 일치않아요. 다시 확인해보시겠어요?"
-        android:textSize="12sp"
+        android:layout_marginStart="28sp"
+        android:layout_marginTop="4dp"
+        android:text="The emails do not match. Would you like to check again?"
         android:textColor="#FE2E2E"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.14"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
     <ImageView
         android:id="@+id/btnback3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.042"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.038"
         app:srcCompat="@drawable/back" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

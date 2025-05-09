@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient; // 구글 로그인 클라이언트
 
     private EditText mEtEmail, mEtPwd;
-    private ImageView mBtnLogin;
+    private Button mBtnLogin;
     private TextView mBtnRegister;
     private ImageView googleLoginbtn;
     private TextView btnFind;

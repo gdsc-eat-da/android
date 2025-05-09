@@ -121,7 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String strPwd = mEtPwd.getText().toString().trim();
 
                 if (strEmail.isEmpty() || strPwd.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "이메일과 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "\n" + "Enter your email and password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -137,14 +137,14 @@ public class RegisterActivity extends AppCompatActivity {
                                     // 사용자 데이터베이스에 저장
                                     addUserToDatabase(strEmail, strPwd, userId);
 
-                                    Toast.makeText(RegisterActivity.this, "회원가입 완료", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "Membership registration completed", Toast.LENGTH_SHORT).show();
 
                                     // 닉네임 입력 화면으로 이동
                                     Intent intent = new Intent(RegisterActivity.this, NicknameActivity.class);
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    Toast.makeText(RegisterActivity.this, "아이디나 비밀번호를 확인하세요", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "\n" + "Check your ID or password", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
