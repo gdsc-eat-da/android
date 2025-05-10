@@ -8,30 +8,52 @@
     android:background="#FFFFFF"
     tools:context=".UserServey2">
 
-    <ImageView
-        android:id="@+id/imageView22"
-        android:layout_width="360dp"
-        android:layout_height="146dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+    <TextView
+        android:id="@+id/textView100"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:lines="2"
+        android:text="The basic setup is now complete!"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="90dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicisdone" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView101"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="If there is any incorrect information, you can correct it"
+        android:textColor="#959595"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView100" />
 
     <!-- 닉네임 입력 -->
+
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/servey"
+        app:layout_constraintStart_toEndOf="@+id/textView101"
+        app:layout_constraintTop_toBottomOf="@+id/textView100" />
+
     <EditText
         android:id="@+id/nicknameEditText"
-        android:layout_width="360dp"
-        android:layout_height="63dp"
-
+        android:layout_width="363dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#BABAC0"
         android:inputType="text"
         android:padding="16dp"
-        android:text="닉네임"
+        android:text="Nickname"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/imageView22"
-        app:layout_constraintStart_toStartOf="@+id/imageView22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
     <!-- 알레르기 유무 입력 -->
@@ -40,75 +62,86 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/allergyRecyclerView"
-        android:layout_width="362dp"
-        android:layout_height="61dp"
+        android:layout_width="363dp"
+        android:layout_height="60dp"
         android:background="#ffffff"
-        app:layout_constraintEnd_toEndOf="@+id/nicknameEditText"
 
-        app:layout_constraintStart_toStartOf="@+id/nicknameEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView33" />
 
     <EditText
         android:id="@+id/userTypeEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
+        android:layout_width="363dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#BABAC0"
         android:inputType="text"
         android:padding="16dp"
-        android:text="사용자 타입"
+        android:text="User type"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/allergyRecyclerView"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/allergyRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView35" />
 
     <TextView
         android:id="@+id/textView33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="56dp"
-        android:text="알레르기 유무"
+        android:layout_marginTop="46dp"
+        android:text="Allergy"
         android:textColor="#727272"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/nicknameEditText"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nicknameEditText" />
+
 
     <TextView
         android:id="@+id/textView34"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="닉네임"
+        android:layout_marginStart="24dp"
+        android:text="Nickname"
         android:textColor="#727272"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/imageView22"
-        app:layout_constraintTop_toBottomOf="@+id/imageView22" />
+        android:layout_marginTop="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView101" />
 
     <TextView
         android:id="@+id/textView35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="56dp"
-        android:text="사용자 유형"
+        android:layout_marginTop="46dp"
+        android:text="User type"
         android:textColor="#727272"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/allergyRecyclerView"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView" />
 
-    <ImageView
+    <TextView
+        android:id="@+id/textView45"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="126dp"
+        android:text="You can edit it later on My Page."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userTypeEditText" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/getstart"
-        android:layout_width="311dp"
-        android:layout_height="103dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintEnd_toEndOf="@+id/userTypeEditText"
-        app:layout_constraintHorizontal_bias="0.526"
-        app:layout_constraintStart_toStartOf="@+id/userTypeEditText"
-        app:layout_constraintTop_toBottomOf="@+id/userTypeEditText"
-        app:srcCompat="@drawable/survey2start" />
+        android:layout_width="363dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/black"
+        android:text="Start"
+        app:cornerRadius="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView45" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -46,7 +47,7 @@ public class UserServey2 extends AppCompatActivity {
     private RecyclerView allergyRecyclerView;
     private AllergyAdapter allergyAdapter;
     private ArrayList<String> selectedItems, finalselectedItems;
-    private ImageView getStartImageView;
+    private Button getStartImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
