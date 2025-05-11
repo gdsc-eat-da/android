@@ -82,7 +82,7 @@ public class NicknameActivity extends AppCompatActivity {
 
         // 닉네임이 비어있다면 저장 불가
         if (nickname.isEmpty()) {
-            Toast.makeText(NicknameActivity.this, "닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NicknameActivity.this, "Enter your nickname.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -95,7 +95,7 @@ public class NicknameActivity extends AppCompatActivity {
             // `UserAccount/{uid}/nickname` 경로에 닉네임 저장
             mDatabaseRef.child(uid).child("nickname").setValue(nickname).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(NicknameActivity.this, "계정 설정 완료.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NicknameActivity.this, "Complete account setup.", Toast.LENGTH_SHORT).show();
                     setTransactionCount(uid);
                     setDefaultProfileImage(uid);
                     // 온보딩 1로 이동
@@ -105,11 +105,11 @@ public class NicknameActivity extends AppCompatActivity {
                     finish();
 
                 } else {
-                    Toast.makeText(NicknameActivity.this, "닉네임 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NicknameActivity.this, "Failed to save nickname.", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(NicknameActivity.this, "로그인 상태를 확인하세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NicknameActivity.this, "Check your login status.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -122,7 +122,7 @@ public class NicknameActivity extends AppCompatActivity {
                 //Toast.makeText(NicknameActivity.this, "거래 횟수가 초기화되었습니다.", Toast.LENGTH_SHORT).show();
             } else {
                 // 거래 횟수 초기화 실패
-                Toast.makeText(NicknameActivity.this, "거래 횟수 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NicknameActivity.this, "Failed to initialize transaction count.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -139,7 +139,7 @@ public class NicknameActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         //Toast.makeText(NicknameActivity.this, "기본 프로필 이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(NicknameActivity.this, "프로필 이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NicknameActivity.this, "Failed to save profile image.", Toast.LENGTH_SHORT).show();
                     }
                 });
 

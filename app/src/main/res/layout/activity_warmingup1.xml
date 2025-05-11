@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:maxLines="2"
-        android:text="규정 사항을 다시 한 번 더 기억해봐요"
+        android:text="Let's review the rules again"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,42 +28,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="맞는 규정사항을 모두 선택해주세요."
+        android:text="Please select all applicable regulations."
         android:textColor="#959595"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.108"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView28" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/toSkip2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="160dp"
-        android:background="@drawable/skip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.074"
+        android:backgroundTint="#F2F3F7"
+        android:text="Skip"
+        app:cornerRadius="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/question4" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/seeAnswer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
         android:layout_marginTop="160dp"
-        android:background="@drawable/seeanswer"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/black"
+        android:text="Check the answer."
+        app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.904"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/question6" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnstarteatda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="363dp"
+        android:layout_height="60dp"
         android:layout_marginTop="160dp"
         android:visibility="gone"
-        android:background="@drawable/eatdastart"
+        android:backgroundTint="@color/black"
+        android:text="Getting started with EAT:DA"
+        app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/question6" />

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class UserSurvey1 extends AppCompatActivity {
 
-    private ImageButton toSkip, goNext;
+    private Button toSkip, goNext;
     private ImageView back;
     private RadioGroup personal;
     private RadioButton individual, selfEmp, enterprise;

@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this) // ✅ 다이얼로그 띄우기
-                        .setTitle("앱 종료")
-                        .setMessage("정말 종료하시겠습니까?")
-                        .setPositiveButton("확인", (dialogInterface, which) -> finish()) // 🔴 앱 종료
-                        .setNegativeButton("취소", null) // 취소 버튼 클릭 시 아무 동작 없음
+                        .setTitle("Exit the app")
+                        .setMessage("Are you sure you want to quit?")
+                        .setPositiveButton("Check", (dialogInterface, which) -> finish()) // 🔴 앱 종료
+                        .setNegativeButton("Canccel", null) // 취소 버튼 클릭 시 아무 동작 없음
                         .show();
 
                 // "확인" 버튼의 텍스트 색을 검정으로 설정
