@@ -41,7 +41,7 @@ public class Onboarding1 extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Toast.makeText(Onboarding1.this, "최초 회원가입시 필수 방문 페이지 입니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Onboarding1.this, "\n" + "This is a page that requires membership registration.", Toast.LENGTH_SHORT).show();
             }
         });
 

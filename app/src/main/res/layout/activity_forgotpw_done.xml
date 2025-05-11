@@ -12,64 +12,56 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="비밀번호 찾기"
+        android:layout_marginTop="50dp"
+        android:text="Find password"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="재설정 링크가 이메일로"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="52dp"
+        android:text="A reset link has been sent"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.16" />
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
     <TextView
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="전송되었어요"
+        android:layout_marginStart="24dp"
+        android:text="to your email."
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19" />
+        app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_reset_tologin"
         android:layout_width="363dp"
         android:layout_height="60dp"
-        android:text="로그인하러 가기"
+        android:layout_marginTop="196dp"
         android:backgroundTint="@color/black"
+        android:text="Go to log in"
         app:cornerRadius="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.88"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:src="@drawable/email"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47000003" />
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

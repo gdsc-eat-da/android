@@ -12,27 +12,24 @@
         android:id="@+id/btnbacktoon1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.042"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.038"
         app:srcCompat="@drawable/back" />
 
     <TextView
         android:id="@+id/textView26"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
-        android:text="사용자 유형을 선택해주세요."
-        android:textStyle="bold"
+        android:text="Please select your user type."
         android:textSize="22sp"
-
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnbacktoon1" />
 
     <RadioGroup
         android:id="@+id/radioGroupPersonal"
@@ -50,7 +47,7 @@
             android:background="@drawable/radiodefault"
             android:button="@null"
             android:gravity="center"
-            android:text="개인"
+            android:text="Individual"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -62,7 +59,7 @@
             android:background="@drawable/radiodefault"
             android:button="@null"
             android:gravity="center"
-            android:text="자영업자"
+            android:text="Self-employed"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -74,28 +71,32 @@
             android:background="@drawable/radiodefault"
             android:button="@null"
             android:gravity="center"
-            android:text="기업"
+            android:text="Enterprise"
             android:textSize="18sp"
             android:textStyle="bold" />
     </RadioGroup>
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/goNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
         android:layout_marginTop="248dp"
-        android:background="@drawable/okbutton"
+        android:backgroundTint="@color/black"
+        android:text="Check"
+        app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupPersonal"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupPersonal" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/toSkip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
         android:layout_marginTop="248dp"
-        android:background="@drawable/skip"
+        android:backgroundTint="#F2F3F7"
+        android:text="Skip"
+        app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupPersonal"

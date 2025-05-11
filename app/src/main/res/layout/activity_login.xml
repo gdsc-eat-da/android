@@ -13,69 +13,64 @@
         android:layout_width="363dp"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="25dp"
-        android:ems="10"
-        android:hint="아이디"
-        android:paddingLeft="16dp"
-        android:textSize="16sp"
-        android:textColor="#B0B0B0"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.26"
         android:background="@drawable/edit_text_background"
+        android:ems="10"
+        android:hint="Id"
         android:importantForAccessibility="yes"
-         />
+        android:inputType="textEmailAddress"
+        android:paddingLeft="16dp"
+        android:textColor="#B0B0B0"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
         android:id="@+id/et_pwd"
         android:layout_width="363dp"
         android:layout_height="50dp"
         android:layout_marginStart="41dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="18dp"
         android:layout_marginEnd="42dp"
         android:background="@drawable/edit_text_background"
         android:ems="10"
-        android:hint="비밀번호"
+        android:hint="Password"
         android:importantForAccessibility="yes"
         android:inputType="textPassword"
         android:paddingLeft="16dp"
         android:textColor="#B0B0B0"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/login"
         android:layout_width="363dp"
         android:layout_height="60dp"
-        android:background="@drawable/loginbutton"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/black"
+        android:text="Login"
+        app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.43" />
+        app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
 
     <TextView
         android:id="@+id/legistor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="회원가입 >"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Sign Up >"
         android:textSize="13dp"
         android:textStyle="bold"
         app:iconTint="@color/design_default_color_error"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.51"
+        app:layout_constraintTop_toBottomOf="@+id/login"
         app:rippleColor="#8C8C8C"
         app:strokeColor="#D9D9D9" />
 
@@ -83,64 +78,57 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EAT:다에 오신 걸"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="to EAT:DA"
         android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.110000014" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="환영해요!"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="100dp"
+        android:text="Welcome!"
         android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.17000002" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.56"
+        app:layout_constraintTop_toBottomOf="@+id/legistor"
         app:srcCompat="@drawable/or" />
 
     <TextView
         android:id="@+id/findpasswd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="비밀번호 찾기"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:text="Find password"
         android:textSize="13dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.51" />
+        app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <ImageView
         android:id="@+id/btn_google_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.64"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:srcCompat="@drawable/googlelogin" />
 
 
