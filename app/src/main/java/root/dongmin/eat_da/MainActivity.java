@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this) // ✅ 다이얼로그 띄우기
-                        .setTitle("앱 종료")
-                        .setMessage("정말 종료하시겠습니까?")
-                        .setPositiveButton("확인", (dialogInterface, which) -> finish()) // 🔴 앱 종료
-                        .setNegativeButton("취소", null) // 취소 버튼 클릭 시 아무 동작 없음
+                        .setTitle("Exit App")
+                        .setMessage("Are you sure you want to exit?")
+                        .setPositiveButton("Confirm", (dialogInterface, which) -> finish()) // 🔴 앱 종료
+                        .setNegativeButton("Cancel", null) // 취소 버튼 클릭 시 아무 동작 없음
                         .show();
 
                 // "확인" 버튼의 텍스트 색을 검정으로 설정
@@ -438,11 +438,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String nickname = dataSnapshot.getValue(String.class);
                     if (nickname != null) {
-                        greed.setText("반갑습니다, " + nickname + "님!");
+                        greed.setText("Welcome, " + nickname);
                         greed2.setText(nickname);
                         Nickname = nickname;
                     } else {
-                        greed.setText("닉네임을 설정해주세요.");
+                        greed.setText("Please set your nickname.");
                         greed2.setText("_");
                         greed.setOnClickListener(v -> {
                             Intent intent = new Intent(MainActivity.this, NicknameActivity.class);
@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MainActivity.this, "닉네임을 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "load nickname failed", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // levelBig에 텍스트 설정
                         //levelBig = findViewById(R.id.levelhowmuch);
-                        levelBig.setText("거래 " + (5-remainder) + "번 더 하면 레벨 업이에요!");
+                        levelBig.setText((5-remainder) + "more trades and you'll level up!");
 
                         // levelSmall에 텍스트 설정
                         //levelSmall = findViewById(R.id.levelhowmuch2);
@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         // transactionCount가 null인 경우 기본값 설정
                         //levelBig = findViewById(R.id.levelhowmuch);
-                        levelBig.setText("거래 0번 더 하면 레벨 업이에요..");
+                        levelBig.setText("0 more trades and you'll level up..");
 
                         //levelSmall = findViewById(R.id.levelhowmuch2);
                         levelSmall.setText("0Lv..");
@@ -519,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MainActivity.this, "거래 횟수를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Failed to load transaction history.", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -545,13 +545,13 @@ public class MainActivity extends AppCompatActivity {
                     loadtradeCount(allPosts);
 
                 } else {
-                    showErrorMessage("게시글을 불러올 수 없습니다.");
+                    showErrorMessage("Could not load posts.");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
-                showErrorMessage("네트워크 오류로 게시글을 불러올 수 없습니다.");
+                showErrorMessage("Network error. Failed to load posts.");
             }
         });
     }
@@ -606,7 +606,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     Log.d("API_RESPONSE", "Response Body or NeedPost List is null");
-                    showErrorMessage("필요 게시글을 불러올 수 없습니다.");
+                    showErrorMessage("network error.");
                     needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>()); // 빈 리스트로 초기화
                     needrecyclerView.setAdapter(needPostAdapter);
                 }
@@ -615,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<NeedPostResponseWrapper> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "네트워크 오류: " + t.getMessage());
-                showErrorMessage("네트워크 오류로 필요 게시글을 불러올 수 없습니다.");
+                showErrorMessage("network error.");
 
                 // 네트워크 오류 발생 시 RecyclerView에 빈 리스트 적용
                 needPostAdapter = new NeedPostAdapter(MainActivity.this, new ArrayList<>());
@@ -657,14 +657,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d("API_RESPONSE", "Response Body or PostLocation List is null");
-                    showErrorMessage("위치 데이터를 불러올 수 없어.");
+                    showErrorMessage("Could not get current location.");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<PostLocationResponseWrapper> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "네트워크 오류: " + t.getMessage());
-                showErrorMessage("네트워크 오류로 데이터를 불러올 수 없어 ㅅ뷰ㅠㅠㅠㅠ.");
+                showErrorMessage("network error.");
             }
         });
     }
@@ -688,13 +688,13 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.setAdapter(postAdapter);
                 } else {
                     Log.e("Upload", "근처 게시물 불러오기 실패: 위도 :"+ latitude + " 경도:" + longitude + " 거리: " + radius);
-                    showErrorMessage("근처 게시글을 불러올 수 없습니다.");
+                    showErrorMessage("Could not get current location.");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<NearbyPostResponse> call, @NonNull Throwable t) {
-                showErrorMessage("네트워크 오류로 게시글을 불러올 수 없습니다.");
+                showErrorMessage("network error.");
             }
         });
     }
@@ -719,11 +719,11 @@ public class MainActivity extends AppCompatActivity {
                                 double longitude = location.getLongitude();
 
                                 isNearbyActive = true;
-                                nearbySwitch.setText("근처 게시글 취소");
+                                nearbySwitch.setText("cancelled nearby blabla");
 
                                 loadNearbyPosts(latitude, longitude);
                             } else {
-                                Toast.makeText(MainActivity.this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Could not get current location.", Toast.LENGTH_SHORT).show();
                             }
                         });
             } else {
@@ -879,19 +879,19 @@ public class MainActivity extends AppCompatActivity {
 
             if(zorifilter == true)
             {
-                if (!(zorifilter && hashtags.contains("조리"))) {
+                if (!(zorifilter && hashtags.contains("Cooked"))) {
                     continue;
                 }
             }
             if(bezorifilter == true)
             {
-                if (!(bezorifilter && hashtags.contains("비조리"))) {
+                if (!(bezorifilter && hashtags.contains("Pre-cooked"))) {
                     continue;
                 }
             }
             if(instantfilter == true)
             {
-                if (!(instantfilter && hashtags.contains("인스턴트"))) {
+                if (!(instantfilter && hashtags.contains("Instant"))) {
                     continue;
                 }
             }
@@ -915,19 +915,19 @@ public class MainActivity extends AppCompatActivity {
 
             if(zorifilter == true)
             {
-                if (!(zorifilter && hashtags.contains("조리"))) {
+                if (!(zorifilter && hashtags.contains("Cooked"))) {
                     continue;
                 }
             }
             if(bezorifilter == true)
             {
-                if (!(bezorifilter && hashtags.contains("비조리"))) {
+                if (!(bezorifilter && hashtags.contains("Pre-cooked"))) {
                     continue;
                 }
             }
             if(instantfilter == true)
             {
-                if (!(instantfilter && hashtags.contains("인스턴트"))) {
+                if (!(instantfilter && hashtags.contains("Instant"))) {
                     continue;
                 }
             }

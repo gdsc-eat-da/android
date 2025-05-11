@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="반갑습니다. 000님!"
+                android:text="Hello. 000!"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@id/profileImage"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="초록색이름"
+                android:text="greenName"
                 android:textColor="#55EEE0"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -66,10 +66,10 @@
 
             <TextView
                 android:id="@+id/levelhowmuch"
-                android:layout_width="206dp"
-                android:layout_height="77dp"
+                android:layout_width="257dp"
+                android:layout_height="78dp"
                 android:layout_marginTop="8dp"
-                android:text="거래 3번 더 하면 레벨 업이에요!"
+                android:text="3 more trades and you'll level up!"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +82,7 @@
                 android:layout_width="321dp"
                 android:layout_height="83dp"
                 android:layout_marginTop="16dp"
-                android:text="최근 도움을 요청한 유저들의                게시글을 확인해 보세요"
+                android:text="Check out posts from users       who recently asked for help!"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -139,25 +139,27 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="거래횟수"
+                    android:text="Trade count"
                     android:textColor="#000000"
                     android:textSize="15sp" />
 
                 <!-- 왼쪽 텍스트 아래 숫자 -->
+
+                <!-- 가운데 텍스트 -->
+
                 <TextView
                     android:id="@+id/gureCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/gure"
                     android:layout_alignStart="@id/gure"
-                    android:layout_marginStart="22dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="33dp"
+                    android:layout_marginTop="5dp"
                     android:text="0"
                     android:textColor="#000000"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <!-- 가운데 텍스트 -->
                 <TextView
                     android:id="@+id/kyesekell"
                     android:layout_width="wrap_content"
@@ -165,7 +167,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="5dp"
-                    android:text="북마크"
+                    android:text="Bookmarks"
                     android:textColor="#000000"
                     android:textSize="15sp" />
 
@@ -191,7 +193,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginEnd="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="작성 계시글"
+                    android:text="Your posts"
                     android:textColor="#000000"
                     android:textSize="15sp" />
 
@@ -203,7 +205,7 @@
                     android:layout_below="@id/book"
                     android:layout_alignEnd="@id/book"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="30dp"
+                    android:layout_marginEnd="28dp"
                     android:text="0"
                     android:textColor="#000000"
                     android:textSize="22sp"
@@ -217,7 +219,7 @@
                 android:layout_marginTop="32dp"
                 android:background="@drawable/edit_text_background"
                 android:ems="10"
-                android:hint="원하는 음식을 검색해보세요!"
+                android:hint="Find your favorite food!"
                 android:inputType="text"
                 android:paddingLeft="16dp"
                 android:textColor="#B0B0B0"
@@ -265,7 +267,7 @@
                 android:id="@+id/btnNearby"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="근처 게시물 필터링  "
+                android:text="Filter nearby posts    "
                 android:textColor="#CCCCCC"
                 android:textStyle="bold"
                 android:thumb="@drawable/thumb"
@@ -289,8 +291,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
-                android:layout_width="210dp"
-                android:layout_height="61dp"
+                android:layout_width="247dp"
+                android:layout_height="59dp"
                 android:layout_marginTop="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -305,7 +307,7 @@
                     android:background="@drawable/minisel"
                     android:maxWidth="250dp"
                     android:padding="6dp"
-                    android:text=" 조리 "
+                    android:text=" Cooked "
                     android:textColor="#121111"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -315,30 +317,30 @@
                     android:id="@+id/textView_msgfruitvega"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="52dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/minisel"
                     android:maxWidth="250dp"
                     android:padding="6dp"
-                    android:text=" 비조리 "
+                    android:text=" Pre-cooked "
                     android:textColor="#121111"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/TextView_msgegg"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView_msgseed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="117dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/minisel"
                     android:maxWidth="250dp"
                     android:padding="6dp"
-                    android:text=" 인스턴트 "
+                    android:text=" Instant "
                     android:textColor="#121111"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView_msgfruitvega"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

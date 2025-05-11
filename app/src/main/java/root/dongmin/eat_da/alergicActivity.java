@@ -132,17 +132,35 @@ public class alergicActivity extends AppCompatActivity {
         alergicItems.add("파인애플");
 
         alergicMap = new HashMap<>();
-        alergicMap.put("TextView_msgegg", new ArrayList<String>() {{ add("계란"); }});
-        alergicMap.put("textView_msgmilk", new ArrayList<String>() {{ add("우유"); }});
-        alergicMap.put("textView_msgfruitvega", new ArrayList<String>() {{ add("복숭아"); }});
-        alergicMap.put("textView_msgseed", new ArrayList<String>() {{ add("메밀"); add("대두"); add("밀"); add("잣"); }});
-        alergicMap.put("textView_msgnut", new ArrayList<String>() {{ add("땅콩"); add("호두"); }});
-        alergicMap.put("textView_msghardseafood", new ArrayList<String>() {{ add("게"); add("새우"); }});
-        alergicMap.put("textView_msgseafood", new ArrayList<String>() {{ add("오징어"); add("고등어"); }});
-        alergicMap.put("textView_msgjoga", new ArrayList<String>() {{ add("조개"); }});
-        alergicMap.put("textView_msgmeat", new ArrayList<String>() {{ add("닭고기"); add("돼지고기"); add("쇠고기"); }});
-        alergicMap.put("textView_msgahwang", new ArrayList<String>() {{ add("아황산류"); }});
-        alergicMap.put("textView_msgvega", new ArrayList<String>() {{ add("토마토"); }});
+        alergicMap.put("TextView_msgegg", new ArrayList<String>() {{ add("Egg"); }});
+        alergicMap.put("textView_msgmilk", new ArrayList<String>() {{ add("Milk"); }});
+        alergicMap.put("textView_msgfruitvega", new ArrayList<String>() {{ add("Peach"); }});
+        alergicMap.put("textView_msgseed", new ArrayList<String>() {{
+            add("Buckwheat");
+            add("Soybean");
+            add("Wheat");
+            add("Pine nut");
+        }});
+        alergicMap.put("textView_msgnut", new ArrayList<String>() {{
+            add("Peanut");
+            add("Walnut");
+        }});
+        alergicMap.put("textView_msghardseafood", new ArrayList<String>() {{
+            add("Crab");
+            add("Shrimp");
+        }});
+        alergicMap.put("textView_msgseafood", new ArrayList<String>() {{
+            add("Squid");
+            add("Mackerel");
+        }});
+        alergicMap.put("textView_msgjoga", new ArrayList<String>() {{ add("Clam"); }});
+        alergicMap.put("textView_msgmeat", new ArrayList<String>() {{
+            add("Chicken");
+            add("Pork");
+            add("Beef");
+        }});
+        alergicMap.put("textView_msgahwang", new ArrayList<String>() {{ add("Sulfites"); }});
+        alergicMap.put("textView_msgvega", new ArrayList<String>() {{ add("Tomato"); }});
 
         alergicAdapter = new AlergicAdapter(alergicItems);
         miniAlergicAdapter = new MiniAlergicAdapter(this, selectedItems, btnComplete);
@@ -194,7 +212,7 @@ public class alergicActivity extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(), String.join(", ", items) + " 클릭됨!", Toast.LENGTH_SHORT).show();
                     updateRecyclerView(items);
                 } else {
-                    Toast.makeText(getApplicationContext(), "해당 항목이 없습니다!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "The item does not exist.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -226,7 +244,7 @@ public class alergicActivity extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(), newItem + " 추가됨!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss(); // 다이얼로그 닫기
             } else {
-                Toast.makeText(getApplicationContext(), "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please enter a valid value.", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -337,14 +355,14 @@ public class alergicActivity extends AppCompatActivity {
             holder.itemView.setLayoutParams(layoutParams);
 
 
-            btnComplete.setText(items.size() + "개 선택완료");
+            btnComplete.setText(items.size() + " Confirm");
 
             holder.itemView.setOnClickListener(v -> {
                 // 아이템을 클릭했을 때, items에서만 해당 아이템 삭제
                 String selectedItem = items.get(position);
                 items.remove(position);  // items 리스트에서 삭제
                 notifyDataSetChanged();
-                btnComplete.setText(items.size() + "개 선택완료");  // 남은 개수로 버튼 텍스트 업데이트
+                btnComplete.setText(items.size() + " Confirm");  // 남은 개수로 버튼 텍스트 업데이트
             });
         }
 
