@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="root.dongmin.eat_da" />
+                  <option name="mobileSdkAppId" value="1:35392002959:android:2af3a802ca19822ac189fa" />
+                  <option name="projectId" value="eat-da-68342" />
+                  <option name="projectNumber" value="35392002959" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
