@@ -176,12 +176,12 @@ public class UserServey2 extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "정보가 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "The information was successfully saved.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(UserServey2.this, WarmingupActivity1.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Failed to save information.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

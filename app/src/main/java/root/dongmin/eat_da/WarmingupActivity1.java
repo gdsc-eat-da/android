@@ -3,6 +3,7 @@ package root.dongmin.eat_da;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,9 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class WarmingupActivity1 extends AppCompatActivity {
 
-    private ImageButton jumpButton;
-    private ImageButton checkAnswerButton;
-    private ImageButton btnstart;
+    private Button jumpButton;
+    private Button checkAnswerButton;
+    private Button btnstart;
     private CheckBox question1, question2, question3, question4, question5, question6;
     private ImageView bubble1, bubble2, bubble3;
 
@@ -58,7 +59,7 @@ public class WarmingupActivity1 extends AppCompatActivity {
 
             if(allCorrect && !includesIncorrect){
                 // 모두 정답일 경우
-                Toast.makeText(WarmingupActivity1.this, "모두 정답 입니다!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WarmingupActivity1.this, "All are correct!", Toast.LENGTH_SHORT).show();
             } else {
                 // bubble 이미지를 보여주고, 잘못된 항목의 배경을 변경
                 if (question1.isChecked()) {
@@ -75,7 +76,7 @@ public class WarmingupActivity1 extends AppCompatActivity {
                 }
 
 
-                Toast.makeText(WarmingupActivity1.this, "답을 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WarmingupActivity1.this, "Please check your answer.", Toast.LENGTH_SHORT).show();
             }
 
             // 체크박스를 클릭할 수 없도록 비활성화
