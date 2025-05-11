@@ -67,7 +67,7 @@
             android:background="@drawable/minisel"
             android:maxWidth="250dp"
             android:padding="6dp"
-            android:text=" 전체 "
+            android:text="All"
             android:textColor="#121111"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"

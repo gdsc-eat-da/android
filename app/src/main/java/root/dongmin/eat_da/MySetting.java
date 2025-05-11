@@ -134,7 +134,7 @@ public class MySetting extends AppCompatActivity {
                         if (nickname != null) {
                             nicknameChange.setText(nickname);
                         } else {
-                            nicknameChange.setText("닉네임이 없습니다.");
+                            nicknameChange.setText("nickname");
                         }
 
                         if (profileImageUrl != null) {
@@ -147,11 +147,11 @@ public class MySetting extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MySetting.this, "데이터 로딩 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MySetting.this, "loading failed: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are not logged in.", Toast.LENGTH_SHORT).show();
         }
 
         // 닉네임 변경 후 저장 버튼 클릭 리스너
@@ -161,7 +161,7 @@ public class MySetting extends AppCompatActivity {
             if (!newNickname.isEmpty()) {
                 // 변경된 닉네임을 Firebase에 저장할지 묻는 다이얼로그 띄우기
                 new AlertDialog.Builder(MySetting.this)
-                        .setMessage("변경된 닉네임을 저장하시겠습니까?")
+                        .setMessage("Do you want to save the changed nickname?")
                         .setCancelable(false)
                         .setPositiveButton("확인", (dialog, id) -> {
                             // Firebase에 닉네임 저장
@@ -171,17 +171,17 @@ public class MySetting extends AppCompatActivity {
                                 mDatabaseRef.child(uid).child("nickname").setValue(newNickname)
                                         .addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(MySetting.this, "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MySetting.this, "Nickname has been changed.", Toast.LENGTH_SHORT).show();
                                             } else {
-                                                Toast.makeText(MySetting.this, "닉네임 변경 실패", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MySetting.this, "Failed to change nickname.", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                             }
                         })
-                        .setNegativeButton("취소", null)
+                        .setNegativeButton("cancel", null)
                         .show();
             } else {
-                Toast.makeText(MySetting.this, "닉네임을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MySetting.this, "Please enter a nickname.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -225,12 +225,12 @@ public class MySetting extends AppCompatActivity {
                 if (file.exists()) {
                     uploadProfileImage(file);
                 } else {
-                    Log.e("UploadProfile", "파일이 존재하지 않습니다.");
-                    Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Log.e("UploadProfile", "File not found.");
+                    Toast.makeText(this, "there's no file", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Log.e("UploadProfile", "파일 경로를 가져올 수 없습니다.");
-                Toast.makeText(this, "파일 경로를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Log.e("UploadProfile", "File not found.");
+                Toast.makeText(this, "Failed to get file path.", Toast.LENGTH_SHORT).show();
             }
 
             // Glide로 미리보기
@@ -294,7 +294,7 @@ public class MySetting extends AppCompatActivity {
                                     // Firebase에 이미지 URL 업데이트
                                     mDatabaseRef.child(uid).child("profileImage").setValue(imageUrl)
                                             .addOnSuccessListener(aVoid -> {
-                                                Toast.makeText(MySetting.this, "프로필 사진이 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MySetting.this, "update succeed", Toast.LENGTH_SHORT).show();
                                                 Log.d("UploadProfile", "Firebase에 프로필 이미지 업데이트 성공");
 
                                                 // Glide로 프로필 이미지 로드
@@ -303,21 +303,21 @@ public class MySetting extends AppCompatActivity {
                                                         .into(profile);  // ImageView에 로드
                                             })
                                             .addOnFailureListener(e -> {
-                                                Toast.makeText(MySetting.this, "프로필 사진 업데이트 실패", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MySetting.this, "Profile picture update failed", Toast.LENGTH_SHORT).show();
                                                 Log.e("UploadProfile", "Firebase 업데이트 실패: " + e.getMessage());
                                             });
                                 }
                             } else {
                                 Log.e("UploadProfile", "이미지 URL이 유효하지 않습니다.");
-                                Toast.makeText(MySetting.this, "유효한 이미지 URL이 아닙니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MySetting.this, "Invalid image URL", Toast.LENGTH_SHORT).show();
                             }
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(MySetting.this, "서버 응답 처리 실패", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MySetting.this, "Failed to process server response", Toast.LENGTH_SHORT).show();
                             Log.e("UploadProfile", "서버 응답 처리 중 오류 발생: " + e.getMessage());
                         }
                     } else {
-                        Toast.makeText(MySetting.this, "서버 오류", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MySetting.this, "Server error", Toast.LENGTH_SHORT).show();
                         Log.e("UploadProfile", "서버 오류 발생: " + response.code());
                     }
                 }
@@ -325,13 +325,13 @@ public class MySetting extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(MySetting.this, "네트워크 오류", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MySetting.this, "Network error", Toast.LENGTH_SHORT).show();
                     Log.e("UploadProfile", "네트워크 오류 발생: " + t.getMessage());
                 }
             });
         } else {
             Log.e("UploadProfile", "파일이 존재하지 않습니다.");
-            Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -371,20 +371,20 @@ public class MySetting extends AppCompatActivity {
 
                         progressBar.setProgress(remainder); // 나머지 값을 progress로 설정
                         levelshow.setText(level + "Lv");
-                        tran.setText("거래 "+(5-remainder)+ " 회"); // 다음 레벨까지 남은 횟수 계산
-                        com.setText("댓글 • 하트 "+(5-remainder)+" 회");
+                        tran.setText((5-remainder)+ " shared"); // 다음 레벨까지 남은 횟수 계산
+                        com.setText((5-remainder)+"  comments");
                     } else {
 
                         progressBar.setProgress(0); // 기본값 0으로 설정
                         levelshow.setText("0Lv");
-                        tran.setText("거래 0 회");
-                        com.setText("댓글 • 하트 0 회");
+                        tran.setText("0 shared");
+                        com.setText("0 comments");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MySetting.this, "거래 횟수를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MySetting.this, "Failed to load transaction count", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

@@ -315,9 +315,9 @@ public class MapActivity extends AppCompatActivity {
 
                         // 텍스트뷰에 사용자 정보 설정
                         if (nickname != null) {
-                            nickname.setText(nic+"님");
+                            nickname.setText(nic);
                         } else {
-                            nickname.setText("닉네임이 없습니다.");
+                            nickname.setText("nickname");
                         }
 
                         if (profileImageUrl != null) {
@@ -330,11 +330,11 @@ public class MapActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MapActivity.this, "데이터 로딩 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapActivity.this, "data loading failed: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "This is a user who is not logged in.", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -455,16 +455,16 @@ public class MapActivity extends AppCompatActivity {
                                 @Override
                                 public void onMapError(Exception error) {
                                     Log.e("KakaoMap", "onMapError: ", error);
-                                    Toast.makeText(MapActivity.this, "지도 로딩 중 오류 발생", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MapActivity.this, "error(map loading)", Toast.LENGTH_SHORT).show();
                                 }
                             }, readyCallback); // KakaoMapReadyCallback 추가
 
                         } catch (Exception e) {
                             Log.e("MapActivity", "KakaoMap SDK 초기화 실패", e);
-                            Toast.makeText(MapActivity.this, "지도 초기화 중 오류 발생", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapActivity.this, "Error initializing map", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(this, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Unable to get location information.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -497,9 +497,9 @@ public class MapActivity extends AppCompatActivity {
 
     private void showPermissionExplanation() {
         new AlertDialog.Builder(this)
-                .setTitle("위치 권한 필요")
-                .setMessage("위치 서비스를 사용하기 위해 권한을 허용해주세요.")
-                .setPositiveButton("설정", new DialogInterface.OnClickListener() {
+                .setTitle("Location rights required")
+                .setMessage("위Allow permission to use location services.")
+                .setPositiveButton("check", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -512,7 +512,7 @@ public class MapActivity extends AppCompatActivity {
                         }
                     }
                 })
-                .setNegativeButton("취소", null)
+                .setNegativeButton("cancel", null)
                 .show();
     }
 

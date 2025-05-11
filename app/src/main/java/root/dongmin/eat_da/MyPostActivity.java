@@ -92,7 +92,7 @@ public class MyPostActivity extends AppCompatActivity {
         // ✅ Firebase에서 닉네임 가져오기
         getNickname(nickname -> {
             if (nickname == null || nickname.isEmpty()) {
-                Toast.makeText(MyPostActivity.this, "닉네임을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyPostActivity.this, "can't found nickname", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -135,7 +135,7 @@ public class MyPostActivity extends AppCompatActivity {
                                     postAdapter = new PostAdapter(MyPostActivity.this, allPosts);
                                     recyclerView.setAdapter(postAdapter);
                                 } else {
-                                    Toast.makeText(MyPostActivity.this, "게시글이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MyPostActivity.this, "no posts", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 String message = jsonResponse.getString("message");
@@ -143,11 +143,11 @@ public class MyPostActivity extends AppCompatActivity {
                             }
                         } catch (Exception e) {
                             Log.e("MyPostActivity", "JSON 파싱 오류: " + e.getMessage());
-                            Toast.makeText(MyPostActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyPostActivity.this, "error", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Log.d("MyPostActivity", "Error: " + response.message());
-                        Toast.makeText(MyPostActivity.this, "게시글을 불러올 수 없습니다. 서버 오류.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyPostActivity.this, "server error", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -155,7 +155,7 @@ public class MyPostActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     // 네트워크 오류 처리
                     Log.d("MyPostActivity", "Failure: " + t.getMessage());
-                    Toast.makeText(MyPostActivity.this, "네트워크 오류로 게시글을 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyPostActivity.this, "network error", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -165,7 +165,7 @@ public class MyPostActivity extends AppCompatActivity {
         // ✅ Firebase에서 닉네임 가져오기
         getNickname(nickname -> {
             if (nickname == null || nickname.isEmpty()) {
-                Toast.makeText(MyPostActivity.this, "닉네임을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyPostActivity.this, "can't found nickname", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -209,7 +209,7 @@ public class MyPostActivity extends AppCompatActivity {
                                     needPostAdapter = new NeedPostAdapter(MyPostActivity.this, needPosts);
                                     needrecyclerView.setAdapter(needPostAdapter);
                                 } else {
-                                    Toast.makeText(MyPostActivity.this, "게시글이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MyPostActivity.this, "there's no posts", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 String message = jsonResponse.getString("message");
@@ -217,11 +217,11 @@ public class MyPostActivity extends AppCompatActivity {
                             }
                         } catch (Exception e) {
                             Log.e("MyPostActivity", "JSON 파싱 오류: " + e.getMessage());
-                            Toast.makeText(MyPostActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyPostActivity.this, "error", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Log.d("MyPostActivity", "Error: " + response.message());
-                        Toast.makeText(MyPostActivity.this, "게시글을 불러올 수 없습니다. 서버 오류.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyPostActivity.this, "server error", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -229,7 +229,7 @@ public class MyPostActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     // 네트워크 오류 처리
                     Log.d("MyPostActivity", "Failure: " + t.getMessage());
-                    Toast.makeText(MyPostActivity.this, "네트워크 오류로 게시글을 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyPostActivity.this, "network error", Toast.LENGTH_SHORT).show();
                 }
             });
         });

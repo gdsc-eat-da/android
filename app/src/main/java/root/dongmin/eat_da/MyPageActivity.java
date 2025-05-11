@@ -137,7 +137,7 @@ public class MyPageActivity extends AppCompatActivity {
                         return true;
                     } else {
                         // 필요 시 로딩 중 메시지나 대기 화면을 띄울 수도 있습니다
-                        Toast.makeText(MyPageActivity.this, "데이터를 로딩 중입니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyPageActivity.this, "loading data.", Toast.LENGTH_SHORT).show();
                     }
                 } else if (item.getItemId() == R.id.recipe) {
                     Intent intent = new Intent(MyPageActivity.this, RecipeActivity.class);
@@ -207,7 +207,7 @@ public class MyPageActivity extends AppCompatActivity {
                         if (nickname != null) {
                             namePage.setText(nickname);
                         } else {
-                            namePage.setText("닉네임이 없습니다.");
+                            namePage.setText("nickname");
                         }
 
                         if (transactionCount != null) {
@@ -226,11 +226,11 @@ public class MyPageActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MyPageActivity.this, "데이터 로딩 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyPageActivity.this, "failed loading data: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are not logged in.", Toast.LENGTH_SHORT).show();
         }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -257,9 +257,9 @@ public class MyPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog dialog = new AlertDialog.Builder(v.getContext())
-                        .setTitle("로그아웃하시겠습니까?")
-                        .setMessage("로그인 창으로 돌아가시겠습니까?")
-                        .setPositiveButton("확인", (dialogInterface, which) -> {
+                        .setTitle("Log out?")
+                        .setMessage("You'll need to sign in again to access your account.")
+                        .setPositiveButton("LOG OUT", (dialogInterface, which) -> {
                             // Firebase 로그아웃
                             FirebaseAuth.getInstance().signOut();
 
@@ -272,7 +272,7 @@ public class MyPageActivity extends AppCompatActivity {
                                 finish(); // 현재 액티비티 종료
                             });
                         })
-                        .setNegativeButton("취소", null)
+                        .setNegativeButton("cancel", null)
                         .show();
 
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
@@ -367,11 +367,11 @@ public class MyPageActivity extends AppCompatActivity {
                     uploadProfileImage(file);
                 } else {
                     Log.e("UploadProfile", "파일이 존재하지 않습니다.");
-                    Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "The file does not exist.", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Log.e("UploadProfile", "파일 경로를 가져올 수 없습니다.");
-                Toast.makeText(this, "파일 경로를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "ERROR: File path resolution failed - file does not exist", Toast.LENGTH_SHORT).show();
             }
 
             // Glide로 미리보기
@@ -448,21 +448,21 @@ public class MyPageActivity extends AppCompatActivity {
                                                         .into(profile);  // ImageView에 로드
                                             })
                                             .addOnFailureListener(e -> {
-                                                Toast.makeText(MyPageActivity.this, "프로필 사진 업데이트 실패", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MyPageActivity.this, "Failed to update profile picture", Toast.LENGTH_SHORT).show();
                                                 Log.e("UploadProfile", "Firebase 업데이트 실패: " + e.getMessage());
                                             });
                                 }
                             } else {
                                 Log.e("UploadProfile", "이미지 URL이 유효하지 않습니다.");
-                                Toast.makeText(MyPageActivity.this, "유효한 이미지 URL이 아닙니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MyPageActivity.this, "Invalid image URL.", Toast.LENGTH_SHORT).show();
                             }
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(MyPageActivity.this, "서버 응답 처리 실패", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyPageActivity.this, "Error processing server response", Toast.LENGTH_SHORT).show();
                             Log.e("UploadProfile", "서버 응답 처리 중 오류 발생: " + e.getMessage());
                         }
                     } else {
-                        Toast.makeText(MyPageActivity.this, "서버 오류", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyPageActivity.this, "server error", Toast.LENGTH_SHORT).show();
                         Log.e("UploadProfile", "서버 오류 발생: " + response.code());
                     }
                 }
@@ -470,13 +470,13 @@ public class MyPageActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(MyPageActivity.this, "네트워크 오류", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyPageActivity.this, "network error", Toast.LENGTH_SHORT).show();
                     Log.e("UploadProfile", "네트워크 오류 발생: " + t.getMessage());
                 }
             });
         } else {
             Log.e("UploadProfile", "파일이 존재하지 않습니다.");
-            Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "File does not exist.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -493,10 +493,10 @@ public class MyPageActivity extends AppCompatActivity {
 
         if (alarmSetting) {
             setAlarm(); // 알람 활성화
-            Toast.makeText(this, "알람이 활성화되었습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Alarm activated.", Toast.LENGTH_SHORT).show();
         } else {
             cancelAlarm(); // 알람 비활성화
-            Toast.makeText(this, "알람이 비활성화되었습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Alarm deactivated.", Toast.LENGTH_SHORT).show();
         }
 
         alarmSwitch.setChecked(alarmSetting); // UI 업데이트
@@ -505,13 +505,13 @@ public class MyPageActivity extends AppCompatActivity {
     // 알람을 설정하는 메서드
     private void setAlarm() {
         // 여기에 알람을 설정하는 로직 추가 (예: AlarmManager 활용)
-        Log.d("Alarm", "알람이 활성화되었습니다.");
+        Log.d("Alarm", "Alarm activated.");
     }
 
     // 알람을 취소하는 메서드
     private void cancelAlarm() {
         // 여기에 알람을 해제하는 로직 추가
-        Log.d("Alarm", "알람이 비활성화되었습니다.");
+        Log.d("Alarm", "Alarm deactivated.");
     }
 
 

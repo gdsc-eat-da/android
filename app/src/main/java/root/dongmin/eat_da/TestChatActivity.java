@@ -358,14 +358,14 @@ public class TestChatActivity extends AppCompatActivity {
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
-                                                            Toast.makeText(TestChatActivity.this, "채팅 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(TestChatActivity.this, "chat is sucessfully deleted", Toast.LENGTH_SHORT).show();
 
                                                             // chatRef의 모든 요소들도 삭제
                                                             chatRef.removeValue()
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
-                                                                            Toast.makeText(TestChatActivity.this, "chatRef 데이터 또한 삭제되었습니다...", Toast.LENGTH_SHORT).show();
+                                                                            //Toast.makeText(TestChatActivity.this, "chatRef 데이터 또한 삭제되었습니다...", Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     })
                                                                     .addOnFailureListener(new OnFailureListener() {
