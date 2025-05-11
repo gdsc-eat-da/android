@@ -98,13 +98,13 @@ public class AllergyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.miniunsel);
                     if (!finalAlergicList.contains(allergyItem)) {
                         finalAlergicList.add(allergyItem);
-                        Toast.makeText(v.getContext(), "추가됨: " + allergyItem, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Added: " + allergyItem, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     isSelectedList.set(position, false);
                     ((AllergyViewHolder) holder).tvMini.setBackgroundResource(R.drawable.minisel);
                     finalAlergicList.remove(allergyItem);
-                    Toast.makeText(v.getContext(), "제거됨: " + allergyItem, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "Removed: " + allergyItem, Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (holder instanceof PlusViewHolder) {
