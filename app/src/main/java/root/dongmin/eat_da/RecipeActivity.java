@@ -207,6 +207,7 @@ public class RecipeActivity extends AppCompatActivity {
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(RecipeActivity.this,MapActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); //이거 왜 지워 진거지??
                     startActivity(intent);
 
                     overridePendingTransition(0, 0); // 전환 애니메이션 제거

@@ -203,7 +203,10 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PhotoActivity.this,NeedActivity.class);
+
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
 
             }
         });

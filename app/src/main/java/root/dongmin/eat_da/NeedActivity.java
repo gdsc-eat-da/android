@@ -161,12 +161,12 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.needface) {
-                    radioNeedFace.setBackgroundResource(R.drawable.checkedface);
-                    radioNeedNoFace.setBackgroundResource(R.drawable.noface);
+                    radioNeedFace.setBackgroundResource(R.drawable.checkedfaceup);
+                    radioNeedNoFace.setBackgroundResource(R.drawable.nofaceup);
                     isFaceSelected = 0; // ✅ face 선택 시 0
                 } else if (checkedId == R.id.neednoface) {
-                    radioNeedFace.setBackgroundResource(R.drawable.face);
-                    radioNeedNoFace.setBackgroundResource(R.drawable.checkednoface);
+                    radioNeedFace.setBackgroundResource(R.drawable.faceup);
+                    radioNeedNoFace.setBackgroundResource(R.drawable.checkednofaceup);
                     isFaceSelected = 1; // ✅ noface 선택 시 1
                 }
             }
@@ -199,6 +199,8 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 Intent intent = new Intent(NeedActivity.this, PhotoActivity.class);
                 startActivity(intent);
+
+                overridePendingTransition(0, 0); // 전환 애니메이션 제거
             }
         });
     }

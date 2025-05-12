@@ -166,7 +166,7 @@
                 android:background="@drawable/edit_text_background"
                 android:buttonTint="@color/black"
                 android:checked="true"
-                android:text="I'll share some food with you" />
+                android:text="I want to share food" />
         </RadioGroup>
 
         <ImageView
