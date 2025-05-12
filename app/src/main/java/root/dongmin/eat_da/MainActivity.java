@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -234,6 +235,8 @@ public class MainActivity extends AppCompatActivity {
         bezori = findViewById(R.id.textView_msgfruitvega);
         instant = findViewById(R.id.textView_msgseed);
         search = findViewById(R.id.searchPost);
+        Button geminiButton = findViewById(R.id.gemini); // XML에서 정의한 버튼 ID
+
 
 
         // RecyclerView 설정
@@ -257,6 +260,17 @@ public class MainActivity extends AppCompatActivity {
         needrecyclerView.addItemDecoration(itemDecoration);
 
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+
+        geminiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GeminiActivity.class);
+
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
 
 
         zori.setOnClickListener(v -> {

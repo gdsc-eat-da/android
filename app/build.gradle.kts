@@ -104,5 +104,9 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.8")
 
     implementation ("com.google.android.flexbox:flexbox:3.0.0") //FlexboxLayoutManager 추가임
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("com.google.ai.client.generativeai:generativeai:0.9.0")
+    implementation ("com.google.guava:guava:32.1.2-android") // 최신 버전 (2024년 기준)
 
 }
