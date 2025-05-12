@@ -192,20 +192,33 @@ public class RecipeActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_home) {
                     Intent intent = new Intent(RecipeActivity.this, MainActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.chat) {
                     Intent intent = new Intent(RecipeActivity.this, UserFindActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+                    finish();
                     return true;
                 }else if (item.getItemId() == R.id.work_load){
                     Intent intent = new Intent(RecipeActivity.this,MapActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }else if (item.getItemId() == R.id.nav_profile){
-                    Intent intent = new Intent(RecipeActivity.this,RecipeActivity.class);
+                    Intent intent = new Intent(RecipeActivity.this,MyPageActivity.class);
                     startActivity(intent);
+
+                    overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
                     finish();
                     return true;
                 }

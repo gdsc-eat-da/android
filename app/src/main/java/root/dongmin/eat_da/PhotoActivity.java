@@ -177,12 +177,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.face) {
-                    radioFace.setBackgroundResource(R.drawable.checkedface);
-                    radioNoFace.setBackgroundResource(R.drawable.noface);
+                    radioFace.setBackgroundResource(R.drawable.checkedfaceup);
+                    radioNoFace.setBackgroundResource(R.drawable.nofaceup);
                     isFaceSelected = 0; // ✅ face 선택 시 0
                 } else if (checkedId == R.id.noface) {
-                    radioFace.setBackgroundResource(R.drawable.face);
-                    radioNoFace.setBackgroundResource(R.drawable.checkednoface);
+                    radioFace.setBackgroundResource(R.drawable.faceup);
+                    radioNoFace.setBackgroundResource(R.drawable.checkednofaceup);
                     isFaceSelected = 1; // ✅ noface 선택 시 1
                 }
             }

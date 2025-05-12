@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingredient"
             app:shapeAppearanceOverlay="@style/RoundedImageView2"
-            app:srcCompat="@drawable/takephoto" />
+            app:srcCompat="@drawable/takephotoup" />
 
         <!-- 알레르기 유무 텍스트 -->
         <!-- carmeraView 아래에 배치 -->
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="180dp"
-            android:text="알레르기 유무"
+            android:text="Allergy status"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/hashtagRecyclerView"
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="음식이 해당 알레르기에 포함되진 않나요?"
+            android:text="Are any foods included in this allergy?"
             android:textColor="#808080"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/allergyText"
@@ -79,7 +79,7 @@
             android:id="@+id/allergyText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="추천 해시태그"
+            android:text="Recommended Tags"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/radioFace"
@@ -94,7 +94,7 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/edit_text_background"
             android:ems="10"
-            android:hint="글 제목"
+            android:hint="Title of the article"
             android:inputType="text"
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +108,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/edit_text_background"
             android:ems="10"
-            android:hint="게시물 내용을 작성해주세요"
+            android:hint="Please write the post content"
             android:inputType="text"
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +121,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="52dp"
             android:backgroundTint="@color/black"
-            android:text="작성완료"
+            android:text="Completed"
             app:cornerRadius="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
@@ -133,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:text="주변 이웃을 도울 수 있어요!"
+            android:text="You can help your neighbors!"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -157,7 +157,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/edit_text_background"
                 android:buttonTint="@color/black"
-                android:text="음식이 필요해요" />
+                android:text="I need food" />
 
             <RadioButton
                 android:id="@+id/foodDistribute"
@@ -166,7 +166,7 @@
                 android:background="@drawable/edit_text_background"
                 android:buttonTint="@color/black"
                 android:checked="true"
-                android:text="음식을 나눠줄래요" />
+                android:text="I'll share some food with you" />
         </RadioGroup>
 
         <ImageView
@@ -196,7 +196,7 @@
                 android:layout_width="363dp"
                 android:layout_height="130dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/checkedface"
+                android:background="@drawable/checkedfaceup"
                 android:button="@null"
                 android:checked="true" />
 
@@ -204,7 +204,7 @@
                 android:id="@+id/noface"
                 android:layout_width="363dp"
                 android:layout_height="130dp"
-                android:background="@drawable/noface"
+                android:background="@drawable/nofaceup"
                 android:button="@null" />
         </RadioGroup>
 
@@ -213,7 +213,7 @@
             android:id="@+id/allergyDescription2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(최대 5개)"
+            android:text="(Up to 5)"
             android:textColor="#808080"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/hashtagRecyclerView"
