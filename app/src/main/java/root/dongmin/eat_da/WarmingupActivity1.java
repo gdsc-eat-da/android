@@ -64,15 +64,15 @@ public class WarmingupActivity1 extends AppCompatActivity {
                 // bubble 이미지를 보여주고, 잘못된 항목의 배경을 변경
                 if (question1.isChecked()) {
                     bubble1.setVisibility(View.VISIBLE); // question1이 체크되었을 때 bubble1 표시
-                    question1.setBackgroundResource(R.drawable.foodnowrong); // question1 배경 변경
+                    question1.setBackgroundResource(R.drawable.foodnowrongup); // question1 배경 변경
                 }
                 if (question3.isChecked()) {
                     bubble3.setVisibility(View.VISIBLE); // question3이 체크되었을 때 bubble2 표시
-                    question3.setBackgroundResource(R.drawable.foodfakewrong); // question3 배경 변경
+                    question3.setBackgroundResource(R.drawable.foodfakewrongup); // question3 배경 변경
                 }
                 if (question5.isChecked()) {
                     bubble2.setVisibility(View.VISIBLE); // question5가 체크되었을 때 bubble3 표시
-                    question5.setBackgroundResource(R.drawable.cashwrong); // question5 배경 변경
+                    question5.setBackgroundResource(R.drawable.cashwrongup); // question5 배경 변경
                 }
 
 
@@ -106,17 +106,17 @@ public class WarmingupActivity1 extends AppCompatActivity {
 
     private void setCheckBoxListeners() {
         question1.setOnCheckedChangeListener((buttonView, isChecked) ->
-                updateCheckBoxBackground(question1, isChecked, R.drawable.foodnoclick, R.drawable.foodnodefault));
+                updateCheckBoxBackground(question1, isChecked, R.drawable.foodnoclickup, R.drawable.foodnodefaultup));
         question2.setOnCheckedChangeListener((buttonView, isChecked) ->
-                updateCheckBoxBackground(question2, isChecked, R.drawable.recipeshareclick, R.drawable.recipesharedefault));
+                updateCheckBoxBackground(question2, isChecked, R.drawable.recipeshareclickup, R.drawable.recipesharedefaultup));
         question3.setOnCheckedChangeListener((buttonView, isChecked) ->
-                updateCheckBoxBackground(question3, isChecked, R.drawable.foodfakeclick, R.drawable.foodfakedefault));
+                updateCheckBoxBackground(question3, isChecked, R.drawable.foodfakeclickup, R.drawable.foodfakedefaultup));
         question4.setOnCheckedChangeListener((buttonView, isChecked) ->
-                updateCheckBoxBackground(question4, isChecked, R.drawable.crimeclicked, R.drawable.crimedefault));
+                updateCheckBoxBackground(question4, isChecked, R.drawable.crimeclickedup, R.drawable.crimedefaultup));
         question5.setOnCheckedChangeListener((buttonView, isChecked) ->
-                updateCheckBoxBackground(question5, isChecked, R.drawable.cashclicked, R.drawable.cashdefault));
+                updateCheckBoxBackground(question5, isChecked, R.drawable.cashclickedup, R.drawable.cashdefaultup));
         question6.setOnCheckedChangeListener((buttonView, isChecked) ->
-                updateCheckBoxBackground(question6, isChecked, R.drawable.timeatteckclicked, R.drawable.timeattackdefault));
+                updateCheckBoxBackground(question6, isChecked, R.drawable.timeatteckclickedup, R.drawable.timeattackdefaultup));
     }
 
     private void updateCheckBoxBackground(CheckBox checkBox, boolean isChecked, int checkedImage, int defaultImage) {

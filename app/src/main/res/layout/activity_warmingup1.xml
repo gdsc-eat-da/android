@@ -77,7 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="84dp"
-        android:background="@drawable/foodnodefault"
+        android:background="@drawable/foodnodefaultup"
         android:button="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.054"
@@ -89,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="84dp"
-        android:background="@drawable/recipesharedefault"
+        android:background="@drawable/recipesharedefaultup"
         android:button="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="84dp"
-        android:background="@drawable/foodfakedefault"
+        android:background="@drawable/foodfakedefaultup"
         android:button="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.945"
@@ -113,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:background="@drawable/crimedefault"
+        android:background="@drawable/crimedefaultup"
         android:button="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.054"
@@ -125,7 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:background="@drawable/cashdefault"
+        android:background="@drawable/cashdefaultup"
         android:button="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -137,7 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:background="@drawable/timeattackdefault"
+        android:background="@drawable/timeattackdefaultup"
         android:button="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.942"
@@ -153,7 +153,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/bubble1" />
+        app:srcCompat="@drawable/bubble1up" />
 
     <ImageView
         android:id="@+id/bubble2"
@@ -164,7 +164,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.522"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/bubble2" />
+        app:srcCompat="@drawable/bubble2up" />
 
     <ImageView
         android:id="@+id/bubble3"
@@ -175,7 +175,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.947"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/bubble3" />
+        app:srcCompat="@drawable/bubble3up" />
 
 
 
