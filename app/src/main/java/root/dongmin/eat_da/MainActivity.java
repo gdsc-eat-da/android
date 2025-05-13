@@ -148,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            private int previousItemId = R.id.nav_home; // 초기 선택된 아이콘 (homeclicked 상태)
+            private int previousItemId = R.id.nav_home; // 초기값
+
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (previousItemId == item.getItemId()) {

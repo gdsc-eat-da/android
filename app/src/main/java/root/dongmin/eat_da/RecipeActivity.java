@@ -120,7 +120,7 @@ public class RecipeActivity extends AppCompatActivity {
                         return true;
                     } else {
                         // 필요 시 로딩 중 메시지나 대기 화면을 띄울 수도 있습니다
-                        Toast.makeText(RecipeActivity.this, "데이터를 로딩 중입니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RecipeActivity.this, "Loading...", Toast.LENGTH_SHORT).show();
                     }
                 }else if (item.getItemId() == R.id.nav_profile){
                     Intent intent = new Intent(RecipeActivity.this,MyPageActivity.class);
@@ -258,16 +258,15 @@ public class RecipeActivity extends AppCompatActivity {
         I = findViewById(R.id.textView_msg9);
 
         // 해시태그 버튼 클릭 리스너 설정
-        A.setOnClickListener(v -> filterByHashtag("인기메뉴", true));
-        B.setOnClickListener(v -> filterByHashtag("자취생", true));
-        C.setOnClickListener(v -> filterByHashtag("건강식", true));
-        D.setOnClickListener(v -> filterByHashtag("아동", true));
-        E.setOnClickListener(v -> filterByHashtag("간식", true));
-        F.setOnClickListener(v -> filterByHashtag("인기", false));
-        G.setOnClickListener(v -> filterByHashtag("분리배출", false));
-        H.setOnClickListener(v -> filterByHashtag("질문상담", false));
-        I.setOnClickListener(v -> filterByHashtag("알뜰 지식", false));
-
+        A.setOnClickListener(v -> filterByHashtag("Popular", true));
+        B.setOnClickListener(v -> filterByHashtag("Living Alone", true));
+        C.setOnClickListener(v -> filterByHashtag("Healthy Food", true));
+        D.setOnClickListener(v -> filterByHashtag("Children", true));
+        E.setOnClickListener(v -> filterByHashtag("Snack", true));
+        F.setOnClickListener(v -> filterByHashtag("Popular", false));
+        G.setOnClickListener(v -> filterByHashtag("Recycling", false));
+        H.setOnClickListener(v -> filterByHashtag("Q&A", false));
+        I.setOnClickListener(v -> filterByHashtag("Frugal Knowledge", false));
         // 버튼 이벤트 처리
         setupButtons();
 
@@ -305,13 +304,13 @@ public class RecipeActivity extends AppCompatActivity {
                     recyclerView.setAdapter(recipeAdapter);
                     helprecycleView.setAdapter(helpAdapter);
                 } else {
-                    Toast.makeText(RecipeActivity.this, "레시피 불러오기 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecipeActivity.this, "failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
-                Toast.makeText(RecipeActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RecipeActivity.this, "network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -326,18 +325,18 @@ public class RecipeActivity extends AppCompatActivity {
         boolean isFiltered = false;
         if (isRecipe) {
             switch (hashtag) {
-                case "인기메뉴": isFiltered = isAFiltered; targetButton = A; isAFiltered = !isAFiltered; break;
-                case "자취생": isFiltered = isBFiltered; targetButton = B; isBFiltered = !isBFiltered; break;
-                case "건강식": isFiltered = isCFiltered; targetButton = C; isCFiltered = !isCFiltered; break;
-                case "아동": isFiltered = isDFiltered; targetButton = D; isDFiltered = !isDFiltered; break;
-                case "간식": isFiltered = isEFiltered; targetButton = E; isEFiltered = !isEFiltered; break;
+                case "Popular": isFiltered = isAFiltered; targetButton = A; isAFiltered = !isAFiltered; break;
+                case "Living Alone": isFiltered = isBFiltered; targetButton = B; isBFiltered = !isBFiltered; break;
+                case "Healthy Food": isFiltered = isCFiltered; targetButton = C; isCFiltered = !isCFiltered; break;
+                case "Children": isFiltered = isDFiltered; targetButton = D; isDFiltered = !isDFiltered; break;
+                case "Snack": isFiltered = isEFiltered; targetButton = E; isEFiltered = !isEFiltered; break;
             }
         } else {
             switch (hashtag) {
-                case "인기": isFiltered = isFFiltered; targetButton = F; isFFiltered = !isFFiltered; break;
-                case "분리배출": isFiltered = isGFiltered; targetButton = G; isGFiltered = !isGFiltered; break;
-                case "질문상담": isFiltered = isHFiltered; targetButton = H; isHFiltered = !isHFiltered; break;
-                case "알뜰 지식": isFiltered = isIFiltered; targetButton = I; isIFiltered = !isIFiltered; break;
+                case "Popular": isFiltered = isFFiltered; targetButton = F; isFFiltered = !isFFiltered; break;
+                case "Recycling": isFiltered = isGFiltered; targetButton = G; isGFiltered = !isGFiltered; break;
+                case "Q&A": isFiltered = isHFiltered; targetButton = H; isHFiltered = !isHFiltered; break;
+                case "Frugal Knowledge": isFiltered = isIFiltered; targetButton = I; isIFiltered = !isIFiltered; break;
             }
         }
 
@@ -431,11 +430,11 @@ public class RecipeActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(RecipeActivity.this, "데이터 로딩 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecipeActivity.this, "data loading failed: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User is not logged in.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -450,16 +449,16 @@ public class RecipeActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String nickname = dataSnapshot.getValue(String.class);
                     if (nickname != null) {
-                        greed.setText(nickname + "님");
+                        greed.setText(nickname);
                         Nickname = nickname;
                     } else {
-                        greed.setText("닉네임을 설정해주세요.");
+                        greed.setText("Please set your nickname.");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(RecipeActivity.this, "닉네임을 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecipeActivity.this, " Failed to load nickname.", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

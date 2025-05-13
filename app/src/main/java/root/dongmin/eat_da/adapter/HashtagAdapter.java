@@ -90,13 +90,13 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagV
                 isSelectedList.set(position, true);
                 ((HashtagViewHolder) holder).tvMini.setBackgroundResource(R.drawable.miniunsel);
                 finalHashList.add(hashItem); // 리스트에 추가 (액티비티의 리스트를 직접 수정)
-                Toast.makeText(v.getContext(), "추가됨: " + hashItem, Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "added: " + hashItem, Toast.LENGTH_SHORT).show();
             } else {
                 // 비활성화 상태로 변경
                 isSelectedList.set(position, false);
                 ((HashtagViewHolder) holder).tvMini.setBackgroundResource(R.drawable.minisel);
                 finalHashList.remove(hashItem); // 리스트에서 제거 (액티비티의 리스트를 직접 수정)
-                Toast.makeText(v.getContext(), "제거됨: " + hashItem, Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "deleted: " + hashItem, Toast.LENGTH_SHORT).show();
             }
         });
 

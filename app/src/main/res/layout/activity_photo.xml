@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingredient"
             app:shapeAppearanceOverlay="@style/RoundedImageView2"
-            app:srcCompat="@drawable/takephotoup" />
+            app:srcCompat="@drawable/camerare" />
 
         <!-- 알레르기 유무 텍스트 -->
         <!-- carmeraView 아래에 배치 -->

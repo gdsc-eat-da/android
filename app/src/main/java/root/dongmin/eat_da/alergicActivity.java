@@ -127,9 +127,9 @@ public class alergicActivity extends AppCompatActivity {
         alergicItems = new ArrayList<>();
         selectedItems = new ArrayList<>(); // 선택된 항목 저장 리스트
 
-        alergicItems.add("사과");
-        alergicItems.add("토마토");
-        alergicItems.add("파인애플");
+        alergicItems.add("apple");
+        alergicItems.add("tomato");
+        alergicItems.add("pineapple");
 
         alergicMap = new HashMap<>();
         alergicMap.put("TextView_msgegg", new ArrayList<String>() {{ add("Egg"); }});

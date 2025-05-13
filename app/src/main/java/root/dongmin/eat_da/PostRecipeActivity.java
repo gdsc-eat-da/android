@@ -60,7 +60,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
     private PlusHashtagAdapter plusHashtagAdapter;
     private root.dongmin.eat_da.adapter.HashtagAdapter HashtagAdapter;
     private RecyclerView hashtagRecyclerView, plusHashtagRecyclerView;
-    public List<String> hashList = new ArrayList<>(Arrays.asList("인기", "분리배출", "질문상담" ,"알뜰 지식"));
+    public List<String> hashList = new ArrayList<>(Arrays.asList("Popular", "Recycling", "Q&A" ,"Frugal Knowledge"));
     public List<String> finalHashList = new ArrayList<>();
     public List<String> UpHashList = new ArrayList<>();
     private TextView free, recipe;
@@ -189,7 +189,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
 
         getNickname(nickname -> {
             if (nickname == null) {
-                Toast.makeText(PostRecipeActivity.this, "닉네임을 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PostRecipeActivity.this, "Failed to load the nickname.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -223,7 +223,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
                             if (success) {
                                 int recipeID = jsonResponse.getInt("recipeID");
                                 Log.d("Upload", "recipeID: " + recipeID);
-                                Toast.makeText(PostRecipeActivity.this,"레시피가 업로드되었습니다!" , Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PostRecipeActivity.this,"The recipe has been uploaded!" , Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(PostRecipeActivity.this, RecipeActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                                 finish();
@@ -304,7 +304,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
 
 
     private void showCustomDialog() {
-        Toast.makeText(getApplicationContext(), "다이얼로그 시작.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
         // 1. 다이얼로그 생성
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_item);
@@ -324,7 +324,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
                 // 다이얼로그 닫기
                 dialog.dismiss();
             } else {
-                Toast.makeText(getApplicationContext(), "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please enter the correct value.", Toast.LENGTH_SHORT).show();
             }
         });
 

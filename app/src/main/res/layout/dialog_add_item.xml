@@ -13,7 +13,7 @@
         android:layout_height="67dp"
         android:gravity="start|center_vertical"
         android:paddingBottom="10dp"
-        android:text=" 알레르기 직접 입력하기"
+        android:text="check allergies"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/edittext_rounded"
-        android:hint="알레르기 입력"
+        android:hint="write your allergies."
         android:inputType="text"
         android:padding="12dp"
         android:textSize="16sp" />
@@ -39,6 +39,6 @@
             android:layout_width="wrap_content"
             android:layout_height="70dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/add_icon" />
+            app:srcCompat="@drawable/submitre" />
     </LinearLayout>
 </LinearLayout>

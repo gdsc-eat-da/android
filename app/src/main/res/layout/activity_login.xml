@@ -12,9 +12,7 @@
         android:id="@+id/et_email"
         android:layout_width="363dp"
         android:layout_height="50dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_background"
         android:ems="10"
         android:hint="Id"
@@ -24,7 +22,7 @@
         android:textColor="#B0B0B0"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.458"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -33,8 +31,7 @@
         android:layout_width="363dp"
         android:layout_height="50dp"
         android:layout_marginStart="41dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="42dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/edit_text_background"
         android:ems="10"
         android:hint="Password"
@@ -43,8 +40,9 @@
         android:paddingLeft="16dp"
         android:textColor="#B0B0B0"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/et_email"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/et_email"
         app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
     <com.google.android.material.button.MaterialButton
@@ -55,8 +53,8 @@
         android:backgroundTint="@color/black"
         android:text="Login"
         app:cornerRadius="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/et_pwd"
+        app:layout_constraintStart_toStartOf="@+id/et_pwd"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
 
     <TextView
@@ -126,8 +124,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/login"
+        app:layout_constraintStart_toStartOf="@+id/login"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:srcCompat="@drawable/googleloginup" />
 

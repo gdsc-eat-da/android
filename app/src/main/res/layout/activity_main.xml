@@ -149,14 +149,15 @@
 
                 <TextView
                     android:id="@+id/gureCount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="79dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/gure"
-                    android:layout_alignStart="@id/gure"
+                    android:layout_alignStart="@+id/gure"
                     android:layout_alignEnd="@+id/gure"
-                    android:layout_marginStart="33dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="33dp"
+                    android:layout_marginEnd="0dp"
+                    android:gravity="center"
                     android:text="0"
                     android:textColor="#000000"
                     android:textSize="22sp"
@@ -176,14 +177,15 @@
                 <!-- 가운데 텍스트 아래 숫자 -->
                 <TextView
                     android:id="@+id/kyesekellCount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/kyesekell"
                     android:layout_alignStart="@+id/kyesekell"
                     android:layout_alignEnd="@+id/kyesekell"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="31dp"
+                    android:layout_marginEnd="0dp"
+                    android:gravity="center"
                     android:text="0"
                     android:textColor="#000000"
                     android:textSize="22sp"
@@ -210,13 +212,14 @@
                     android:layout_below="@id/book"
                     android:layout_alignStart="@+id/book"
                     android:layout_alignEnd="@+id/book"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="-1dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="28dp"
+                    android:layout_marginEnd="0dp"
                     android:text="0"
                     android:textColor="#000000"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:gravity="center"/>
             </RelativeLayout>
 
             <EditText
@@ -294,7 +297,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-                app:srcCompat="@drawable/mainpam" />
+                app:srcCompat="@drawable/holdon" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -395,5 +398,5 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="70dp"
-        android:background="@drawable/posting" />
+        android:background="@drawable/s" />
 </FrameLayout>
