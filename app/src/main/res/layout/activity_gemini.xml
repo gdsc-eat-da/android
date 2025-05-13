@@ -1,29 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/main"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/inputText"
-        android:hint="질문을 입력하세요"
+    <LinearLayout
+        android:id="@+id/main"
+        android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/sendButton"
-        android:text="Gemini에게 보내기"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        <!-- 이미지 표시 -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/resultText"
-        android:text="결과가 여기에 표시됩니다"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp" />
-</LinearLayout>
+        <!-- 수동 입력 필드 -->
+        <EditText
+            android:id="@+id/inputText"
+            android:hint="질문을 입력하세요 (선택)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Gemini에게 질문 보내기 버튼 -->
+        <Button
+            android:id="@+id/sendButton"
+            android:text="Gemini에게 보내기"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- 결과 텍스트 -->
+        <TextView
+            android:id="@+id/resultText"
+            android:text="결과가 여기에 표시됩니다"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

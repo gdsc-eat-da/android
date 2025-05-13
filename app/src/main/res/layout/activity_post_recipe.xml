@@ -157,7 +157,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="264dp"
         android:backgroundTint="@color/black"
-        android:text="Submit"
+        android:text="Ask Gemini"
         app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

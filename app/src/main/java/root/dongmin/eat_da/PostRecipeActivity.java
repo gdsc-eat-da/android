@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +37,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -186,6 +192,64 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
             Log.e("Upload", "내용 또는 재료가 비어 있습니다.");
             return;
         }
+
+        // isrecipe가 0인 경우 (일반 게시물)
+        if (isrecipe == 0) {
+            getNickname(nickname -> {
+                if (nickname == null) {
+                    Toast.makeText(PostRecipeActivity.this, "Failed to load the nickname.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // ReDeActivity로 이동하면서 데이터 전달
+                Intent intent = new Intent(PostRecipeActivity.this, GeminiActivity.class);
+
+                // 이미지 비트맵을 파일로 저장 후 URI로 전달
+                if (imageBitmap != null) {
+                    try {
+                        // 캐시 디렉토리에 이미지 파일 저장
+                        File imageFile = new File(getCacheDir(), "shared_image.jpg");
+                        FileOutputStream fos = new FileOutputStream(imageFile);
+                        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                        fos.flush();
+                        fos.close();
+
+                        // FileProvider를 사용해 안전한 URI 생성
+                        Uri imageUri = FileProvider.getUriForFile(
+                                PostRecipeActivity.this,
+                                getPackageName() + ".fileprovider",
+                                imageFile
+                        );
+
+                        intent.putExtra("photoUri", imageUri.toString());
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // 권한 부여
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(PostRecipeActivity.this, "이미지 처리 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+                // 나머지 데이터 전달
+                intent.putExtra("contents", contents);
+                intent.putExtra("ingredients", ingredients);
+                intent.putExtra("nickname", nickname);
+                intent.putExtra("suggestion", 0); // 기본값 0
+                intent.putExtra("hashtag", getFormattedHashtags());
+                intent.putExtra("isrecipe", isrecipe);
+                intent.putExtra("recipeID", "local_post_" + System.currentTimeMillis());
+
+                startActivity(intent);
+                finish();
+            });
+            return;
+        }
+
+
+
+
+
 
         getNickname(nickname -> {
             if (nickname == null) {
