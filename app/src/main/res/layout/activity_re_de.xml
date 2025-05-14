@@ -136,7 +136,7 @@
             android:background="@color/white"
             android:backgroundTint="#F2F3F7"
             android:ems="10"
-            android:hint="댓글을 작성해보세요."
+            android:hint="set text"
             android:inputType="text"
             android:paddingLeft="16dp"
             android:textColor="#9F9F9F"

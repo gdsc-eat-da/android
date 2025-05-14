@@ -1,45 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ReDeActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
-        android:orientation="vertical"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- 이미지 표시 -->
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 수동 입력 필드 -->
-        <EditText
-            android:id="@+id/inputText"
-            android:hint="질문을 입력하세요 (선택)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- Gemini에게 질문 보내기 버튼 -->
-        <Button
-            android:id="@+id/sendButton"
-            android:text="Gemini에게 보내기"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
-        <!-- 결과 텍스트 -->
+        <!-- 기존 뷰들 -->
         <TextView
-            android:id="@+id/resultText"
-            android:text="결과가 여기에 표시됩니다"
+            android:id="@+id/detailTitle"
+            android:layout_width="379dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="80dp"
+            android:padding="16dp"
+            android:text="제목이 들어가는 공간입니다."
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/imageView28"
+            app:layout_constraintStart_toStartOf="@+id/imageView28"
+            app:layout_constraintTop_toBottomOf="@+id/imageView28" />
+
+        <ImageView
+            android:id="@+id/imageView28"
+            android:layout_width="379dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="36dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/upre" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="48dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/detailTitle"
+            app:layout_constraintTop_toBottomOf="@+id/detailTitle"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/nick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="닉네임"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/profile"
+            app:layout_constraintStart_toEndOf="@+id/profile"
+            app:layout_constraintTop_toTopOf="@+id/profile" />
+
+        <ImageView
+            android:id="@+id/imageView29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile"
+            app:srcCompat="@drawable/linere" />
+
+        <ImageView
+            android:id="@+id/imageView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/whatisname"
+            app:srcCompat="@drawable/linere" />
+
+        <TextView
+            android:id="@+id/detailIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:textSize="16sp" />
-    </LinearLayout>
-</ScrollView>
+            android:layout_marginTop="12dp"
+            android:padding="18sp"
+            android:text="내용이 들어가는 공간입니다.내용이 들어가는 공간입니다.내용이 들어가는 공간입니다.\n"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView29" />
+
+        <ImageView
+            android:id="@+id/detailImage"
+            android:layout_width="0dp"
+            android:layout_height="380dp"
+            android:background="#909090"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailIngredients" />
+
+        <TextView
+            android:id="@+id/whatisname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:padding="18sp"
+            android:text="#태그 #태그 #태그"
+            android:textColor="#31CDD8"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailImage" />
+
+        <!-- 댓글 RecyclerView -->
+
+        <!-- 댓글 작성 칸 -->
+
+
+        <EditText
+            android:id="@+id/searchPost"
+            android:layout_width="313dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:backgroundTint="#F2F3F7"
+            android:ems="10"
+            android:hint="댓글을 작성해보세요."
+            android:inputType="text"
+            android:paddingLeft="16dp"
+            android:textColor="#9F9F9F"
+            android:textColorHint="#9F9F9F"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView47"
+            app:layout_constraintTop_toBottomOf="@+id/textView47" />
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="60dp"
+            android:layout_height="57dp"
+            android:padding="15sp"
+            android:text="확인"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/textView47"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/searchPost"
+            app:layout_constraintTop_toTopOf="@+id/searchPost" />
+
+        <TextView
+            android:id="@+id/textView46"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="84dp"
+            android:background="@drawable/rounded_gray_background"
+            android:text="summary"
+            app:layout_constraintEnd_toEndOf="@+id/detailTitle"
+            app:layout_constraintHorizontal_bias="0.512"
+            app:layout_constraintStart_toStartOf="@+id/detailTitle"
+            app:layout_constraintTop_toBottomOf="@+id/imageView32" />
+
+        <TextView
+            android:id="@+id/textView47"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/textView46"
+            app:layout_constraintHorizontal_bias="0.512"
+            app:layout_constraintStart_toStartOf="@+id/textView46"
+            app:layout_constraintTop_toBottomOf="@+id/textView46" />
+        <!-- 댓글 작성 확인 버튼 -->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
