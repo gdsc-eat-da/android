@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
     public List<PostLocation> postLocations;
 
+    private Button gemma;
+
 
 
     // 1초에 한 번씩 loadChatList()를 호출
@@ -335,6 +337,17 @@ public class MainActivity extends AppCompatActivity {
                 filterPosts(searchText, zorifilter, bezorifilter, instantfilter); // 검색 함수 호출
             }
         });
+
+//        gemma = findViewById(R.id.Gemma);
+//        gemma.setOnClickListener(v -> {
+//            Intent intent = new Intent(this, GemmaActivity.class);
+//            startActivity(intent);
+//
+//            overridePendingTransition(0, 0); // 전환 애니메이션 제거
+//
+//        });
+
+
 
 
 

@@ -41,7 +41,9 @@
 
 
 
-
+        <activity
+            android:name=".GemmaActivity"
+            android:exported="false" />
         <activity
             android:name=".GeminiActivity"
             android:exported="false" />

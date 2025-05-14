@@ -50,6 +50,14 @@ android {
     }
 }
 
+//configurations.all {
+//    resolutionStrategy {
+//        force("com.google.protobuf:protobuf-javalite:4.26.1")
+//    }
+//}
+
+
+
 dependencies {
 
 
@@ -109,6 +117,6 @@ dependencies {
     implementation ("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation ("com.google.guava:guava:32.1.2-android") // 최신 버전 (2024년 기준)
 
-    implementation("com.google.mediapipe:tasks-genai:0.10.28")
+    //implementation("com.google.mediapipe:tasks-genai:0.10.20")
 
 }
