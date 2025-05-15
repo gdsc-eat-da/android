@@ -119,7 +119,7 @@ public class PlusHashtagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 dialog.dismiss();
             } else {
-                Toast.makeText(context, "올바른 값을 입력하세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Please check your input.", Toast.LENGTH_SHORT).show();
             }
         });
 

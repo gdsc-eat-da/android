@@ -131,12 +131,12 @@ public class PostDetailActivity extends AppCompatActivity {
 
     // ✅ 알레르기 경고 팝업 띄우는 함수
     private void showAllergyWarningPopup(Set<String> allergySet) {
-        String message = "⚠️ 해당 음식에 포함된 알레르기 성분: " + String.join(", ", allergySet);
+        String message = "⚠️ Allergenic ingredients contained in this food: " + String.join(", ", allergySet);
 
         new AlertDialog.Builder(this)
-                .setTitle("알레르기 경고")
+                .setTitle("!alert!")
                 .setMessage(message)
-                .setPositiveButton("확인", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("check", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 }

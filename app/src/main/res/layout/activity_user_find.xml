@@ -29,7 +29,7 @@
             android:background="@drawable/rounded_button_no"
             android:elevation="10dp"
             android:onClick="onRightButtonClick"
-            android:text="나눔받기"
+            android:text="receive"
             android:textColor="#000000"
             android:textSize="14sp" />
 
@@ -42,7 +42,7 @@
             android:background="@drawable/rounded_button_yes"
             android:elevation="3dp"
             android:onClick="onLeftButtonClick"
-            android:text="나눔하기"
+            android:text="share"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
     </LinearLayout>
@@ -82,7 +82,7 @@
             android:background="@drawable/minisel"
             android:maxWidth="250dp"
             android:padding="6dp"
-            android:text=" 읽지않음 "
+            android:text="Unread"
             android:textColor="#121111"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
