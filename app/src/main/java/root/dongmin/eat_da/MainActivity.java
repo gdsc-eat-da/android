@@ -338,14 +338,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        gemma = findViewById(R.id.Gemma);
-//        gemma.setOnClickListener(v -> {
-//            Intent intent = new Intent(this, GemmaActivity.class);
-//            startActivity(intent);
-//
-//            overridePendingTransition(0, 0); // 전환 애니메이션 제거
-//
-//        });
+        gemma = findViewById(R.id.Gemma);
+        gemma.setOnClickListener(v -> {
+            Intent intent = new Intent(this, GemmaActivity.class);
+            startActivity(intent);
+
+            overridePendingTransition(0, 0); // 전환 애니메이션 제거
+
+        });
 
 
 

@@ -16,4 +16,4 @@ local.properties
 app/google-services.json
 /app/src/main/res/values/strings.xml
 /app/src/main/assets/gemma-2b-it-gpu-int4.bin
-
+/app/src/main/assets/gemma-2b-it-cpu-int4.bin
