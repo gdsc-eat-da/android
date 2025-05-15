@@ -50,6 +50,8 @@ public class ReDeActivity extends AppCompatActivity {
         detailIngredients = findViewById(R.id.detailIngredients);
         detailImage = findViewById(R.id.detailImage);
         whatisname = findViewById(R.id.whatisname);
+        heart = findViewById(R.id.heart);
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
 

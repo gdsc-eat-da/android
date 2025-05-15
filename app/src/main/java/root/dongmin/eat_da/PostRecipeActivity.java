@@ -60,7 +60,7 @@ import root.dongmin.eat_da.network.RetrofitClient;
 public class PostRecipeActivity extends AppCompatActivity implements View.OnClickListener{
 
     // UI 요소
-    private Button btnUpload;
+    private Button btnUpload ,askGemma, askPerson;
     private ImageView cameraView,back;
     private EditText eText, inText;
     private PlusHashtagAdapter plusHashtagAdapter;
@@ -71,6 +71,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
     public List<String> UpHashList = new ArrayList<>();
     private TextView free, recipe;
     private int isrecipe = 0; // 0 또는 1로 설정
+    private int isGemini = 0;
 
 
 
@@ -101,6 +102,8 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         // UI 요소 연결
 
         btnUpload = findViewById(R.id.recipeupload);
+        askGemma = findViewById(R.id.askGemma);
+        askPerson = findViewById(R.id.askPerson);
         cameraView = findViewById(R.id.recipecarmeraView);
         eText = findViewById(R.id.recipecontext);
         inText = findViewById(R.id.recipeingredient);
@@ -116,6 +119,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         updateTextColor(isrecipe);
         free.setOnClickListener(v -> {
             isrecipe = 0; // freeorrecipe 값을 0으로 설정
+
             //updateTextColor(isrecipe); // 텍스트 색상 업데이트
             free.setTextColor(Color.parseColor("#000000")); // textView30: 검은색
             recipe.setTextColor(Color.parseColor("#999AA3")); // textView31: 회색
@@ -144,6 +148,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         // 버튼 클릭 리스너 등록
         cameraView.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
+        askPerson.setOnClickListener(this);
 
 
         // 카메라 실행 결과 처리
@@ -174,6 +179,10 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         if (view.getId() == R.id.recipecarmeraView) {
             openCamera();
         } else if (view.getId() == R.id.recipeupload) {
+            isGemini = 1;
+            recipePost();
+        } else if (view.getId() == R.id.askPerson) {
+            isGemini = 0;
             recipePost();
         }
     }
@@ -194,7 +203,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         }
 
         // isrecipe가 0인 경우 (일반 게시물)
-        if (isrecipe == 0) {
+        if (isrecipe == 0 && isGemini == 1) {
             getNickname(nickname -> {
                 if (nickname == null) {
                     Toast.makeText(PostRecipeActivity.this, "Failed to load the nickname.", Toast.LENGTH_SHORT).show();

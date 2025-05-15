@@ -151,16 +151,44 @@
         app:layout_constraintStart_toStartOf="@+id/plusHashtagRecyclerView"
         app:layout_constraintTop_toBottomOf="@+id/allergyText2" />
 
+    <!-- 버튼 그룹: Gemini, Gemma, Person -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/recipeupload"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="264dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@color/black"
         android:text="Ask Gemini"
         app:cornerRadius="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/askGemma"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="@+id/hashtagRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/recipecarmeraView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/askGemma"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="264dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/black"
+        android:text="Ask Gemma"
+        app:cornerRadius="6dp"
+        app:layout_constraintTop_toBottomOf="@+id/recipecarmeraView"
+        app:layout_constraintStart_toEndOf="@+id/recipeupload"
+        app:layout_constraintEnd_toStartOf="@+id/askPerson" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/askPerson"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="264dp"
+        android:backgroundTint="@color/black"
+        android:text="Ask Person"
+        app:cornerRadius="6dp"
+        app:layout_constraintEnd_toEndOf="@+id/hashtagRecyclerView"
+        app:layout_constraintStart_toEndOf="@+id/askGemma"
         app:layout_constraintTop_toBottomOf="@+id/recipecarmeraView" />
 
 

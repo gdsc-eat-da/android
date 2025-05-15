@@ -11,10 +11,12 @@ import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.ai.client.generativeai.java.ChatFutures;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,19 +47,22 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// (기존 import 유지)
+import com.google.ai.client.generativeai.java.ChatFutures;
+
 public class GeminiActivity extends AppCompatActivity {
 
+    // 기존 필드 그대로
     private TextView resultText, sum;
-    private TextView nick;
-    private TextView detailTitle;
-    private TextView whatisname;
+    private TextView nick, detailTitle, whatisname, detailIngredients, confirm;
     private ShapeableImageView profile;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
+    private EditText searchPost;
+    private ImageView imageView;
 
-    private ImageView imageView; // 필드 선언
-
-
+    // ✅ Chat 객체 전역으로 선언
+    private ChatFutures chat;
 
 
     @Override
@@ -65,17 +70,28 @@ public class GeminiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gemini);
 
+        // UI 초기화
+        confirm = findViewById(R.id.confirm);
         resultText = findViewById(R.id.textView47);
+        searchPost = findViewById(R.id.searchPost);
         profile = findViewById(R.id.profile);
         sum = findViewById(R.id.textView46);
-        imageView = findViewById(R.id.detailImage); // 연결
+        imageView = findViewById(R.id.detailImage);
         nick = findViewById(R.id.nick);
         detailTitle = findViewById(R.id.detailTitle);
+        detailIngredients = findViewById(R.id.detailIngredients);
         whatisname = findViewById(R.id.whatisname);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("UserAccount");
 
+        // ✅ Gemini 초기화 및 ChatFutures 생성
+        String apiKey = getString(R.string.GEMINI_KEY);
+        GenerativeModel gm = new GenerativeModel("gemini-2.0-flash", apiKey);
+        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
+        chat = model.startChat();
+
+        // 인텐트 처리
         Intent intent = getIntent();
         Uri imageUri = null;
         String ingredients = "";
@@ -92,36 +108,44 @@ public class GeminiActivity extends AppCompatActivity {
         }
 
         loadImageProfile();
-        nick.setText(nickname); // 작성자 닉네임
-        whatisname.setText(hashtag); // 해시태그
-        detailTitle.setText(contents); // 제목 (예: 요리 이름)
-
+        nick.setText(nickname);
+        whatisname.setText(hashtag);
+        detailTitle.setText(contents);
+        detailIngredients.setText(ingredients);
 
         if (imageUri != null) {
             processImageAndCallGemini(imageUri, ingredients);
         } else {
             resultText.setText("이미지 URI가 전달되지 않았습니다.");
         }
-    }
 
+        confirm.setOnClickListener(v -> {
+            String userQuestion = searchPost.getText().toString().trim();
+
+            if (userQuestion.isEmpty()) {
+                Toast.makeText(this, "ask a question.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // 이미지 없이 질문만 보냄
+            callGeminiWithTextOnly(userQuestion);
+            searchPost.setText("");
+        });
+    }
 
     private void loadImageProfile() {
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
-
-            // 사용자 정보 가져오기 (프로필 이미지)
             mDatabaseRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         String profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
-
-                        // 프로필 이미지 설정
                         if (profileImageUrl != null) {
                             Glide.with(GeminiActivity.this)
-                                    .load(profileImageUrl)  // Firebase에서 가져온 URL
-                                    .into(profile);  // ImageView에 로드
+                                    .load(profileImageUrl)
+                                    .into(profile);
                         }
                     }
                 }
@@ -135,6 +159,7 @@ public class GeminiActivity extends AppCompatActivity {
             Toast.makeText(this, "로그인되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void processImageAndCallGemini(Uri imageUri, String ingredients) {
         try {
             Bitmap bitmap;
@@ -145,10 +170,10 @@ public class GeminiActivity extends AppCompatActivity {
             } else {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
             }
-            imageView.setImageBitmap(bitmap); // 이미지뷰에 표시
+            imageView.setImageBitmap(bitmap);
 
-            // Bitmap을 그대로 넘김
-            callGemini(bitmap, ingredients);
+            // 이미지와 함께 초기 질문
+            callGeminiWithImage(bitmap, ingredients);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,45 +181,47 @@ public class GeminiActivity extends AppCompatActivity {
         }
     }
 
-
-    private void callGemini(Bitmap bitmap, String ingredients) {
-        String apiKey = getString(R.string.GEMINI_KEY);
-
-        GenerativeModel gm = new GenerativeModel("gemini-1.5-flash", apiKey);
-        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
-
+    // ✅ 이미지와 텍스트 함께 사용 (처음 질문)
+    private void callGeminiWithImage(Bitmap bitmap, String ingredients) {
         Content content = new Content.Builder()
                 .addText("Please divide the content into a summary and a detailed explanation. Put the summary between @@ symbols. For the detailed explanation, organize it into multiple steps and enclose each step's title between !! symbols. From now on, please respond in the same language as the question. Here is the question: " + ingredients)
-
                 .addImage(bitmap)
                 .build();
 
-        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+        ListenableFuture<GenerateContentResponse> response = chat.sendMessage(content);
 
+        handleResponse(response);
+    }
+
+    // ✅ 이후 텍스트 질문만 보낼 때
+    private void callGeminiWithTextOnly(String question) {
+        question = "Please divide the content into a summary and a detailed explanation. Put the summary between @@ symbols. For the detailed explanation, organize it into multiple steps and enclose each step's title between !! symbols. From now on, please respond in the same language as the question. Here is the question: "+ question ;
+
+        Content content = new Content.Builder()
+                .addText(question)
+                .build();
+
+        ListenableFuture<GenerateContentResponse> response = chat.sendMessage(content);
+
+        handleResponse(response);
+    }
+
+    // ✅ 공통 응답 처리 함수
+    private void handleResponse(ListenableFuture<GenerateContentResponse> response) {
         Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
             @Override
             public void onSuccess(GenerateContentResponse result) {
                 String resultStr = result.getText().toString();
 
-                // 요약 텍스트 찾기 (정규표현식으로 @@사이 텍스트 추출)
                 Pattern summaryPattern = Pattern.compile("@@(.*?)@@");
                 Matcher summaryMatcher = summaryPattern.matcher(resultStr);
 
-                String summaryText;
-                if (summaryMatcher.find()) {
-                    summaryText = summaryMatcher.group(1).trim();
-                } else {
-                    summaryText = "";
-                }
-
-                // 본문 텍스트에서 @@요약@@ 제거
+                String summaryText = summaryMatcher.find() ? summaryMatcher.group(1).trim() : "";
                 String mainText = resultStr.replaceAll("@@(.*?)@@", "").trim();
 
-                // !! 강조 텍스트 Bold 처리
                 Pattern boldPattern = Pattern.compile("!!(.*?)!!");
                 Matcher boldMatcher = boldPattern.matcher(mainText);
 
-                // !! 제거된 텍스트 만들기
                 String cleanedMainText = mainText.replaceAll("!!(.*?)!!", "$1");
                 SpannableString spannable = new SpannableString(cleanedMainText);
 
@@ -210,17 +237,15 @@ public class GeminiActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     resultText.setText(spannable);
-                    sum.setText(summaryText.isEmpty() ? "요약 없음" : summaryText);
+                    sum.setText(summaryText.isEmpty() ? "no summary" : summaryText);
                 });
             }
-
 
             @Override
             public void onFailure(Throwable t) {
                 t.printStackTrace();
-                runOnUiThread(() -> resultText.setText("Gemini 응답 실패: " + t.getMessage()));
+                runOnUiThread(() -> resultText.setText("Gemini failed: " + t.getMessage()));
             }
         }, getMainExecutor());
     }
-
 }
