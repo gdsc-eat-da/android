@@ -186,6 +186,7 @@ public class UserFindActivity extends AppCompatActivity {
                     return true;
                 }else if (item.getItemId() == R.id.recipe){
                     Intent intent = new Intent(UserFindActivity.this,RecipeActivity.class);
+                    intent.putParcelableArrayListExtra("needPostList", new ArrayList<>(needPosts)); // 이 줄 추가
                     startActivity(intent);
 
                     overridePendingTransition(0, 0); // 전환 애니메이션 제거

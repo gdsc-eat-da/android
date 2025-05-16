@@ -86,6 +86,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.google.guava:guava:32.1.2-android")
 
+    //gemma
+    implementation ("com.google.mediapipe:tasks-genai:0.10.5")
+
     // AI/ML 관련
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0") {
         exclude(group = "com.google.protobuf", module = "protobuf-java")

@@ -149,6 +149,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
         cameraView.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
         askPerson.setOnClickListener(this);
+        askGemma.setOnClickListener(this);
 
 
         // 카메라 실행 결과 처리
@@ -178,7 +179,7 @@ public class PostRecipeActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View view) {
         if (view.getId() == R.id.recipecarmeraView) {
             openCamera();
-        } else if (view.getId() == R.id.recipeupload) {
+        } else if (view.getId() == R.id.recipeupload || view.getId() == R.id.askGemma) {
             isGemini = 1;
             recipePost();
         } else if (view.getId() == R.id.askPerson) {
