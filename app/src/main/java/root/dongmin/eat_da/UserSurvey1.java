@@ -105,19 +105,19 @@ public class UserSurvey1 extends AppCompatActivity {
                     selfEmp.setBackgroundResource(R.drawable.radiodefault);
                     enterprise.setBackgroundResource(R.drawable.radiodefault);
                     isIndividual = 1;
-                    userType = "개인";
+                    userType = "Individual";
                 } else if (checkedId == R.id.radioSelf_empoloyed) {
                     selfEmp.setBackgroundResource(R.drawable.radioclicked);
                     enterprise.setBackgroundResource(R.drawable.radiodefault);
                     individual.setBackgroundResource(R.drawable.radiodefault);
                     isIndividual = 0;
-                    userType = "기업";
+                    userType = "Self-employed";
                 } else if (checkedId == R.id.radioEnterprise) {
                     enterprise.setBackgroundResource(R.drawable.radioclicked);
                     individual.setBackgroundResource(R.drawable.radiodefault);
                     selfEmp.setBackgroundResource(R.drawable.radiodefault);
                     isIndividual = 0;
-                    userType = "자영업자";
+                    userType = "Enterprise";
                 }
             }
         });

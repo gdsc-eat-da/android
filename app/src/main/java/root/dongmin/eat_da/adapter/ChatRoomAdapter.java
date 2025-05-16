@@ -113,7 +113,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
                     // 마지막 메시지를 UI에 반영
                     holder.chatRoomSubtitleTextView.setText(message);
                 } else {
-                    holder.chatRoomSubtitleTextView.setText("메시지 없음");
+                    holder.chatRoomSubtitleTextView.setText("no message");
                 }
             }
         });

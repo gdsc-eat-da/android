@@ -302,7 +302,7 @@ public class UserFindActivity extends AppCompatActivity {
         }
         else {
             Log.e("MAP_DEBUG", "아니 chatRoom 못받음 뭐임??????????");
-            mainloadChatList();
+            //mainloadChatList();
             handleChatRoomAction(chatRoom, isnotMinea);
         }
 
@@ -352,6 +352,10 @@ public class UserFindActivity extends AppCompatActivity {
         chatRoomList = new ArrayList<>();
         adapter = new ChatRoomAdapter(chatRoomList);
         chatRoomRecyclerView.setAdapter(adapter);
+
+
+
+
 
         // 채팅 리스트 및 게시글 로드
         loadChatList(new OnChatListLoadedListener() {

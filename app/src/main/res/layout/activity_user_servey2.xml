@@ -27,38 +27,40 @@
         android:layout_height="wrap_content"
         android:text="If there is any incorrect information, you can correct it"
         android:textColor="#959595"
-        android:layout_marginStart="24dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView100"
         app:layout_constraintTop_toBottomOf="@+id/textView100" />
 
     <!-- 닉네임 입력 -->
 
+    <!-- 알레르기 유무 입력 -->
+
+    <!-- 사용자 유형 입력 -->
+
     <ImageView
+        android:id="@+id/imageView21"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_marginStart="26dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/servey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.315"
         app:layout_constraintStart_toEndOf="@+id/textView101"
         app:layout_constraintTop_toBottomOf="@+id/textView100" />
 
     <EditText
         android:id="@+id/nicknameEditText"
-        android:layout_width="363dp"
-        android:layout_height="60dp"
+        android:layout_width="347dp"
+        android:layout_height="59dp"
         android:backgroundTint="#BABAC0"
         android:inputType="text"
         android:padding="16dp"
         android:text="Nickname"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView101"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView34"
         app:layout_constraintTop_toBottomOf="@+id/textView34" />
-
-    <!-- 알레르기 유무 입력 -->
-
-    <!-- 사용자 유형 입력 -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/allergyRecyclerView"
@@ -66,22 +68,24 @@
         android:layout_height="60dp"
         android:background="#ffffff"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/nicknameEditText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView33"
         app:layout_constraintTop_toBottomOf="@+id/textView33" />
 
     <EditText
         android:id="@+id/userTypeEditText"
-        android:layout_width="363dp"
-        android:layout_height="60dp"
+        android:layout_width="347dp"
+        android:layout_height="59dp"
         android:backgroundTint="#BABAC0"
         android:inputType="text"
         android:padding="16dp"
         android:text="User type"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/nicknameEditText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView35"
         app:layout_constraintTop_toBottomOf="@+id/textView35" />
 
     <TextView
@@ -93,8 +97,7 @@
         android:textColor="#727272"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:layout_marginStart="24dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/nicknameEditText"
         app:layout_constraintTop_toBottomOf="@+id/nicknameEditText" />
 
 
@@ -102,12 +105,11 @@
         android:id="@+id/textView34"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginTop="100dp"
         android:text="Nickname"
         android:textColor="#727272"
         android:textSize="12sp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView101"
         app:layout_constraintTop_toBottomOf="@+id/textView101" />
 
     <TextView
@@ -118,8 +120,7 @@
         android:text="User type"
         android:textColor="#727272"
         android:textSize="12sp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/allergyRecyclerView"
         app:layout_constraintTop_toBottomOf="@+id/allergyRecyclerView" />
 
     <TextView

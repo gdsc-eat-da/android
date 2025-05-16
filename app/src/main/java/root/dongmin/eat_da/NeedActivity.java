@@ -307,7 +307,7 @@ public class NeedActivity extends AppCompatActivity implements View.OnClickListe
 
 
                                     Log.d("Upload", "게시물 업로드 성공!");
-                                    Toast.makeText(NeedActivity.this, "게시물이 업로드되었습니다!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NeedActivity.this, "sucessfully uploaded!", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(NeedActivity.this, MainActivity.class)
                                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                                     finish();

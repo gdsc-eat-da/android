@@ -184,7 +184,7 @@ public class GeminiActivity extends AppCompatActivity {
     // ✅ 이미지와 텍스트 함께 사용 (처음 질문)
     private void callGeminiWithImage(Bitmap bitmap, String ingredients) {
         Content content = new Content.Builder()
-                .addText("Please divide the content into a summary and a detailed explanation. Put the summary between @@ symbols. For the detailed explanation, organize it into multiple steps and enclose each step's title between !! symbols. From now on, please respond in the same language as the question. Here is the question: " + ingredients)
+                .addText("Please split the response into a summary and the full content. The summary should appear right at the beginning, enclosed between @@ symbols. The full content should be broken down step by step, with light summarization. Each step should be separated by section titles, and the section titles should be wrapped with !!. From now on, please respond in the language that will follow(english recommend) : " + ingredients)
                 .addImage(bitmap)
                 .build();
 
@@ -195,8 +195,6 @@ public class GeminiActivity extends AppCompatActivity {
 
     // ✅ 이후 텍스트 질문만 보낼 때
     private void callGeminiWithTextOnly(String question) {
-        question = "Please divide the content into a summary and a detailed explanation. Put the summary between @@ symbols. For the detailed explanation, organize it into multiple steps and enclose each step's title between !! symbols. From now on, please respond in the same language as the question. Here is the question: "+ question ;
-
         Content content = new Content.Builder()
                 .addText(question)
                 .build();

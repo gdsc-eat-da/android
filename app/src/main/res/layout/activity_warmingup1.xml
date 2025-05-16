@@ -5,9 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WarmingupActivity1"
-    android:background="#FFFFFF">
-
+    android:background="#FFFFFF"
+    tools:context=".WarmingupActivity1">
 
     <TextView
         android:id="@+id/textView28"
@@ -18,10 +17,10 @@
         android:text="Let's review the rules again"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12" />
 
     <TextView
         android:id="@+id/textwarmingup"
@@ -30,11 +29,78 @@
         android:layout_marginTop="12dp"
         android:text="Please select all applicable regulations."
         android:textColor="#959595"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintTop_toBottomOf="@id/textView28"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView28" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.108" />
 
+    <!-- Checkboxes -->
+    <CheckBox
+        android:id="@+id/question1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="84dp"
+        android:background="@drawable/foodnodefaultup"
+        android:button="@null"
+        app:layout_constraintStart_toStartOf="@+id/textView28"
+        app:layout_constraintTop_toBottomOf="@id/textwarmingup" />
+
+    <CheckBox
+        android:id="@+id/question2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="84dp"
+        android:background="@drawable/recipesharedefaultup"
+        android:button="@null"
+        app:layout_constraintStart_toEndOf="@id/question1"
+        app:layout_constraintTop_toBottomOf="@id/textwarmingup" />
+
+    <CheckBox
+        android:id="@+id/question3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="84dp"
+        android:background="@drawable/foodfakedefaultup"
+        android:button="@null"
+        app:layout_constraintStart_toEndOf="@id/question2"
+        app:layout_constraintTop_toBottomOf="@id/textwarmingup" />
+
+    <CheckBox
+        android:id="@+id/question4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/crimedefaultup"
+        android:button="@null"
+        app:layout_constraintTop_toBottomOf="@id/question1"
+        app:layout_constraintStart_toStartOf="@id/question1"
+        app:layout_constraintHorizontal_bias="0.054" />
+
+    <CheckBox
+        android:id="@+id/question5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/cashdefaultup"
+        android:button="@null"
+        app:layout_constraintTop_toBottomOf="@id/question2"
+        app:layout_constraintStart_toStartOf="@id/question2"
+        app:layout_constraintHorizontal_bias="0.498" />
+
+    <CheckBox
+        android:id="@+id/question6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/timeattackdefaultup"
+        android:button="@null"
+        app:layout_constraintTop_toBottomOf="@id/question3"
+        app:layout_constraintStart_toStartOf="@id/question3"
+        app:layout_constraintHorizontal_bias="0.942" />
+
+    <!-- Buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/toSkip2"
         android:layout_width="120dp"
@@ -44,20 +110,20 @@
         android:backgroundTint="#F2F3F7"
         android:text="Skip"
         app:cornerRadius="6dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question4" />
+        app:layout_constraintTop_toBottomOf="@id/question4"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/seeAnswer"
         android:layout_width="240dp"
         android:layout_height="60dp"
-        android:layout_marginTop="160dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="160dp"
         android:backgroundTint="@color/black"
         android:text="Check the answer."
         app:cornerRadius="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question6" />
+        app:layout_constraintTop_toBottomOf="@id/question6"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnstarteatda"
@@ -68,91 +134,20 @@
         android:backgroundTint="@color/black"
         android:text="Getting started with EAT:DA"
         app:cornerRadius="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question6" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <CheckBox
-        android:id="@+id/question1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:background="@drawable/foodnodefaultup"
-        android:button="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textwarmingup" />
-
-    <CheckBox
-        android:id="@+id/question2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:background="@drawable/recipesharedefaultup"
-        android:button="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textwarmingup" />
-
-    <CheckBox
-        android:id="@+id/question3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:background="@drawable/foodfakedefaultup"
-        android:button="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textwarmingup" />
-
-    <CheckBox
-        android:id="@+id/question4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/crimedefaultup"
-        android:button="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question1" />
-
-    <CheckBox
-        android:id="@+id/question5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/cashdefaultup"
-        android:button="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question2" />
-
-    <CheckBox
-        android:id="@+id/question6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/timeattackdefaultup"
-        android:button="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.942"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question3" />
-
+    <!-- Speech bubbles -->
     <ImageView
         android:id="@+id/bubble1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/question1"
+        app:layout_constraintBottom_toTopOf="@id/question1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.065"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/bubble1up" />
 
     <ImageView
@@ -160,10 +155,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/question5"
+        app:layout_constraintBottom_toTopOf="@id/question5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.522"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/bubble2up" />
 
     <ImageView
@@ -171,12 +166,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/question3"
+        app:layout_constraintBottom_toTopOf="@id/question3"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.947"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/bubble3up" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -132,10 +132,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
                 if(parts[1].equals("X"))
                 {
-                    holder.TextView_nickname.setText("읽음");
+                    holder.TextView_nickname.setText("read");
                 }
                 else {
-                    holder.TextView_nickname.setText("안읽음");
+                    holder.TextView_nickname.setText("unread");
                 }
 
 

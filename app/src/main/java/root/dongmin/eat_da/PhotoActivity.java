@@ -106,10 +106,10 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     private int isFaceSelected = 0; // 기본값은 face(0)
 
 
-    public List<String> alergicList = new ArrayList<>(Arrays.asList("유제품", "땅콩", "복숭아" ,"밀", "쇠고기", "새우"));
+    public List<String> alergicList = new ArrayList<>(Arrays.asList("Milk", "Peanut", "Peach" ,"Wheat", "Beef", "Shrimp"));
     public List<String> finalAlergicList = new ArrayList<>();
 
-    public List<String> hashList = new ArrayList<>(Arrays.asList("조리", "비조리", "인스턴트" ,"밀키트", "넉넉한유통기한"));
+    public List<String> hashList = new ArrayList<>(Arrays.asList("Cooked", "Pre-cooked", "Instant" ,"Meal-Kit", "Long shelf life"));
     public List<String> finalHashList = new ArrayList<>();
     public List<String> UpHashList = new ArrayList<>();
     private RecyclerView allergyRecyclerView, plusHashtagRecyclerView, hashtagRecyclerView;
@@ -420,7 +420,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
                         if (response.isSuccessful()) {
                             Log.d("Upload", "위치 업로드 성공!");
                             Log.d("Upload", "보내는 데이터: postID=" + postID + ", lat=" + latitude + ", lng=" + longitude);
-                            Toast.makeText(PhotoActivity.this, "게시물이 업로드되었습니다!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PhotoActivity.this, "Your post has been uploaded!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(PhotoActivity.this, MainActivity.class)
                                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                             finish();

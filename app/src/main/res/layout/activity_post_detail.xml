@@ -69,13 +69,13 @@
         android:id="@+id/chatButton"
         android:layout_width="363dp"
         android:layout_height="65dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="36dp"
         android:backgroundTint="@color/black"
-        android:text="채팅하기"
+        android:text="chat"
         android:textColor="@android:color/white"
         app:cornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailIngredients" />
 

@@ -208,7 +208,7 @@ public class TestChatActivity extends AppCompatActivity {
         Date now = new Date();
 
         // 포맷 지정 (요일(한국어) HH:mm 형식)
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE HH:mm", Locale.KOREAN);
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE HH:mm", Locale.ENGLISH);
 
         // 포맷된 날짜와 시간 반환
         return formatter.format(now);
@@ -393,9 +393,9 @@ public class TestChatActivity extends AppCompatActivity {
                                             // receivedId_OK 데이터가 없는 경우
                                             // 팝업창으로 메시지 표시
                                             new AlertDialog.Builder(TestChatActivity.this)
-                                                    .setTitle("거래 완료 요청")
-                                                    .setMessage("거래 완료 요청을 완료했습니다! 상대방도 거래 완료 버튼을 누를 시 채팅은 종료됩니다!")
-                                                    .setPositiveButton("확인", null)
+                                                    .setTitle("Transaction completion request")
+                                                    .setMessage("Your transaction completion request has been submitted! The chat will close once the other party also clicks 'Complete Transaction'.")
+                                                    .setPositiveButton("Confirm", null)
                                                     .show();
                                             Button_tradeIsDone.setBackgroundResource(R.drawable.miniunsel); // 배경 변경
                                         }

@@ -76,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001; // 위치 권한
     private static final int REQUEST_STORAGE_PERMISSION = 1;
-    public String Nickname;
+    public String Nickname = "nulllll";
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
-    private TextView greed, greed2, levelBig, levelSmall, tradeNum, zacksungGesigul, zori, bezori, instant; // 사용자 환영 메시지
+    private TextView greed, greed2, levelBig, levelSmall, tradeNum, zack, zori, bezori, instant, kyesekellCount; // 사용자 환영 메시지
     private ProgressBar progressBar;
     private RecyclerView recyclerView, needrecyclerView;
     private PostAdapter postAdapter;
@@ -234,12 +234,13 @@ public class MainActivity extends AppCompatActivity {
         tradeNum = findViewById(R.id.gureCount);
         progressBar = findViewById(R.id.progressBar);
         profileImage = findViewById(R.id.profileImage);
-        zacksungGesigul = findViewById(R.id.bookCount);
+        zack = findViewById(R.id.bookAA);
         zori = findViewById(R.id.TextView_msgegg);
         bezori = findViewById(R.id.textView_msgfruitvega);
         instant = findViewById(R.id.textView_msgseed);
         search = findViewById(R.id.searchPost);
-        Button geminiButton = findViewById(R.id.gemini); // XML에서 정의한 버튼 ID
+        kyesekellCount = findViewById(R.id.kyesekellCount);
+        //Button geminiButton = findViewById(R.id.gemini); // XML에서 정의한 버튼 ID
 
 
 
@@ -266,15 +267,7 @@ public class MainActivity extends AppCompatActivity {
         needrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
-        geminiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, GeminiActivity.class);
 
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
 
 
         zori.setOnClickListener(v -> {
@@ -470,6 +463,7 @@ public class MainActivity extends AppCompatActivity {
                         greed.setText("Welcome, " + nickname);
                         greed2.setText(nickname);
                         Nickname = nickname;
+                        loadtradeCount(allPosts);
                     } else {
                         greed.setText("Please set your nickname.");
                         greed2.setText("_");
@@ -558,6 +552,11 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
+
+    // 포스트 개수 업데이트 메서드
+
+
 
     // ✅ 게시글 목록 불러오기
     private void loadPosts() {
@@ -887,9 +886,9 @@ public class MainActivity extends AppCompatActivity {
             {
                 myTradeCount+=1;
             }
-
+            Log.e("TradeDebug", "pp.getNickname(): " + pp.getNickname() + " | Nickname: " + Nickname);
         }
-        zacksungGesigul.setText(String.valueOf(myTradeCount));
+        kyesekellCount.setText(String.valueOf(myTradeCount));
     }
     // 게시물 검색기능
     private void filterPosts(String searchText, boolean zorifilter, boolean bezorifilter, boolean instantfilter) {
